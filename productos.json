@@ -99,6 +99,18 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 11,
+      "nombre": "lo que sea",
+      "descripcion": "d",
+      "precio": 150,
+      "categoria": "aires",
+      "imagen": "https://andro4all.com/compras/black-friday",
+      "destacado": false,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
