@@ -263,14 +263,7 @@ Contactar
 </div>
 </footer>
 
-<script>
-    // Forzar desregistrar service workers viejos
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-    }
-</script>
-
-<script src="app-v4.js"></script>
+<script src="app-publico.js"></script>
 <script>
     // Registrar Service Worker para PWA
     if ('serviceWorker' in navigator) {

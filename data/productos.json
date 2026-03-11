@@ -75,42 +75,6 @@
       "categoria": "aires",
       "imagen": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600",
       "destacado": false
-    },
-    {
-      "id": 9,
-      "nombre": "Refrigerador Doble Puerta 450L",
-      "descripcion": "Refrigerador doble puerta 450 litros no frost",
-      "precio": 21000,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600",
-      "destacado": false,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 10,
-      "nombre": "Microondas 30L Digital",
-      "descripcion": "Horno microondas digital 30 litros",
-      "precio": 3500,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600",
-      "destacado": false,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 11,
-      "nombre": "Cocina Empotrada 5 Quemadores",
-      "descripcion": "Cocina empotrada de gas con 5 quemadores",
-      "precio": 18500,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600",
-      "destacado": false,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
     }
   ]
 }

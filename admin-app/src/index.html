@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;">
+    <title>DK Electronic - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        
+        .app-container { display: flex; height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 250px; background: linear-gradient(180deg, #c2410c 0%, #9a3412 100%); color: white; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h1 { font-size: 18px; font-weight: 600; }
+        .sidebar-header p { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+        
+        .nav-menu { flex: 1; padding: 10px; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 4px; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active { background: rgba(255,255,255,0.2); }
+        .nav-item svg { width: 20px; height: 20px; }
+        .nav-item span { font-size: 14px; }
+        
+        .sidebar-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .export-btn { width: 100%; padding: 12px; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+        .export-btn:hover { background: #16a34a; }
+        
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .top-bar { background: white; padding: 15px 25px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .top-bar h2 { font-size: 20px; color: #1f2937; }
+        .top-bar .actions { display: flex; gap: 10px; }
+        
+        .content-area { flex: 1; padding: 25px; overflow-y: auto; }
+        
+        /* Buttons */
+        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: #c2410c; color: white; }
+        .btn-primary:hover { background: #9a3412; }
+        .btn-secondary { background: #6b7280; color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-success:hover { background: #16a34a; }
+        
+        /* Tables */
+        .data-table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .data-table th { background: #f9fafb; padding: 14px 16px; text-align: left; font-weight: 600; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 14px 16px; border-top: 1px solid #f3f4f6; }
+        .data-table tr:hover { background: #f9fafb; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; }
+        .badge-featured { background: #fef3c7; color: #92400e; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 8px; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #c2410c; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; color: #1f2937; }
+        .modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f3f4f6; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-body { padding: 25px; overflow-y: auto; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 10px; }
+        
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .stat-card .value { font-size: 32px; font-weight: 700; color: #c2410c; }
+        .stat-card .label { font-size: 14px; color: #6b7280; margin-top: 4px; }
+        
+        /* Image Preview */
+        .image-preview { width: 100%; height: 200px; border: 2px dashed #d1d5db; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        .image-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .image-preview.empty { color: #9ca3af; }
+        
+        /* Search */
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 10px 16px; border: 1px solid #d1d5db; border-radius: 8px; }
+        
+        /* Toast */
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 8px; color: white; font-weight: 500; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: #22c55e; }
+        .toast.error { background: #ef4444; }
+        
+        /* Checkbox */
+        .checkbox-group { display: flex; gap: 20px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; }
+        .checkbox-item input { width: auto; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 60px 20px; color: #6b7280; }
+        .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>DK Electronic</h1>
+                <p>Panel de Administración</p>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" data-view="dashboard">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-view="products">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <span>Productos</span>
+                </div>
+                <div class="nav-item" data-view="categories">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                    <span>Categorías</span>
+                </div>
+                <div class="nav-item" data-view="brands">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    <span>Marcas</span>
+                </div>
+                <div class="nav-item" data-view="settings">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span>Configuración</span>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="export-btn" onclick="exportData()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    Exportar a Web
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h2 id="pageTitle">Dashboard</h2>
+            </div>
+            <div class="content-area" id="contentArea">
+                <!-- Dashboard -->
+                <div id="view-dashboard" class="view">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="value" id="statProducts">0</div>
+                            <div class="label">Productos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="statCategories">0</div>
+                            <div class="label">Categorías</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="statBrands">0</div>
+                            <div class="label">Marcas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="statFeatured">0</div>
+                            <div class="label">Destacados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div id="view-products" class="view" style="display:none;">
+                    <div class="search-box">
+                        <input type="text" id="searchProducts" placeholder="Buscar productos..." oninput="filterProducts()">
+                        <button class="btn btn-primary" onclick="openProductModal()">+ Nuevo Producto</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Categories -->
+                <div id="view-categories" class="view" style="display:none;">
+                    <div class="search-box">
+                        <button class="btn btn-primary" onclick="openCategoryModal()">+ Nueva Categoría</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Slug</th>
+                                <th>Orden</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Brands -->
+                <div id="view-brands" class="view" style="display:none;">
+                    <div class="search-box">
+                        <button class="btn btn-primary" onclick="openBrandModal()">+ Nueva Marca</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Nombre</th>
+                                <th>Orden</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="brandsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Settings -->
+                <div id="view-settings" class="view" style="display:none;">
+                    <div class="form-group">
+                        <label>Nombre de la Tienda</label>
+                        <input type="text" id="storeName">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>WhatsApp</label>
+                            <input type="text" id="storeWhatsapp">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="storePhone">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="storeEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <textarea id="storeAddress" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSettings()">Guardar Configuración</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Editar</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" id="modalSaveBtn" onclick="saveModal()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let currentView = 'dashboard';
+        let currentEditId = null;
+        let products = [];
+        let categories = [];
+        let brands = [];
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const view = item.dataset.view;
+                navigate(view);
+            });
+        });
+
+        function navigate(view) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+            document.getElementById(`view-${view}`).style.display = 'block';
+            
+            const titles = { dashboard: 'Dashboard', products: 'Productos', categories: 'Categorías', brands: 'Marcas', settings: 'Configuración' };
+            document.getElementById('pageTitle').textContent = titles[view] || view;
+            
+            currentView = view;
+            loadViewData(view);
+        }
+
+        async function loadViewData(view) {
+            switch(view) {
+                case 'dashboard':
+                    await loadDashboard();
+                    break;
+                case 'products':
+                    await loadProducts();
+                    break;
+                case 'categories':
+                    await loadCategories();
+                    break;
+                case 'brands':
+                    await loadBrands();
+                    break;
+                case 'settings':
+                    await loadSettings();
+                    break;
+            }
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            products = await window.api.products.getAll();
+            categories = await window.api.categories.getAll();
+            brands = await window.api.brands.getAll();
+            
+            document.getElementById('statProducts').textContent = products.length;
+            document.getElementById('statCategories').textContent = categories.filter(c => c.activo).length;
+            document.getElementById('statBrands').textContent = brands.filter(b => b.activo).length;
+            document.getElementById('statFeatured').textContent = products.filter(p => p.destacado).length;
+        }
+
+        // Products
+        async function loadProducts() {
+            products = await window.api.products.getAll();
+            categories = await window.api.categories.getAll();
+            renderProducts(products);
+        }
+
+        function renderProducts(list) {
+            const tbody = document.getElementById('productsTable');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay productos</td></tr>';
+                return;
+            }
+            tbody.innerHTML = list.map(p => `
+                <tr>
+                    <td><strong>${p.nombre}</strong><br><small>${p.descripcion?.substring(0, 50) || ''}</small></td>
+                    <td>${p.categoria_nombre || 'Sin categoría'}</td>
+                    <td>RD$ ${p.precio.toLocaleString()}</td>
+                    <td>
+                        ${p.destacado ? '<span class="badge badge-featured">★ Destacado</span>' : ''}
+                        ${p.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="editProduct(${p.id})">Editar</button>
+                        <button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="deleteProduct(${p.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('searchProducts').value.toLowerCase();
+            const filtered = products.filter(p => 
+                p.nombre.toLowerCase().includes(search) || 
+                (p.descripcion && p.descripcion.toLowerCase().includes(search))
+            );
+            renderProducts(filtered);
+        }
+
+        function openProductModal(product = null) {
+            currentEditId = product?.id || null;
+            const isEdit = !!product;
+            
+            const categoryOptions = categories.map(c => 
+                `<option value="${c.id}" ${product?.categoria_id === c.id ? 'selected' : ''}>${c.nombre}</option>`
+            ).join('');
+
+            const modalContent = `
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="prodNombre" value="${product?.nombre || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="prodDescripcion" rows="3">${product?.descripcion || ''}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio *</label>
+                        <input type="number" id="prodPrecio" value="${product?.precio || ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="prodCategoria">${categoryOptions}</select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>URL de Imagen</label>
+                    <input type="text" id="prodImagen" value="${product?.imagen || ''}" placeholder="https://...">
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="prodDestacado" ${product?.destacado ? 'checked' : ''}>
+                        <label>Destacado</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="prodActivo" ${product?.activo !== false ? 'checked' : ''}>
+                        <label>Activo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="prodGarantia" ${product?.garantia ? 'checked' : ''}>
+                        <label>Garantía</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Producto' : 'Nuevo Producto';
+            document.getElementById('modalBody').innerHTML = modalContent;
+            openModal();
+        }
+
+        async function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) openProductModal(product);
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('¿Eliminar este producto?')) {
+                await window.api.products.delete(id);
+                showToast('Producto eliminado', 'success');
+                await loadProducts();
+                await loadDashboard();
+            }
+        }
+
+        // Categories
+        async function loadCategories() {
+            categories = await window.api.categories.getAll();
+            renderCategories();
+        }
+
+        function renderCategories() {
+            const tbody = document.getElementById('categoriesTable');
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay categorías</td></tr>';
+                return;
+            }
+            tbody.innerHTML = categories.map(c => `
+                <tr>
+                    <td><strong>${c.nombre}</strong></td>
+                    <td>${c.slug}</td>
+                    <td>${c.orden}</td>
+                    <td>${c.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="editCategory(${c.id})">Editar</button>
+                        <button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="deleteCategory(${c.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openCategoryModal(category = null) {
+            currentEditId = category?.id || null;
+            const isEdit = !!category;
+            
+            const modalContent = `
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="catNombre" value="${category?.nombre || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>Slug</label>
+                    <input type="text" id="catSlug" value="${category?.slug || ''}" placeholder="auto-generado si vacío">
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="catOrden" value="${category?.orden || 0}">
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="catActivo" ${category?.activo !== false ? 'checked' : ''}>
+                        <label>Activo</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Categoría' : 'Nueva Categoría';
+            document.getElementById('modalBody').innerHTML = modalContent;
+            openModal();
+        }
+
+        async function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (category) openCategoryModal(category);
+        }
+
+        async function deleteCategory(id) {
+            if (confirm('¿Eliminar esta categoría?')) {
+                await window.api.categories.delete(id);
+                showToast('Categoría eliminada', 'success');
+                await loadCategories();
+            }
+        }
+
+        // Brands
+        async function loadBrands() {
+            brands = await window.api.brands.getAll();
+            renderBrands();
+        }
+
+        function renderBrands() {
+            const tbody = document.getElementById('brandsTable');
+            if (brands.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay marcas</td></tr>';
+                return;
+            }
+            tbody.innerHTML = brands.map(b => `
+                <tr>
+                    <td><img src="${b.logo_url || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect fill=%22%23ddd%22 width=%2240%22 height=%2240%22/></svg>'}" style="height:30px"></td>
+                    <td><strong>${b.nombre}</strong></td>
+                    <td>${b.orden}</td>
+                    <td>${b.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="editBrand(${b.id})">Editar</button>
+                        <button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="deleteBrand(${b.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openBrandModal(brand = null) {
+            currentEditId = brand?.id || null;
+            const isEdit = !!brand;
+            
+            const modalContent = `
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="brandNombre" value="${brand?.nombre || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>URL del Logo</label>
+                    <input type="text" id="brandLogo" value="${brand?.logo_url || ''}" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" id="brandOrden" value="${brand?.orden || 0}">
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="brandActivo" ${brand?.activo !== false ? 'checked' : ''}>
+                        <label>Activo</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Marca' : 'Nueva Marca';
+            document.getElementById('modalBody').innerHTML = modalContent;
+            openModal();
+        }
+
+        async function editBrand(id) {
+            const brand = brands.find(b => b.id === id);
+            if (brand) openBrandModal(brand);
+        }
+
+        async function deleteBrand(id) {
+            if (confirm('¿Eliminar esta marca?')) {
+                await window.api.brands.delete(id);
+                showToast('Marca eliminada', 'success');
+                await loadBrands();
+            }
+        }
+
+        // Settings
+        async function loadSettings() {
+            const settings = await window.api.settings.get();
+            document.getElementById('storeName').value = settings.nombre_tienda || '';
+            document.getElementById('storeWhatsapp').value = settings.whatsapp || '';
+            document.getElementById('storePhone').value = settings.telefono || '';
+            document.getElementById('storeEmail').value = settings.email || '';
+            document.getElementById('storeAddress').value = settings.direccion || '';
+        }
+
+        async function saveSettings() {
+            const settings = {
+                nombre_tienda: document.getElementById('storeName').value,
+                whatsapp: document.getElementById('storeWhatsapp').value,
+                telefono: document.getElementById('storePhone').value,
+                email: document.getElementById('storeEmail').value,
+                direccion: document.getElementById('storeAddress').value
+            };
+            await window.api.settings.update(settings);
+            showToast('Configuración guardada', 'success');
+        }
+
+        // Modal
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            currentEditId = null;
+        }
+
+        async function saveModal() {
+            switch(currentView) {
+                case 'products':
+                    const prodData = {
+                        nombre: document.getElementById('prodNombre').value,
+                        descripcion: document.getElementById('prodDescripcion').value,
+                        precio: parseFloat(document.getElementById('prodPrecio').value),
+                        categoria_id: parseInt(document.getElementById('prodCategoria').value) || null,
+                        imagen: document.getElementById('prodImagen').value,
+                        destacado: document.getElementById('prodDestacado').checked,
+                        activo: document.getElementById('prodActivo').checked,
+                        garantia: document.getElementById('prodGarantia').checked
+                    };
+                    if (currentEditId) {
+                        await window.api.products.update(currentEditId, prodData);
+                        showToast('Producto actualizado', 'success');
+                    } else {
+                        await window.api.products.create(prodData);
+                        showToast('Producto creado', 'success');
+                    }
+                    await loadProducts();
+                    await loadDashboard();
+                    break;
+
+                case 'categories':
+                    const catData = {
+                        nombre: document.getElementById('catNombre').value,
+                        slug: document.getElementById('catSlug').value,
+                        orden: parseInt(document.getElementById('catOrden').value) || 0,
+                        activo: document.getElementById('catActivo').checked
+                    };
+                    if (currentEditId) {
+                        await window.api.categories.update(currentEditId, catData);
+                        showToast('Categoría actualizada', 'success');
+                    } else {
+                        await window.api.categories.create(catData);
+                        showToast('Categoría creada', 'success');
+                    }
+                    await loadCategories();
+                    break;
+
+                case 'brands':
+                    const brandData = {
+                        nombre: document.getElementById('brandNombre').value,
+                        logo_url: document.getElementById('brandLogo').value,
+                        orden: parseInt(document.getElementById('brandOrden').value) || 0,
+                        activo: document.getElementById('brandActivo').checked
+                    };
+                    if (currentEditId) {
+                        await window.api.brands.update(currentEditId, brandData);
+                        showToast('Marca actualizada', 'success');
+                    } else {
+                        await window.api.brands.create(brandData);
+                        showToast('Marca creada', 'success');
+                    }
+                    await loadBrands();
+                    break;
+            }
+            closeModal();
+        }
+
+        // Export
+        async function exportData() {
+            showToast('Exportando datos...', 'success');
+            const result = await window.api.export.toJson();
+            if (result.success) {
+                showToast('✓ Exportación completada', 'success');
+            } else {
+                showToast('Error: ' + result.message, 'error');
+            }
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Initialize
+        loadDashboard();
+    </script>
+</body>
+</html>

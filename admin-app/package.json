@@ -1,0 +1,31 @@
+{
+  "name": "dk-electronic-admin",
+  "version": "1.0.0",
+  "description": "Aplicación de administración para DK Electronic",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable"
+  },
+  "author": "DK Electronic",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.2.2",
+    "electron-log": "^5.0.0"
+  },
+  "build": {
+    "appId": "com.dkelectronic.admin",
+    "productName": "DK Electronic Admin",
+    "win": {
+      "target": "portable"
+    },
+    "files": [
+      "src/**/*",
+      "database/**/*"
+    ]
+  }
+}
