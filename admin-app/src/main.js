@@ -19,13 +19,12 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            preload: path.join(__dirname, 'src/preload.js')
+            preload: path.join(__dirname, 'preload.js')
         },
-        icon: path.join(__dirname, 'assets/icon.png'),
         title: 'DK Electronic - Admin'
     });
 
-    mainWindow.loadFile(path.join(__dirname, 'src/index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
     
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -34,10 +33,10 @@ function createWindow() {
     log.info('Aplicación iniciada');
 }
 
-function initializeDatabase() {
+async function initializeDatabase() {
     const dbPath = path.join(__dirname, 'database', 'dk-electronic.db');
     db = new Database(dbPath);
-    db.initialize();
+    await db.initialize();
     log.info('Base de datos inicializada');
 }
 
@@ -152,8 +151,8 @@ ipcMain.handle('image:select', async () => {
     return result.filePaths[0] || null;
 });
 
-app.whenReady().then(() => {
-    initializeDatabase();
+app.whenReady().then(async () => {
+    await initializeDatabase();
     createWindow();
 });
 

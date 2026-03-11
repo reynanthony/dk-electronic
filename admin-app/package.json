@@ -14,7 +14,7 @@
     "electron-builder": "^24.9.1"
   },
   "dependencies": {
-    "better-sqlite3": "^9.2.2",
+    "sql.js": "^1.10.0",
     "electron-log": "^5.0.0"
   },
   "build": {
@@ -25,7 +25,7 @@
     },
     "files": [
       "src/**/*",
-      "database/**/*"
+      "node_modules/**/*"
     ]
   }
 }
