@@ -75,6 +75,18 @@
       "categoria": "aires",
       "imagen": "https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600",
       "destacado": false
+    },
+    {
+      "id": 9,
+      "nombre": "Refrigerador Doble Puerta 450L",
+      "descripcion": "grande",
+      "precio": 21000,
+      "categoria": "electrodomesticos",
+      "imagen": "https://www.frigidaire-la.com/frigidaire-refrigerador-de-183-cu-ft-top-freezer-acero/p",
+      "destacado": false,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
