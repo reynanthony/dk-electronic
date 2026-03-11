@@ -644,6 +644,12 @@ const AdminPanel = {
                         </div>
                         <span>Promociones y Marcas</span>
                     </button>
+                    <button id="publish-btn" onclick="GitHubPublisher.publish()" class="w-full flex items-center gap-3 bg-red-500 hover:bg-red-600 text-white p-3.5 rounded-xl text-sm font-semibold transition-all group">
+                        <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </div>
+                        <span>🌐 Publicar en GitHub</span>
+                    </button>
                     <div class="pt-3 border-t border-slate-100">
                         <button onclick="AdminPanel.logout()" class="w-full flex items-center justify-center gap-2 bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 p-3 rounded-xl text-sm font-medium transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -1145,6 +1151,196 @@ const App = {
         if (window.location.search.includes('admin') && !AppState.isAdmin) {
             AdminPanel.showLogin();
         }
+    }
+};
+
+// ============================================
+// MÓDULO: GitHub Publisher - Auto-publicación
+// ============================================
+const GitHubPublisher = {
+    OWNER: 'reynanthony',
+    REPO: 'dk-electronic',
+    
+    getToken() {
+        return localStorage.getItem('dk_github_token') || '';
+    },
+    
+    setToken(token) {
+        localStorage.setItem('dk_github_token', token);
+    },
+    
+    async publish() {
+        const token = this.getToken();
+        if (!token) {
+            this.showTokenModal();
+            return;
+        }
+        
+        try {
+            const btn = document.querySelector('#publish-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin">⏳</span> Publicando...';
+            
+            const datos = StorageManager.get('dk_productos');
+            const promo = StorageManager.get('dk_promo');
+            const garantia = StorageManager.get('dk_garantia');
+            
+            const contenido = JSON.stringify(datos, null, 2);
+            
+            const sha = await this.getFileSHA('productos.json', token);
+            
+            await this.commitFile('productos.json', contenido, sha, 'Update products from admin panel', token);
+            
+            btn.innerHTML = '✅Publicado!';
+            btn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            btn.classList.add('bg-green-500');
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '🌐 Publicar en GitHub';
+                btn.classList.add('bg-red-500', 'hover:bg-red-600');
+                btn.classList.remove('bg-green-500');
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Publish error:', error);
+            const btn = document.querySelector('#publish-btn');
+            btn.disabled = false;
+            btn.innerHTML = '❌ Error - Revisa el token';
+            alert('Error al publicar: ' + error.message);
+        }
+    },
+    
+    async getFileSHA(filename, token) {
+        try {
+            const response = await fetch(`https://api.github.com/repos/${this.OWNER}/${this.REPO}/contents/${filename}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data.sha;
+            }
+        } catch (e) {}
+        return null;
+    },
+    
+    async commitFile(filename, content, sha, message, token) {
+        const response = await fetch(`https://api.github.com/repos/${this.OWNER}/${this.REPO}/contents/${filename}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                content: btoa(unescape(encodeURIComponent(content))),
+                sha: sha
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error al hacer commit');
+        }
+        
+        return await response.json();
+    },
+    
+    showTokenModal() {
+        const existing = document.getElementById('github-token-modal');
+        if (existing) existing.remove();
+        
+        const currentToken = this.getToken();
+        
+        const modalHtml = `
+            <div id="github-token-modal" class="dk-modal-container fixed inset-0 z-[70] flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-black/50 modal-backdrop" onclick="ModalManager.closeById('github-token-modal')"></div>
+                <div class="relative bg-white rounded-2xl w-full max-w-md shadow-2xl p-6">
+                    <button onclick="ModalManager.closeById('github-token-modal')" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">✕</button>
+                    
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-slate-800 to-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Configurar GitHub</h3>
+                        <p class="text-sm text-slate-500 mt-1">Necesitas un token para publicar cambios</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Token de GitHub</label>
+                            <input type="password" id="github-token" value="${currentToken}" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm" placeholder="ghp_xxxxxxxxxxxx">
+                            <p class="text-xs text-slate-500 mt-1">
+                                <a href="https://github.com/settings/tokens/new?scopes=repo&description=DK-Electronic" target="_blank" class="text-primary hover:underline">Generar token aquí</a>
+                            </p>
+                        </div>
+                        
+                        <button onclick="GitHubPublisher.saveTokenAndPublish()" class="w-full bg-primary hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                            Guardar y Publicar
+                        </button>
+                        
+                        <button onclick="GitHubPublisher.testToken()" class="w-full border border-slate-200 text-slate-600 py-2 rounded-lg text-sm hover:bg-slate-50">
+                            Probar Token
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        
+        ModalManager.open(modalHtml, 'github-token-modal');
+    },
+    
+    saveTokenAndPublish() {
+        const token = document.getElementById('github-token').value.trim();
+        if (!token) {
+            alert('Por favor ingresa un token');
+            return;
+        }
+        
+        this.setToken(token);
+        ModalManager.closeById('github-token-modal');
+        this.publish();
+    },
+    
+    async testToken() {
+        const token = document.getElementById('github-token').value.trim();
+        if (!token) {
+            alert('Ingresa un token primero');
+            return;
+        }
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = 'Probando...';
+        
+        try {
+            const response = await fetch(`https://api.github.com/user`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (response.ok) {
+                const user = await response.json();
+                btn.innerHTML = '✅ Token válido - ' + user.login;
+                btn.classList.add('bg-green-500', 'text-white');
+            } else {
+                btn.innerHTML = '❌ Token inválido';
+                btn.classList.add('bg-red-500', 'text-white');
+            }
+        } catch (e) {
+            btn.innerHTML = '❌ Error de conexión';
+        }
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = 'Probar Token';
+            btn.classList.remove('bg-green-500', 'bg-red-500', 'text-white');
+        }, 2000);
     }
 };
 
