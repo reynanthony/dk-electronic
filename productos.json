@@ -87,6 +87,18 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 10,
+      "nombre": "Microondas 30L Digital",
+      "descripcion": "nuevo",
+      "precio": 1800,
+      "categoria": "electrodomesticos",
+      "imagen": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=500",
+      "destacado": false,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
