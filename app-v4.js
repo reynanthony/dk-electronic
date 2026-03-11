@@ -4,6 +4,30 @@
  */
 
 // ============================================
+// LIMPIEZA DE CACHE VIEJO - Eliminar datos antiguos
+// ============================================
+(function clearOldCache() {
+    try {
+        const oldPromo = localStorage.getItem('dk_promo');
+        if (oldPromo) {
+            const data = JSON.parse(oldPromo);
+            let needsUpdate = false;
+            if (data.brands) {
+                data.brands.forEach(b => {
+                    if (b.url && b.url.includes('.png')) {
+                        b.url = b.url.replace('.png', '.svg');
+                        needsUpdate = true;
+                    }
+                });
+            }
+            if (needsUpdate) {
+                localStorage.setItem('dk_promo', JSON.stringify(data));
+            }
+        }
+    } catch(e) {}
+})();
+
+// ============================================
 // MÓDULO: Storage Manager - Persistencia
 // ============================================
 const StorageManager = {
