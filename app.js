@@ -1241,7 +1241,7 @@ const GitHubPublisher = {
         try {
             const response = await fetch(`https://api.github.com/repos/${this.OWNER}/${this.REPO}/contents/${filename}`, {
                 headers: {
-                    'Authorization': `token ${token}`,
+                    'Authorization': 'token ' + token,
                     'Accept': 'application/vnd.github.v3+json'
                 }
             });
@@ -1249,15 +1249,20 @@ const GitHubPublisher = {
                 const data = await response.json();
                 return data.sha;
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error('Error getting SHA:', e);
+        }
         return null;
     },
     
     async commitFile(filename, content, sha, message, token) {
+        console.log('Token length:', token.length);
+        console.log('Token prefix:', token.substring(0, 10));
+        
         const response = await fetch(`https://api.github.com/repos/${this.OWNER}/${this.REPO}/contents/${filename}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': 'token ' + token,
                 'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json'
             },
