@@ -1,0 +1,36 @@
+{
+    "name": "DK Electronic",
+    "short_name": "DK Electronic",
+    "description": "Tienda online de electrodomésticos, televisores y aires acondicionados en República Dominicana",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f8fafc",
+    "theme_color": "#c2410c",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "logo/dklogo-removebg-preview.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "logo/dklogo-removebg-preview.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["shopping", "electronics"],
+    "lang": "es",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false,
+    " shortcuts": [
+        {
+            "name": "WhatsApp",
+            "url": "https://wa.me/18293686994",
+            "icons": [{ "src": "logo/dklogo-removebg-preview.png", "sizes": "96x96" }]
+        }
+    ]
+}

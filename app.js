@@ -152,6 +152,68 @@ const UrlBuilder = {
 };
 
 // ============================================
+// MÓDULO: Sanitizer - Validación y sanitización
+// ============================================
+const Sanitizer = {
+    sanitizeText(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+
+    sanitizeUrl(url) {
+        if (!url) return '';
+        try {
+            const urlObj = new URL(url);
+            if (['http:', 'https:'].includes(urlObj.protocol)) {
+                return url;
+            }
+        } catch {}
+        return '';
+    },
+
+    sanitizeNumber(value, min = 0, max = Infinity) {
+        const num = parseInt(value, 10);
+        if (isNaN(num)) return min;
+        return Math.max(min, Math.min(max, num));
+    },
+
+    validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    },
+
+    validatePhone(phone) {
+        return /^\+?[\d\s\-()]{10,}$/.test(phone);
+    },
+
+    validateRequired(value) {
+        return value && value.trim().length > 0;
+    },
+
+    validateForm(formData, rules) {
+        const errors = {};
+        
+        for (const [field, validators] of Object.entries(rules)) {
+            const value = formData[field];
+            
+            for (const validator of validators) {
+                const result = validator(value, field);
+                if (result !== true) {
+                    errors[field] = result;
+                    break;
+                }
+        
+        return }
+            }
+        {
+            isValid: Object.keys(errors).length === 0,
+            errors
+        };
+    }
+};
+
+// ============================================
 // MÓDULO: Modal Manager - Sistema de modales
 // ============================================
 const ModalManager = {

@@ -3,10 +3,41 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DK Electronic | Tienda Online</title>
+<meta name="description" content="DK Electronic - Tienda online de electrodomésticos, televisores, aires acondicionado y más. Envíos a todo el país. Garantía de 2 años en todos los productos."/>
+<meta name="keywords" content="televisores, aires acondicionado, electrodomésticos, Samsung, LG, Sony, Midea, Whirlpool, smart TV, refrigeradoras, lavadoras, República Dominicana"/>
+<meta name="author" content="DK Electronic"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://reynanthony.github.io/dk-electronic/"/>
+<meta property="og:title" content="DK Electronic | Tienda de Electrodomésticos Online"/>
+<meta property="og:description" content="Los mejores electrodomésticos con garantía y envío a todo el país. Televisores, Aires Acondicionados y más."/>
+<meta property="og:image" content="https://reynanthony.github.io/dk-electronic/logo/dklogo-removebg-preview.png"/>
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image"/>
+<meta property="twitter:url" content="https://reynanthony.github.io/dk-electronic/"/>
+<meta property="twitter:title" content="DK Electronic | Tienda de Electrodomésticos Online"/>
+<meta property="twitter:description" content="Los mejores electrodomésticos con garantía y envío a todo el país."/>
+
+<!-- Canonical -->
+<link rel="canonical" href="https://reynanthony.github.io/dk-electronic/"/>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#c2410c"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="DK Electronic"/>
+
+<title>DK Electronic | Tienda Online de Electrodomésticos en República Dominicana</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo/dklogo-removebg-preview.png"/>
 <script>
     tailwind.config = {
         theme: {
@@ -30,21 +61,41 @@
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Outfit', sans-serif; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    
+    /* Optimización de imágenes */
+    img { loading: lazy; }
+    
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+    
+    /* Focus visible para accesibilidad */
+    :focus-visible { outline: 2px solid #c2410c; outline-offset: 2px; }
 </style>
+
+<!-- Google Analytics -->
+<!-- Google Analytics - Reemplaza G-XXXXXXXXXX con tu ID de GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+</script>
 </head>
 <body class="bg-background text-dark font-sans">
 <!-- Header -->
-<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex items-center justify-between h-16">
 <!-- Logo -->
-<a href="index.html" class="flex items-center gap-3">
-<img src="https://raw.githubusercontent.com/reynanthony/dk-electronic/main/logo/dklogo-removebg-preview.png" alt="DK" class="h-12 w-12 object-contain">
+<a href="index.html" class="flex items-center gap-3" aria-label="DK Electronic - Inicio">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-12 w-12 object-contain" width="48" height="48">
 <span class="text-xl font-bold tracking-tight">DK <span class="text-primary">Electronic</span></span>
 </a>
 
 <!-- Nav -->
-<nav class="hidden md:flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-8" aria-label="Navegación principal">
 <a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>
 <a href="televisores.html" class="text-sm font-medium hover:text-primary transition-colors">Televisores</a>
 <a href="aires.html" class="text-sm font-medium hover:text-primary transition-colors">Aires</a>
@@ -53,8 +104,8 @@
 
 <!-- Actions -->
 <div class="flex items-center gap-3">
-<a href="https://wa.me/18293686994" target="_blank" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700 transition-colors">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+<a href="https://wa.me/18293686994" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700 transition-colors" aria-label="Contactar por WhatsApp">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 <span class="hidden sm:inline">WhatsApp</span>
 </a>
 </div>
@@ -64,12 +115,12 @@
 
 <main>
 <!-- Hero -->
-<section class="relative bg-gradient-to-br from-orange-50 to-white py-16 lg:py-24">
+<section class="relative bg-gradient-to-br from-orange-50 to-white py-16 lg:py-24" aria-label="Bienvenida">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="grid lg:grid-cols-2 gap-12 items-center">
 <div class="space-y-6">
 <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-medium">
-<span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+<span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
 Lo mejor en tecnología
 </span>
 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
@@ -82,41 +133,41 @@ Calidad garantizada con envío a todo el país. Televisores, Aires Acondicionado
 <a href="#categorias" class="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-orange-700 transition-colors">
 Ver Categorías
 </a>
-<a href="https://wa.me/18293686994" target="_blank" class="border-2 border-primary text-primary px-6 py-3 rounded-full font-medium hover:bg-primary hover:text-white transition-colors">
+<a href="https://wa.me/18293686994" target="_blank" rel="noopener noreferrer" class="border-2 border-primary text-primary px-6 py-3 rounded-full font-medium hover:bg-primary hover:text-white transition-colors">
 Contactar
 </a>
 </div>
 </div>
-<div class="relative">
+<div class="relative" aria-hidden="true">
 <div class="absolute inset-0 bg-gradient-to-r from-orange-200 to-yellow-200 rounded-3xl blur-3xl opacity-50"></div>
-<img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800" alt="Electrodomésticos" class="relative rounded-3xl shadow-2xl w-full object-cover h-80 lg:h-96">
+<img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Electrodomésticos" class="relative rounded-3xl shadow-2xl w-full object-cover h-80 lg:h-96" width="800" height="384" loading="eager">
 </div>
 </div>
 </div>
 </section>
 
 <!-- Promo Section -->
-<section id="promo" class="py-12 bg-gradient-to-r from-orange-50 to-amber-50">
+<section id="promo" class="py-12 bg-gradient-to-r from-orange-50 to-amber-50" aria-label="Promociones">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div id="promo-container"></div>
 </div>
 </section>
 
 <!-- Brands Banner -->
-<section class="py-12 bg-white border-t">
+<section class="py-12 bg-white border-t" aria-label="Nuestras marcas">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h3 class="text-xl font-bold text-center mb-8 text-slate-700">Nuestras <span class="text-primary">Marcas</span></h3>
-<div id="brands-container" class="flex flex-wrap items-center justify-center gap-8"></div>
+<h2 class="text-xl font-bold text-center mb-8 text-slate-700">Nuestras <span class="text-primary">Marcas</span></h2>
+<div id="brands-container" class="flex flex-wrap items-center justify-center gap-8" role="marquee" aria-label="Marcas"></div>
 </div>
 </section>
 
 <!-- Categorías -->
-<section id="categorias" class="py-16 bg-white">
+<section id="categorias" class="py-16 bg-white" aria-label="Categorías">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <h2 class="text-3xl font-bold text-center mb-12">Nuestras <span class="text-primary">Categorías</span></h2>
 <div class="grid md:grid-cols-3 gap-6">
 <a href="televisores.html" class="group relative rounded-2xl overflow-hidden">
-<img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600" alt="Televisores" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
+<img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80" alt="Televisores" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 <div class="absolute bottom-0 left-0 right-0 p-5">
 <h3 class="text-xl font-bold text-white">Televisores</h3>
@@ -124,7 +175,7 @@ Contactar
 </div>
 </a>
 <a href="aires.html" class="group relative rounded-2xl overflow-hidden">
-<img src="https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600" alt="Aires" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
+<img src="https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600&q=80" alt="Aires" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 <div class="absolute bottom-0 left-0 right-0 p-5">
 <h3 class="text-xl font-bold text-white">Aires</h3>
@@ -132,7 +183,7 @@ Contactar
 </div>
 </a>
 <a href="electrodomesticos.html" class="group relative rounded-2xl overflow-hidden">
-<img src="https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600" alt="Electrodomésticos" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
+<img src="https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&q=80" alt="Electrodomésticos" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
 <div class="absolute bottom-0 left-0 right-0 p-5">
 <h3 class="text-xl font-bold text-white">Electrodomésticos</h3>
@@ -144,13 +195,13 @@ Contactar
 </section>
 
 <!-- Productos -->
-<section class="py-16 bg-slate-50">
+<section class="py-16 bg-slate-50" aria-label="Productos">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex items-center justify-between mb-10">
         <h2 class="text-3xl font-bold">Productos <span class="text-primary">Destacados</span></h2>
-        <div id="filtros" class="flex flex-wrap gap-2"></div>
+        <div id="filtros" class="flex flex-wrap gap-2" role="group" aria-label="Filtros de categoría"></div>
     </div>
-<div id="productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<div id="productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" role="region" aria-label="Lista de productos">
 <div class="col-span-full text-center py-12 text-muted">
 <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
 <p class="mt-4">Cargando productos...</p>
@@ -160,7 +211,7 @@ Contactar
 </section>
 
 <!-- Stats -->
-<section class="bg-primary py-12">
+<section class="bg-primary py-12" aria-label="Estadísticas">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-white text-center">
 <div><div class="text-3xl font-bold">250k+</div><div class="text-sm font-medium opacity-80">Ventas</div></div>
 <div><div class="text-3xl font-bold">99.9%</div><div class="text-sm font-medium opacity-80">Confianza</div></div>
@@ -171,35 +222,36 @@ Contactar
 </main>
 
 <!-- Footer -->
-<footer class="bg-white py-12 border-t">
+<footer class="bg-white py-12 border-t" role="contentinfo">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="grid md:grid-cols-4 gap-10">
 <div>
 <div class="flex items-center gap-2 mb-4">
-<img src="https://raw.githubusercontent.com/reynanthony/dk-electronic/main/logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8 object-contain">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8 object-contain" width="32" height="32">
 <span class="font-bold">DK <span class="text-primary">Electronic</span></span>
 </div>
-<p class="text-sm text-muted">Los mejores electrodomésticos con garantía y servicio técnico.</p>
+<p class="text-sm text-muted">Los mejores electrodomésticos con garantía y servicio técnico en República Dominicana.</p>
 </div>
 <div>
 <h4 class="font-medium mb-4">Categorías</h4>
 <ul class="space-y-2 text-sm text-muted">
-<li><a href="televisores.html" class="hover:text-primary">Televisores</a></li>
-<li><a href="aires.html" class="hover:text-primary">Aires</a></li>
-<li><a href="electrodomesticos.html" class="hover:text-primary">Electrodomésticos</a></li>
+<li><a href="televisores.html" class="hover:text-primary transition-colors">Televisores</a></li>
+<li><a href="aires.html" class="hover:text-primary transition-colors">Aires</a></li>
+<li><a href="electrodomesticos.html" class="hover:text-primary transition-colors">Electrodomésticos</a></li>
 </ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Ayuda</h4>
 <ul class="space-y-2 text-sm text-muted">
-<li><a href="#" onclick="showEnvios(); return false;" class="hover:text-primary">Envíos</a></li>
-<li><a href="garantia.html" class="hover:text-primary">Garantía</a></li>
-<li><a href="#" onclick="showContacto(); return false;" class="hover:text-primary">Contacto</a></li>
+<li><a href="#" onclick="showEnvios(); return false;" class="hover:text-primary transition-colors">Envíos</a></li>
+<li><a href="garantia.html" class="hover:text-primary transition-colors">Garantía</a></li>
+<li><a href="#" onclick="showContacto(); return false;" class="hover:text-primary transition-colors">Contacto</a></li>
 </ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Contacto</h4>
 <p class="text-sm text-muted">+1 (829) 368-6994</p>
+<p class="text-sm text-muted"> República Dominicana</p>
 </div>
 </div>
 <div class="pt-8 border-t text-center text-sm text-muted">
@@ -209,5 +261,15 @@ Contactar
 </footer>
 
 <script src="app.js"></script>
+<script>
+    // Registrar Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW registrado'))
+                .catch(err => console.log('SW error:', err));
+        });
+    }
+</script>
 </body>
 </html>

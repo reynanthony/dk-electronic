@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reynanthony.github.io/dk-electronic/sitemap.xml
+
+# Archivos disallowed
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
