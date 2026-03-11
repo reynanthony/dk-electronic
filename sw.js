@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dk-electronic-v1';
+const CACHE_NAME = 'dk-electronic-v2';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -14,7 +14,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Cache abierto');
+                console.log('Cache abierto v2');
                 return cache.addAll(urlsToCache);
             })
             .then(() => self.skipWaiting())
@@ -37,7 +37,7 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Interceptar solicitudes
+// Interceptar solicitudes - siempre ir a la red primero
 self.addEventListener('fetch', event => {
     // No cachear solicitudes de Analytics
     if (event.request.url.includes('google-analytics.com') || 
@@ -45,34 +45,26 @@ self.addEventListener('fetch', event => {
         return;
     }
 
+    // Siempre ir a la red primero para ver cambios
     event.respondWith(
-        caches.match(event.request)
+        fetch(event.request)
             .then(response => {
-                // Devolver cache si existe, si no hacer fetch
-                if (response) {
-                    return response;
-                }
+                // Clonar respuesta
+                const responseToCache = response.clone();
                 
-                return fetch(event.request).then(response => {
-                    // No cachear respuestas no válidas
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
-                        return response;
-                    }
-                    
-                    // Clonar respuesta para cachear
-                    const responseToCache = response.clone();
-                    
+                // Cachear solo respuestas válidas
+                if (response.status === 200) {
                     caches.open(CACHE_NAME)
                         .then(cache => {
                             cache.put(event.request, responseToCache);
                         });
-                    
-                    return response;
-                });
+                }
+                
+                return response;
             })
             .catch(() => {
-                // Si hay error, devolver página offline si existe
-                return caches.match('/index.html');
+                // Si falla la red, buscar en cache
+                return caches.match(event.request);
             })
     );
 });
