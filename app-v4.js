@@ -456,7 +456,8 @@ const PromoRenderer = {
         }
 
         const brandItem = (brand) => {
-            const imgSrc = brand.url.includes('?') ? brand.url + '&v=1' : brand.url + '?v=1';
+            const brandName = brand.nombre.toLowerCase().replace(/\s+/g, '');
+            const imgSrc = `imagenes/${brandName}.svg?v=1`;
             return `
                 <div style="display: inline-flex; flex-direction: column; align-items: center; margin: 0 40px; min-width: 140px;">
                     <img src="${imgSrc}" alt="${brand.nombre}" style="height: 50px; object-fit: contain; filter: grayscale(100%); transition: filter 0.3s;" 
