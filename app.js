@@ -1076,7 +1076,7 @@ const App = {
         const stored = StorageManager.get('dk_productos');
         
         try {
-            AppState.datos = stored ? stored : await (await fetch('productos.json')).json();
+            AppState.datos = stored ? stored : await (await fetch('productos.json?v=2')).json();
             if (!stored) {
                 StorageManager.set('dk_productos', AppState.datos);
             }
