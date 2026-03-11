@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const log = require('electron-log');
-const Database = require('./src/database');
-const Exporter = require('./src/exporter');
+const Database = require('./database');
+const Exporter = require('./exporter');
 
 log.transports.file.level = 'info';
 log.transports.console.level = 'debug';
