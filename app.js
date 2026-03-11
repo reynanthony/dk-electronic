@@ -57,11 +57,11 @@ const DefaultData = {
             activo: true
         },
         brands: [
-            { nombre: 'Samsung', url: 'imagenes/samsung.png', activo: true },
-            { nombre: 'LG', url: 'imagenes/lg.png', activo: true },
-            { nombre: 'Sony', url: 'imagenes/sony.png', activo: true },
-            { nombre: 'Midea', url: 'imagenes/midea.png', activo: true },
-            { nombre: 'Whirlpool', url: 'imagenes/whirlpool.png', activo: true }
+            { nombre: 'Samsung', url: 'imagenes/samsung.svg', activo: true },
+            { nombre: 'LG', url: 'imagenes/lg.svg', activo: true },
+            { nombre: 'Sony', url: 'imagenes/sony.svg', activo: true },
+            { nombre: 'Midea', url: 'imagenes/midea.svg', activo: true },
+            { nombre: 'Whirlpool', url: 'imagenes/whirlpool.svg', activo: true }
         ]
     },
 
