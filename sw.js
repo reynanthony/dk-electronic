@@ -1,9 +1,9 @@
-const CACHE_NAME = 'dk-electronic-v2';
+const CACHE_NAME = 'dk-electronic-v4';
 const urlsToCache = [
     '/',
     '/index.html',
-    '/app.js',
-    '/productos.json',
+    '/app.js?v=3',
+    '/productos.json?v=3',
     '/logo/dklogo-removebg-preview.png',
     'https://cdn.tailwindcss.com',
     'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap'

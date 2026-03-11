@@ -1073,13 +1073,10 @@ const App = {
     async init() {
         AppState.init();
         
-        const stored = StorageManager.get('dk_productos');
-        
         try {
-            AppState.datos = stored ? stored : await (await fetch('productos.json?v=2')).json();
-            if (!stored) {
-                StorageManager.set('dk_productos', AppState.datos);
-            }
+            const timestamp = Date.now();
+            AppState.datos = await (await fetch(`productos.json?_=${timestamp}`)).json();
+            StorageManager.set('dk_productos', AppState.datos);
             
             this.renderPage();
             
@@ -1087,10 +1084,16 @@ const App = {
                 AdminPanel.showPanel();
             }
             
-        } catch (e) { 
-            const container = document.getElementById('productos');
-            if (container) {
-                container.innerHTML = '<p class="col-span-full text-center py-10">Error al cargar los productos</p>'; 
+        } catch (e) {
+            const stored = StorageManager.get('dk_productos');
+            if (stored) {
+                AppState.datos = stored;
+                this.renderPage();
+            } else {
+                const container = document.getElementById('productos');
+                if (container) {
+                    container.innerHTML = '<p class="col-span-full text-center py-10">Error al cargar los productos</p>'; 
+                }
             }
             console.error('Error loading data:', e);
         }
