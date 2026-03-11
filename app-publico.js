@@ -124,7 +124,8 @@
             
             container.innerHTML = buttons.map((c, i) => {
                 const isActive = i === 0;
-                return `<button data-category="${c}" class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${isActive ? 'bg-orange-700 text-white' : 'bg-gray-200 text-gray-600 hover:text-gray-800'}">${c === 'todos' ? 'Todos' : c.charAt(0).toUpperCase() + c.slice(1)}</button>`;
+                const label = c === 'todos' ? 'Todos' : c.charAt(0).toUpperCase() + c.slice(1);
+                return `<button data-category="${c}" class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${isActive ? 'bg-primary text-white shadow-orange-300/50' : 'bg-white text-slate-600 hover:bg-orange-50 border border-slate-200'}">${label}</button>`;
             }).join('');
 
             container.querySelectorAll('.filter-btn').forEach(btn => {
@@ -136,11 +137,11 @@
             const category = e.target.dataset.category;
             
             document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('bg-orange-700', 'text-white');
-                b.classList.add('bg-gray-200', 'text-gray-600');
+                b.classList.remove('bg-primary', 'text-white', 'shadow-orange-300/50');
+                b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
             });
-            e.target.classList.remove('bg-gray-200', 'text-gray-600');
-            e.target.classList.add('bg-orange-700', 'text-white');
+            e.target.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            e.target.classList.add('bg-primary', 'text-white', 'shadow-orange-300/50');
 
             const result = category === 'todos' 
                 ? DataLoader.getProducts() 
