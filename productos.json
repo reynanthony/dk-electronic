@@ -50,6 +50,15 @@
       "destacado": true
     },
     {
+      "id": 6,
+      "nombre": "Lavadora LG 16kg",
+      "descripcion": "Lavadora carga frontal 16kg con tecnología inverter",
+      "precio": 27999,
+      "categoria": "electrodomesticos",
+      "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600",
+      "destacado": true
+    },
+    {
       "id": 7,
       "nombre": "Smart TV Sony 65\" 4K",
       "descripcion": "Televisor 65 pulgadas 4K HDR con Android TV",
