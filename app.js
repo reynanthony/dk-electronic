@@ -1192,6 +1192,8 @@ const GitHubPublisher = {
     
     async publish() {
         const token = this.getToken();
+        console.log('Token exists:', !!token, 'Length:', token?.length);
+        
         if (!token) {
             this.showTokenModal();
             return;
@@ -1203,14 +1205,17 @@ const GitHubPublisher = {
             btn.innerHTML = '<span class="animate-spin">⏳</span> Publicando...';
             
             const datos = StorageManager.get('dk_productos');
-            const promo = StorageManager.get('dk_promo');
-            const garantia = StorageManager.get('dk_garantia');
+            console.log('Publishing datos:', datos ? 'exists' : 'null');
             
             const contenido = JSON.stringify(datos, null, 2);
             
+            console.log('Getting SHA...');
             const sha = await this.getFileSHA('productos.json', token);
+            console.log('SHA:', sha);
             
+            console.log('Committing file...');
             await this.commitFile('productos.json', contenido, sha, 'Update products from admin panel', token);
+            console.log('File committed successfully!');
             
             btn.innerHTML = '✅Publicado!';
             btn.classList.remove('bg-red-500', 'hover:bg-red-600');
@@ -1218,7 +1223,7 @@ const GitHubPublisher = {
             
             setTimeout(() => {
                 btn.disabled = false;
-                btn.innerHTML = '🌐 Publicar en GitHub';
+                btn.innerHTML = '🌐 Publicar Cambios';
                 btn.classList.add('bg-red-500', 'hover:bg-red-600');
                 btn.classList.remove('bg-green-500');
             }, 3000);
