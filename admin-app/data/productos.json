@@ -3,5 +3,18 @@
     "nombre": "DK Electronic",
     "whatsapp": "18293686994"
   },
-  "productos": []
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "prueba",
+      "descripcion": "probando esta funcion",
+      "precio": 800,
+      "categoria": "pulceras",
+      "imagen": "",
+      "destacado": false,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
+    }
+  ]
 }
