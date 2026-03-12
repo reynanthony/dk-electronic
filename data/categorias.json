@@ -5,5 +5,12 @@
     "slug": "pulseras",
     "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
     "orden": 0
+  },
+  {
+    "id": 5,
+    "nombre": "Televisores",
+    "slug": "televisores",
+    "imagen": "imagenes/1200_900.jpeg",
+    "orden": 0
   }
 ]
