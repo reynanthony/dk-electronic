@@ -52,7 +52,6 @@
         getPromotions() {
             return this.promociones;
         },
-        },
 
         getFeatured() {
             return this.getProducts().filter(p => p.destacado);
