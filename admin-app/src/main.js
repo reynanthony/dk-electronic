@@ -3,12 +3,15 @@ const path = require('path');
 const log = require('electron-log');
 const Database = require('./database');
 const Exporter = require('./exporter');
+const simpleGit = require('simple-git');
 
 log.transports.file.level = 'info';
 log.transports.console.level = 'debug';
 
 let mainWindow;
 let db;
+
+const git = simpleGit(path.join(__dirname, '..'));
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -149,6 +152,77 @@ ipcMain.handle('image:select', async () => {
         ]
     });
     return result.filePaths[0] || null;
+});
+
+// IPC Handlers - Git
+ipcMain.handle('git:status', async () => {
+    try {
+        const status = await git.status();
+        return { success: true, status };
+    } catch (error) {
+        log.error('Git status error:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('git:commitAndPush', async (event, message) => {
+    try {
+        log.info('Iniciando commit y push...');
+        
+        const status = await git.status();
+        if (status.files.length === 0) {
+            return { success: false, message: 'No hay cambios para guardar' };
+        }
+
+        await git.add('.');
+        await git.commit(message || 'Actualización de productos desde admin');
+        log.info('Commit realizado');
+
+        await git.push();
+        log.info('Push completado');
+
+        return { success: true, message: 'Cambios guardados y subidos a GitHub' };
+    } catch (error) {
+        log.error('Git commit/push error:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('git:pull', async () => {
+    try {
+        await git.pull();
+        return { success: true, message: 'Actualizado desde GitHub' };
+    } catch (error) {
+        log.error('Git pull error:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('git:exportAndPush', async () => {
+    try {
+        log.info('Iniciando exportación y push...');
+        
+        const exporter = new Exporter(db, path.join(__dirname, '..', 'data'));
+        await exporter.exportAll();
+        log.info('Datos exportados');
+
+        const status = await git.status();
+        if (status.files.length === 0) {
+            return { success: false, message: 'No hay cambios para guardar' };
+        }
+
+        await git.add('.');
+        await git.commit('Actualización de productos desde admin');
+        log.info('Commit realizado');
+
+        await git.push();
+        log.info('Push completado');
+
+        return { success: true, message: 'Exportado y subido a GitHub' };
+    } catch (error) {
+        log.error('Git export/push error:', error);
+        return { success: false, message: error.message };
+    }
 });
 
 app.whenReady().then(async () => {

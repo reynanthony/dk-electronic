@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "sql.js": "^1.10.0",
-    "electron-log": "^5.0.0"
+    "electron-log": "^5.0.0",
+    "simple-git": "^3.22.0"
   },
   "build": {
     "appId": "com.dkelectronic.admin",

@@ -49,5 +49,13 @@ contextBridge.exposeInMainWorld('api', {
     // Imágenes
     image: {
         select: () => ipcRenderer.invoke('image:select')
+    },
+
+    // Git
+    git: {
+        status: () => ipcRenderer.invoke('git:status'),
+        commitAndPush: (message) => ipcRenderer.invoke('git:commitAndPush', message),
+        pull: () => ipcRenderer.invoke('git:pull'),
+        exportAndPush: () => ipcRenderer.invoke('git:exportAndPush')
     }
 });
