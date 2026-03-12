@@ -15,6 +15,18 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 2,
+      "nombre": "smartv",
+      "descripcion": "nueva",
+      "precio": 11000,
+      "categoria": "televisores",
+      "imagen": "https://www.lg.com/es/tv-y-barras-de-sonido/oled-evo/oled83g55lw/",
+      "destacado": true,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
