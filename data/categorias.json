@@ -1,0 +1,30 @@
+[
+  {
+    "id": 4,
+    "nombre": "Pulseras",
+    "slug": "pulseras",
+    "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
+    "orden": 0
+  },
+  {
+    "id": 1,
+    "nombre": "Televisores",
+    "slug": "televisores",
+    "imagen": "",
+    "orden": 1
+  },
+  {
+    "id": 2,
+    "nombre": "Aires Acondicionados",
+    "slug": "aires",
+    "imagen": "",
+    "orden": 2
+  },
+  {
+    "id": 3,
+    "nombre": "Electrodomésticos",
+    "slug": "electrodomesticos",
+    "imagen": "",
+    "orden": 3
+  }
+]

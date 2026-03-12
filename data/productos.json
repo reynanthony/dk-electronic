@@ -3,30 +3,5 @@
     "nombre": "DK Electronic",
     "whatsapp": "18293686994"
   },
-  "productos": [
-    {
-      "id": 1,
-      "nombre": "prueba",
-      "descripcion": "probando esta funcion",
-      "precio": 800,
-      "categoria": "pulceras",
-      "imagen": "https://dochajoyaspormayor.com.ar/tienda/pulseras-cristales/",
-      "destacado": true,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 2,
-      "nombre": "smartv",
-      "descripcion": "nueva",
-      "precio": 11000,
-      "categoria": "televisores",
-      "imagen": "https://www.lg.com/es/tv-y-barras-de-sonido/oled-evo/oled83g55lw/",
-      "destacado": true,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    }
-  ]
+  "productos": []
 }
