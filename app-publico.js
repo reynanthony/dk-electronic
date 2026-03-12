@@ -132,13 +132,21 @@
                 return;
             }
 
-            container.innerHTML = brands.map(brand => {
+            const brandsHTML = brands.map(brand => {
                 const logo = brand.logo_url || '';
                 if (logo) {
-                    return `<img src="${logo}" alt="${brand.nombre}" class="h-12 object-contain" loading="lazy">`;
+                    return `<img src="${logo}" alt="${brand.nombre}" class="h-16 object-contain mx-8" loading="lazy">`;
                 }
-                return `<span class="text-lg font-medium text-gray-600">${brand.nombre}</span>`;
+                return `<span class="text-xl font-medium text-gray-600 mx-8">${brand.nombre}</span>`;
             }).join('');
+
+            container.innerHTML = `
+                <div class="overflow-hidden py-6">
+                    <div class="flex animate-marquee whitespace-nowrap">
+                        ${brandsHTML} ${brandsHTML} ${brandsHTML}
+                    </div>
+                </div>
+            `;
         }
     };
 
@@ -171,7 +179,7 @@
                 }
                 
                 container.innerHTML = `
-                    <div class="w-full h-48 md:h-96 lg:h-[500px] relative bg-black">
+                    <div class="w-full h-[800px] relative bg-black">
                         <iframe src="${videoUrl}" class="w-full h-full absolute inset-0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;

@@ -76,6 +76,18 @@
     /* Smooth scroll */
     html { scroll-behavior: smooth; }
     
+    /* Marquee animation */
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-33.33%); }
+    }
+    .animate-marquee {
+        animation: marquee 20s linear infinite;
+    }
+    .animate-marquee:hover {
+        animation-play-state: paused;
+    }
+    
     /* Focus visible para accesibilidad */
     :focus-visible { outline: 2px solid #c2410c; outline-offset: 2px; }
 </style>
@@ -159,10 +171,7 @@ Contactar
 
 <!-- Brands Banner -->
 <section class="py-12 bg-white border-t" aria-label="Nuestras marcas">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<h2 class="text-xl font-bold text-center mb-8 text-slate-700">Nuestras <span class="text-primary">Marcas</span></h2>
-<div id="brands-container" class="flex flex-wrap items-center justify-center gap-8" role="marquee" aria-label="Marcas"></div>
-</div>
+<div id="brands-container" class="w-full" role="marquee" aria-label="Marcas"></div>
 </section>
 
 <!-- Categorías -->
