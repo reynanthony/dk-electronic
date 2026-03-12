@@ -128,24 +128,33 @@
             const brands = DataLoader.getBrands();
 
             if (brands.length === 0) {
-                container.innerHTML = '<p class="text-gray-400">No hay marcas disponibles</p>';
+                container.innerHTML = '<p class="text-gray-400 text-center py-4">No hay marcas disponibles</p>';
                 return;
             }
 
             const brandsHTML = brands.map(brand => {
                 const logo = brand.logo_url || '';
                 if (logo) {
-                    return `<img src="${logo}" alt="${brand.nombre}" class="h-16 object-contain mx-8" loading="lazy">`;
+                    return `<img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain mx-12 flex-shrink-0" loading="lazy">`;
                 }
-                return `<span class="text-xl font-medium text-gray-600 mx-8">${brand.nombre}</span>`;
+                return `<span class="text-2xl font-medium text-gray-600 mx-12 flex-shrink-0">${brand.nombre}</span>`;
             }).join('');
 
+            const totalWidth = brands.length * 200;
             container.innerHTML = `
-                <div class="overflow-hidden py-6">
-                    <div class="flex animate-marquee whitespace-nowrap">
-                        ${brandsHTML} ${brandsHTML} ${brandsHTML}
+                <div class="overflow-hidden bg-gradient-to-r from-orange-50 to-amber-50 py-8">
+                    <div class="flex" style="width: ${totalWidth * 3}px; animation: marquee 25s linear infinite;">
+                        ${brandsHTML}
+                        ${brandsHTML}
+                        ${brandsHTML}
                     </div>
                 </div>
+                <style>
+                    @keyframes marquee {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-${totalWidth}px); }
+                    }
+                </style>
             `;
         }
     };
