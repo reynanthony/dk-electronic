@@ -135,21 +135,16 @@
             const brandsItems = brands.map(brand => {
                 const logo = brand.logo_url || '';
                 if (logo) {
-                    return `<div class="flex-shrink-0 mx-8"><img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain" loading="lazy"></div>`;
+                    return `<div class="flex-shrink-0 mx-10"><img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain" loading="lazy"></div>`;
                 }
-                return `<div class="flex-shrink-0 mx-8"><span class="text-2xl font-medium text-gray-600">${brand.nombre}</span></div>`;
+                return `<div class="flex-shrink-0 mx-10"><span class="text-2xl font-medium text-gray-600">${brand.nombre}</span></div>`;
             }).join('');
 
-            const trackWidth = brands.length * 300;
             container.innerHTML = `
                 <div class="overflow-hidden py-6 bg-orange-50">
-                    <div class="flex items-center" style="width: max-content;">
-                        <div class="flex items-center animate-marquee" style="width: ${trackWidth}px;">
-                            ${brandsItems}
-                        </div>
-                        <div class="flex items-center animate-marquee" style="width: ${trackWidth}px;">
-                            ${brandsItems}
-                        </div>
+                    <div class="marquee-track">
+                        ${brandsItems}
+                        ${brandsItems}
                     </div>
                 </div>
             `;
