@@ -127,7 +127,7 @@ ipcMain.handle('settings:update', async (event, settings) => {
 // IPC Handlers - Exportación
 ipcMain.handle('export:toJson', async (event, outputPath) => {
     try {
-        const exporter = new Exporter(db, outputPath || path.join(__dirname, '..', '..', 'data'));
+        const exporter = new Exporter(db, outputPath || path.join(__dirname, '..', '..', '..', 'data'));
         await exporter.exportAll();
         return { success: true, message: 'Exportación completada' };
     } catch (error) {
@@ -221,7 +221,7 @@ ipcMain.handle('git:exportAndPush', async () => {
     try {
         log.info('Iniciando exportación y push...');
         
-        const exporter = new Exporter(db, path.join(__dirname, '..', '..', 'data'));
+        const exporter = new Exporter(db, path.join(__dirname, '..', '..', '..', 'data'));
         await exporter.exportAll();
         log.info('Datos exportados');
 
