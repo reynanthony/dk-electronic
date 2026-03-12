@@ -135,6 +135,10 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                     <span>Promociones</span>
                 </div>
+                <div class="nav-item" data-view="pages">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Páginas</span>
+                </div>
                 <div class="nav-item" data-view="settings">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <span>Configuración</span>
@@ -253,6 +257,24 @@
                     </table>
                 </div>
 
+                <!-- Pages -->
+                <div id="view-pages" class="view" style="display:none;">
+                    <div class="search-box">
+                        <button class="btn btn-primary" onclick="openPageModal()">+ Editar Página</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Página</th>
+                                <th>Título</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pagesTable"></tbody>
+                    </table>
+                </div>
+
                 <!-- Settings -->
                 <div id="view-settings" class="view" style="display:none;">
                     <div class="form-group">
@@ -322,7 +344,7 @@
             document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
             document.getElementById(`view-${view}`).style.display = 'block';
             
-            const titles = { dashboard: 'Dashboard', products: 'Productos', categories: 'Categorías', brands: 'Marcas', promotions: 'Promociones', settings: 'Configuración' };
+            const titles = { dashboard: 'Dashboard', products: 'Productos', categories: 'Categorías', brands: 'Marcas', promotions: 'Promociones', pages: 'Páginas', settings: 'Configuración' };
             document.getElementById('pageTitle').textContent = titles[view] || view;
             
             currentView = view;
@@ -345,6 +367,9 @@
                     break;
                 case 'promotions':
                     await loadPromotions();
+                    break;
+                case 'pages':
+                    await loadPages();
                     break;
                 case 'settings':
                     await loadSettings();
@@ -697,6 +722,76 @@
             }
         }
 
+        // Pages
+        let pages = [];
+        const availablePages = [
+            { slug: 'envios', name: 'Envíos' },
+            { slug: 'contacto', name: 'Contacto' },
+            { slug: 'garantia', name: 'Garantía' }
+        ];
+        
+        async function loadPages() {
+            pages = await window.api.pages.getAll();
+            renderPages();
+        }
+
+        function renderPages() {
+            const tbody = document.getElementById('pagesTable');
+            const pageMap = {};
+            pages.forEach(p => pageMap[p.page_slug] = p);
+            
+            tbody.innerHTML = availablePages.map(p => {
+                const page = pageMap[p.slug] || { page_slug: p.slug, title: '', activo: 1 };
+                return `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${page.title || '-'}</td>
+                        <td>${page.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="editPage('${p.slug}')">Editar</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function editPage(slug) {
+            const page = await window.api.pages.getBySlug(slug) || { page_slug: slug, title: '', content: '', activo: 1 };
+            openPageModal(page);
+        }
+
+        function openPageModal(page = null) {
+            currentEditId = page?.id || null;
+            const pageName = availablePages.find(p => p.slug === page.page_slug)?.name || page.page_slug;
+            
+            const modalContent = `
+                <div class="form-group">
+                    <label>Página</label>
+                    <input type="text" value="${pageName}" disabled>
+                    <input type="hidden" id="pageSlug" value="${page.page_slug}">
+                </div>
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="pageTitle" value="${page.title || ''}" placeholder="Título de la página">
+                </div>
+                <div class="form-group">
+                    <label>Contenido (HTML)</label>
+                    <textarea id="pageContent" rows="10" placeholder="Contenido HTML de la página">${page.content || ''}</textarea>
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pageActivo" ${page.activo !== false ? 'checked' : ''}>
+                        <label>Activo</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = 'Editar Página: ' + pageName;
+            document.getElementById('modalBody').innerHTML = modalContent;
+            currentView = 'pages';
+            openModal();
+        }
+
         // Settings
         async function loadSettings() {
             const settings = await window.api.settings.get();
@@ -806,6 +901,18 @@
                         showToast('Promoción creada', 'success');
                     }
                     await loadPromotions();
+                    break;
+
+                case 'pages':
+                    const pageData = {
+                        page_slug: document.getElementById('pageSlug').value,
+                        title: document.getElementById('pageTitle').value,
+                        content: document.getElementById('pageContent').value,
+                        activo: document.getElementById('pageActivo').checked
+                    };
+                    await window.api.pages.save(pageData);
+                    showToast('Página guardada', 'success');
+                    await loadPages();
                     break;
             }
             closeModal();

@@ -34,6 +34,13 @@ contextBridge.exposeInMainWorld('api', {
         delete: (id) => ipcRenderer.invoke('promotions:delete', id)
     },
     
+    // Páginas
+    pages: {
+        getAll: () => ipcRenderer.invoke('pages:getAll'),
+        getBySlug: (slug) => ipcRenderer.invoke('pages:getBySlug', slug),
+        save: (page) => ipcRenderer.invoke('pages:save', page)
+    },
+    
     // Configuración
     settings: {
         get: () => ipcRenderer.invoke('settings:get'),

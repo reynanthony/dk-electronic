@@ -80,6 +80,18 @@ class DKDatabase {
         `);
 
         this.db.run(`
+            CREATE TABLE IF NOT EXISTS page_content (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                page_slug TEXT NOT NULL UNIQUE,
+                title TEXT,
+                content TEXT,
+                activo INTEGER DEFAULT 1,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        this.db.run(`
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
@@ -285,6 +297,34 @@ class DKDatabase {
         this.db.run('DELETE FROM promotions WHERE id = ?', [id]);
         this.save();
         return { changes: 1 };
+    }
+
+    // PÁGINAS
+    getAllPages() {
+        const stmt = this.db.prepare('SELECT * FROM page_content ORDER BY page_slug');
+        return this._rowsToObjects(stmt);
+    }
+
+    getPageBySlug(slug) {
+        const stmt = this.db.prepare('SELECT * FROM page_content WHERE page_slug = ?');
+        stmt.bind([slug]);
+        const results = this._rowsToObjects(stmt);
+        return results[0] || null;
+    }
+
+    savePage(page) {
+        const existing = this.getPageBySlug(page.page_slug);
+        if (existing) {
+            this.db.run('UPDATE page_content SET title=?, content=?, activo=?, updated_at=CURRENT_TIMESTAMP WHERE page_slug=?', [
+                page.title || '', page.content || '', page.activo ? 1 : 0, page.page_slug
+            ]);
+        } else {
+            this.db.run('INSERT INTO page_content (page_slug, title, content, activo) VALUES (?, ?, ?, ?)', [
+                page.page_slug, page.title || '', page.content || '', page.activo ? 1 : 0
+            ]);
+        }
+        this.save();
+        return page;
     }
 
     // CONFIGURACIÓN

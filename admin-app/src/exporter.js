@@ -21,6 +21,7 @@ class Exporter {
         await this.exportCategories();
         await this.exportBrands();
         await this.exportPromotions();
+        await this.exportPages();
         
         log.info('Exportación completada');
         return true;
@@ -104,6 +105,22 @@ class Exporter {
         const filePath = path.join(this.outputPath, 'promociones.json');
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
         log.info('Promociones exportadas:', filePath);
+    }
+
+    async exportPages() {
+        const pages = this.db.getAllPages().filter(p => p.activo);
+        
+        const data = {};
+        pages.forEach(p => {
+            data[p.page_slug] = {
+                title: p.title || '',
+                content: p.content || ''
+            };
+        });
+
+        const filePath = path.join(this.outputPath, 'paginas.json');
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        log.info('Páginas exportadas:', filePath);
     }
 
     async exportStore() {

@@ -115,6 +115,19 @@ ipcMain.handle('promotions:delete', async (event, id) => {
     return db.deletePromotion(id);
 });
 
+// IPC Handlers - Páginas
+ipcMain.handle('pages:getAll', async () => {
+    return db.getAllPages();
+});
+
+ipcMain.handle('pages:getBySlug', async (event, slug) => {
+    return db.getPageBySlug(slug);
+});
+
+ipcMain.handle('pages:save', async (event, page) => {
+    return db.savePage(page);
+});
+
 // IPC Handlers - Configuración
 ipcMain.handle('settings:get', async () => {
     return db.getSettings();
