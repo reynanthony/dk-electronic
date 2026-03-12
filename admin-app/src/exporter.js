@@ -18,6 +18,9 @@ class Exporter {
 
         await this.exportProducts();
         await this.exportStore();
+        await this.exportCategories();
+        await this.exportBrands();
+        await this.exportPromotions();
         
         log.info('Exportación completada');
         return true;
@@ -40,6 +43,7 @@ class Exporter {
                 descripcion: p.descripcion,
                 precio: p.precio,
                 categoria: p.categoria_nombre ? p.categoria_nombre.toLowerCase().replace(/\s+/g, '') : 'otros',
+                categoria_id: p.categoria_id,
                 imagen: p.imagen,
                 destacado: p.destacado === 1,
                 garantia: p.garantia === 1,
@@ -51,6 +55,55 @@ class Exporter {
         const filePath = path.join(this.outputPath, 'productos.json');
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
         log.info('Productos exportados:', filePath);
+    }
+
+    async exportCategories() {
+        const categories = this.db.getAllCategories().filter(c => c.activo);
+        
+        const data = categories.map(c => ({
+            id: c.id,
+            nombre: c.nombre,
+            slug: c.slug,
+            imagen: c.imagen || '',
+            orden: c.orden
+        }));
+
+        const filePath = path.join(this.outputPath, 'categorias.json');
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        log.info('Categorías exportadas:', filePath);
+    }
+
+    async exportBrands() {
+        const brands = this.db.getAllBrands().filter(b => b.activo);
+        
+        const data = brands.map(b => ({
+            id: b.id,
+            nombre: b.nombre,
+            logo_url: b.logo_url || '',
+            orden: b.orden
+        }));
+
+        const filePath = path.join(this.outputPath, 'marcas.json');
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        log.info('Marcas exportadas:', filePath);
+    }
+
+    async exportPromotions() {
+        const promotions = this.db.getAllPromotions().filter(p => p.activo);
+        
+        const data = promotions.map(p => ({
+            id: p.id,
+            titulo: p.titulo,
+            descripcion: p.descripcion,
+            imagen: p.imagen || '',
+            video_url: p.video_url || '',
+            fecha_inicio: p.fecha_inicio,
+            fecha_fin: p.fecha_fin
+        }));
+
+        const filePath = path.join(this.outputPath, 'promociones.json');
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        log.info('Promociones exportadas:', filePath);
     }
 
     async exportStore() {

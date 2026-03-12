@@ -144,14 +144,33 @@ ipcMain.handle('export:selectFolder', async () => {
 });
 
 // IPC Handlers - Imágenes
+const fs = require('fs');
+
 ipcMain.handle('image:select', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
         properties: ['openFile'],
         filters: [
             { name: 'Imágenes', extensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'] }
-        ]
+        ],
+        defaultPath: path.join(__dirname, '..', '..', 'imagenes')
     });
-    return result.filePaths[0] || null;
+    
+    if (!result.filePaths[0]) return null;
+    
+    const sourcePath = result.filePaths[0];
+    const fileName = path.basename(sourcePath);
+    const imagesFolder = path.join(__dirname, '..', '..', 'imagenes');
+    const destPath = path.join(imagesFolder, fileName);
+    
+    if (!fs.existsSync(imagesFolder)) {
+        fs.mkdirSync(imagesFolder, { recursive: true });
+    }
+    
+    if (sourcePath !== destPath) {
+        fs.copyFileSync(sourcePath, destPath);
+    }
+    
+    return 'imagenes/' + fileName;
 });
 
 // IPC Handlers - Git

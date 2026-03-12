@@ -131,6 +131,10 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                     <span>Marcas</span>
                 </div>
+                <div class="nav-item" data-view="promotions">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                    <span>Promociones</span>
+                </div>
                 <div class="nav-item" data-view="settings">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <span>Configuración</span>
@@ -230,6 +234,25 @@
                     </table>
                 </div>
 
+                <!-- Promotions -->
+                <div id="view-promotions" class="view" style="display:none;">
+                    <div class="search-box">
+                        <button class="btn btn-primary" onclick="openPromotionModal()">+ Nueva Promoción</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Título</th>
+                                <th>Video</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promotionsTable"></tbody>
+                    </table>
+                </div>
+
                 <!-- Settings -->
                 <div id="view-settings" class="view" style="display:none;">
                     <div class="form-group">
@@ -299,7 +322,7 @@
             document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
             document.getElementById(`view-${view}`).style.display = 'block';
             
-            const titles = { dashboard: 'Dashboard', products: 'Productos', categories: 'Categorías', brands: 'Marcas', settings: 'Configuración' };
+            const titles = { dashboard: 'Dashboard', products: 'Productos', categories: 'Categorías', brands: 'Marcas', promotions: 'Promociones', settings: 'Configuración' };
             document.getElementById('pageTitle').textContent = titles[view] || view;
             
             currentView = view;
@@ -319,6 +342,9 @@
                     break;
                 case 'brands':
                     await loadBrands();
+                    break;
+                case 'promotions':
+                    await loadPromotions();
                     break;
                 case 'settings':
                     await loadSettings();
@@ -483,6 +509,11 @@
                     <input type="text" id="catSlug" value="${category?.slug || ''}" placeholder="auto-generado si vacío">
                 </div>
                 <div class="form-group">
+                    <label>Imagen (URL)</label>
+                    <input type="text" id="catImagen" value="${category?.imagen || ''}" placeholder="https://...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('catImagen')">Seleccionar imagen</button>
+                </div>
+                <div class="form-group">
                     <label>Orden</label>
                     <input type="number" id="catOrden" value="${category?.orden || 0}">
                 </div>
@@ -550,6 +581,7 @@
                 <div class="form-group">
                     <label>URL del Logo</label>
                     <input type="text" id="brandLogo" value="${brand?.logo_url || ''}" placeholder="https://...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('brandLogo')">Seleccionar imagen</button>
                 </div>
                 <div class="form-group">
                     <label>Orden</label>
@@ -578,6 +610,90 @@
                 await window.api.brands.delete(id);
                 showToast('Marca eliminada', 'success');
                 await loadBrands();
+            }
+        }
+
+        // Promotions
+        let promotions = [];
+        
+        async function loadPromotions() {
+            promotions = await window.api.promotions.getAll();
+            renderPromotions();
+        }
+
+        function renderPromotions() {
+            const tbody = document.getElementById('promotionsTable');
+            if (promotions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay promociones</td></tr>';
+                return;
+            }
+            tbody.innerHTML = promotions.map(p => `
+                <tr>
+                    <td><img src="${p.imagen || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect fill=%22%23ddd%22 width=%2240%22 height=%2240%22/></svg>'}" style="height:30px"></td>
+                    <td><strong>${p.titulo}</strong></td>
+                    <td>${p.video_url ? '<span class="badge badge-active">Sí</span>' : '-'}</td>
+                    <td>${p.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="editPromotion(${p.id})">Editar</button>
+                        <button class="btn btn-danger" style="padding:6px 12px;font-size:12px" onclick="deletePromotion(${p.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openPromotionModal(promotion = null) {
+            currentEditId = promotion?.id || null;
+            const isEdit = !!promotion;
+            
+            const modalContent = `
+                <div class="form-group">
+                    <label>Título *</label>
+                    <input type="text" id="promTitulo" value="${promotion?.titulo || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="promDesc" rows="3">${promotion?.descripcion || ''}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imagen (URL)</label>
+                    <input type="text" id="promImagen" value="${promotion?.imagen || ''}" placeholder="https://...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('promImagen')">Seleccionar imagen</button>
+                </div>
+                <div class="form-group">
+                    <label>Video (URL de YouTube o video)</label>
+                    <input type="text" id="promVideo" value="${promotion?.video_url || ''}" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Fecha inicio</label>
+                    <input type="date" id="promFechaInicio" value="${promotion?.fecha_inicio || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Fecha fin</label>
+                    <input type="date" id="promFechaFin" value="${promotion?.fecha_fin || ''}">
+                </div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="promActivo" ${promotion?.activo !== false ? 'checked' : ''}>
+                        <label>Activo</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Promoción' : 'Nueva Promoción';
+            document.getElementById('modalBody').innerHTML = modalContent;
+            openModal();
+        }
+
+        async function editPromotion(id) {
+            const promotion = promotions.find(p => p.id === id);
+            if (promotion) openPromotionModal(promotion);
+        }
+
+        async function deletePromotion(id) {
+            if (confirm('¿Eliminar esta promoción?')) {
+                await window.api.promotions.delete(id);
+                showToast('Promoción eliminada', 'success');
+                await loadPromotions();
             }
         }
 
@@ -641,6 +757,7 @@
                     const catData = {
                         nombre: document.getElementById('catNombre').value,
                         slug: document.getElementById('catSlug').value,
+                        imagen: document.getElementById('catImagen').value,
                         orden: parseInt(document.getElementById('catOrden').value) || 0,
                         activo: document.getElementById('catActivo').checked
                     };
@@ -669,6 +786,26 @@
                         showToast('Marca creada', 'success');
                     }
                     await loadBrands();
+                    break;
+
+                case 'promotions':
+                    const promData = {
+                        titulo: document.getElementById('promTitulo').value,
+                        descripcion: document.getElementById('promDesc').value,
+                        imagen: document.getElementById('promImagen').value,
+                        video_url: document.getElementById('promVideo').value,
+                        fecha_inicio: document.getElementById('promFechaInicio').value,
+                        fecha_fin: document.getElementById('promFechaFin').value,
+                        activo: document.getElementById('promActivo').checked
+                    };
+                    if (currentEditId) {
+                        await window.api.promotions.update(currentEditId, promData);
+                        showToast('Promoción actualizada', 'success');
+                    } else {
+                        await window.api.promotions.create(promData);
+                        showToast('Promoción creada', 'success');
+                    }
+                    await loadPromotions();
                     break;
             }
             closeModal();
@@ -727,6 +864,14 @@
             
             btn.disabled = false;
             btnText.textContent = 'Subir a GitHub';
+        }
+
+        // Select Image
+        async function selectImage(inputId) {
+            const imagePath = await window.api.image.select();
+            if (imagePath) {
+                document.getElementById(inputId).value = imagePath;
+            }
         }
 
         // Toast

@@ -44,6 +44,7 @@ class DKDatabase {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL UNIQUE,
                 slug TEXT UNIQUE,
+                imagen TEXT,
                 activo INTEGER DEFAULT 1,
                 orden INTEGER DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -58,6 +59,21 @@ class DKDatabase {
                 logo_url TEXT,
                 activo INTEGER DEFAULT 1,
                 orden INTEGER DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS promotions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                titulo TEXT NOT NULL,
+                descripcion TEXT,
+                imagen TEXT,
+                video_url TEXT,
+                activo INTEGER DEFAULT 1,
+                fecha_inicio TEXT,
+                fecha_fin TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
@@ -189,7 +205,7 @@ class DKDatabase {
 
     createCategory(category) {
         const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        this.db.run('INSERT INTO categories (nombre, slug, activo, orden) VALUES (?, ?, ?, ?)', [category.nombre, slug, category.activo ? 1 : 0, category.orden || 0]);
+        this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden) VALUES (?, ?, ?, ?, ?)', [category.nombre, slug, category.imagen || '', category.activo ? 1 : 0, category.orden || 0]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
         this.save();
         return { id: lastId, ...category, slug };
@@ -197,7 +213,7 @@ class DKDatabase {
 
     updateCategory(id, category) {
         const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        this.db.run('UPDATE categories SET nombre=?, slug=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [category.nombre, slug, category.activo ? 1 : 0, category.orden || 0, id]);
+        this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [category.nombre, slug, category.imagen || '', category.activo ? 1 : 0, category.orden || 0, id]);
         this.save();
         return { id, ...category, slug };
     }
@@ -229,6 +245,44 @@ class DKDatabase {
 
     deleteBrand(id) {
         this.db.run('DELETE FROM brands WHERE id = ?', [id]);
+        this.save();
+        return { changes: 1 };
+    }
+
+    // PROMOCIONES
+    getAllPromotions() {
+        const stmt = this.db.prepare('SELECT * FROM promotions ORDER BY id DESC');
+        return this._rowsToObjects(stmt);
+    }
+
+    getPromotionById(id) {
+        const stmt = this.db.prepare('SELECT * FROM promotions WHERE id = ?');
+        stmt.bind([id]);
+        const results = this._rowsToObjects(stmt);
+        return results[0] || null;
+    }
+
+    createPromotion(promotion) {
+        this.db.run(`INSERT INTO promotions (titulo, descripcion, imagen, video_url, activo, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
+            promotion.titulo, promotion.descripcion || '', promotion.imagen || '', promotion.video_url || '', 
+            promotion.activo ? 1 : 0, promotion.fecha_inicio || null, promotion.fecha_fin || null
+        ]);
+        const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
+        this.save();
+        return { id: lastId, ...promotion };
+    }
+
+    updatePromotion(id, promotion) {
+        this.db.run(`UPDATE promotions SET titulo=?, descripcion=?, imagen=?, video_url=?, activo=?, fecha_inicio=?, fecha_fin=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`, [
+            promotion.titulo, promotion.descripcion || '', promotion.imagen || '', promotion.video_url || '',
+            promotion.activo ? 1 : 0, promotion.fecha_inicio || null, promotion.fecha_fin || null, id
+        ]);
+        this.save();
+        return { id, ...promotion };
+    }
+
+    deletePromotion(id) {
+        this.db.run('DELETE FROM promotions WHERE id = ?', [id]);
         this.save();
         return { changes: 1 };
     }
