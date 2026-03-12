@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1,
+    "titulo": "NUEVO PRODUCTO!",
+    "descripcion": "",
+    "imagen": "",
+    "video_url": "https://www.youtube.com/watch?v=kIMY1J-iq7c&t=15s",
+    "fecha_inicio": "2026-03-12",
+    "fecha_fin": "2026-03-13"
+  }
+]
