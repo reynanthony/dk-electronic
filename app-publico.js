@@ -11,12 +11,25 @@
     // ==========================================
     const DataLoader = {
         data: null,
+        categorias: [],
+        marcas: [],
+        promociones: [],
 
         async load() {
             const timestamp = Date.now();
-            const response = await fetch(`data/productos.json?_=${timestamp}`);
-            if (!response.ok) throw new Error('Error cargando datos');
-            this.data = await response.json();
+            
+            const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
+                fetch(`data/productos.json?_=${timestamp}`),
+                fetch(`data/categorias.json?_=${timestamp}`),
+                fetch(`data/marcas.json?_=${timestamp}`),
+                fetch(`data/promociones.json?_=${timestamp}`)
+            ]);
+
+            this.data = productosRes.ok ? await productosRes.json() : { productos: [] };
+            this.categorias = categoriasRes.ok ? await categoriasRes.json() : [];
+            this.marcas = marcasRes.ok ? await marcasRes.json() : [];
+            this.promociones = promocionesRes.ok ? await promocionesRes.json() : [];
+            
             return this.data;
         },
 
@@ -25,9 +38,20 @@
         },
 
         getCategories() {
-            const products = this.getProducts();
-            const cats = [...new Set(products.map(p => p.categoria))];
-            return cats.sort();
+            return this.categorias.map(c => c.slug || c.nombre.toLowerCase().replace(/\s+/g, ''));
+        },
+
+        getCategoriesFull() {
+            return this.categorias;
+        },
+
+        getBrands() {
+            return this.marcas;
+        },
+
+        getPromotions() {
+            return this.promociones;
+        },
         },
 
         getFeatured() {
@@ -64,7 +88,7 @@
     // MÓDULO: ProductRenderer - Renderiza productos
     // ==========================================
     const CategoryRenderer = {
-        categoryImages: {
+        defaultImages: {
             'televisores': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80',
             'aires': 'https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600&q=80',
             'electrodomesticos': 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&q=80'
@@ -73,30 +97,24 @@
             const container = document.getElementById('categorias-container');
             if (!container) return;
 
-            const products = DataLoader.getProducts();
-            const categories = DataLoader.getCategories();
+            const categories = DataLoader.getCategoriesFull();
 
             if (categories.length === 0) {
                 container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-500">No hay categorías disponibles</p>';
                 return;
             }
 
-            const categoryInfo = {
-                'televisores': { name: 'Televisores', desc: 'Smart TV, 4K, OLED' },
-                'aires': { name: 'Aires', desc: 'Split, Inverter' },
-                'electrodomesticos': { name: 'Electrodomésticos', desc: 'Refrigeradoras, Lavadoras' },
-                'pulceras': { name: 'Pulceras', desc: 'Joyería y accesorios' }
-            };
-
             container.innerHTML = categories.map(cat => {
-                const info = categoryInfo[cat] || { name: cat.charAt(0).toUpperCase() + cat.slice(1), desc: 'Ver productos' };
-                const img = this.categoryImages[cat] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80';
-                return `<a href="${cat}.html" class="group relative rounded-2xl overflow-hidden">
-                    <img src="${img}" alt="${info.name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
+                const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
+                const name = cat.nombre;
+                const desc = 'Ver productos';
+                const img = cat.imagen || this.defaultImages[slug] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80';
+                return `<a href="${slug}.html" class="group relative rounded-2xl overflow-hidden">
+                    <img src="${img}" alt="${name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-5">
-                        <h3 class="text-xl font-bold text-white">${info.name}</h3>
-                        <p class="text-white/80 text-sm">${info.desc}</p>
+                        <h3 class="text-xl font-bold text-white">${name}</h3>
+                        <p class="text-white/80 text-sm">${desc}</p>
                     </div>
                 </a>`;
             }).join('');
