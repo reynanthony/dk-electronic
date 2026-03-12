@@ -132,29 +132,26 @@
                 return;
             }
 
-            const brandsHTML = brands.map(brand => {
+            const brandsItems = brands.map(brand => {
                 const logo = brand.logo_url || '';
                 if (logo) {
-                    return `<img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain mx-12 flex-shrink-0" loading="lazy">`;
+                    return `<div class="flex-shrink-0 mx-8"><img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain" loading="lazy"></div>`;
                 }
-                return `<span class="text-2xl font-medium text-gray-600 mx-12 flex-shrink-0">${brand.nombre}</span>`;
+                return `<div class="flex-shrink-0 mx-8"><span class="text-2xl font-medium text-gray-600">${brand.nombre}</span></div>`;
             }).join('');
 
-            const totalWidth = brands.length * 200;
+            const trackWidth = brands.length * 300;
             container.innerHTML = `
-                <div class="overflow-hidden bg-gradient-to-r from-orange-50 to-amber-50 py-8">
-                    <div class="flex" style="width: ${totalWidth * 3}px; animation: marquee 25s linear infinite;">
-                        ${brandsHTML}
-                        ${brandsHTML}
-                        ${brandsHTML}
+                <div class="overflow-hidden py-6 bg-orange-50">
+                    <div class="flex items-center" style="width: max-content;">
+                        <div class="flex items-center animate-marquee" style="width: ${trackWidth}px;">
+                            ${brandsItems}
+                        </div>
+                        <div class="flex items-center animate-marquee" style="width: ${trackWidth}px;">
+                            ${brandsItems}
+                        </div>
                     </div>
                 </div>
-                <style>
-                    @keyframes marquee {
-                        0% { transform: translateX(0); }
-                        100% { transform: translateX(-${totalWidth}px); }
-                    }
-                </style>
             `;
         }
     };
