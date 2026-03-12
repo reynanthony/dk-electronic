@@ -272,35 +272,16 @@
             const container = document.getElementById('filtros');
             if (!container) return;
 
-            const categorias = DataLoader.getCategories();
-            const buttons = ['todos', ...categorias];
+            const categories = DataLoader.getCategoriesFull();
+            
+            const buttons = [{ slug: 'todos', nombre: 'Todos' }, ...categories.map(c => ({ slug: c.slug || c.nombre.toLowerCase().replace(/\s+/g, ''), nombre: c.nombre }))];
             
             container.innerHTML = buttons.map((c, i) => {
                 const isActive = i === 0;
-                const label = c === 'todos' ? 'Todos' : c.charAt(0).toUpperCase() + c.slice(1);
-                return `<button data-category="${c}" class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${isActive ? 'bg-primary text-white shadow-orange-300/50' : 'bg-white text-slate-600 hover:bg-orange-50 border border-slate-200'}">${label}</button>`;
+                const label = c.nombre;
+                const href = c.slug === 'todos' ? 'index.html' : c.slug + '.html';
+                return `<a href="${href}" class="filter-link flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${isActive ? 'bg-primary text-white' : 'bg-white text-slate-600 hover:bg-orange-50 border border-slate-200'}">${label}</a>`;
             }).join('');
-
-            container.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => this.handleFilter(e));
-            });
-        },
-
-        handleFilter(e) {
-            const category = e.target.dataset.category;
-            
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('bg-primary', 'text-white', 'shadow-orange-300/50');
-                b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
-            });
-            e.target.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
-            e.target.classList.add('bg-primary', 'text-white', 'shadow-orange-300/50');
-
-            const result = category === 'todos' 
-                ? DataLoader.getProducts() 
-                : DataLoader.getByCategory(category);
-            
-            ProductRenderer.render(result);
         }
     };
 
