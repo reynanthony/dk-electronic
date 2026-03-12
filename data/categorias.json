@@ -12,5 +12,19 @@
     "slug": "televisores",
     "imagen": "imagenes/1200_900.jpeg",
     "orden": 0
+  },
+  {
+    "id": 6,
+    "nombre": "Aires",
+    "slug": "aires",
+    "imagen": "imagenes/aire.jpg",
+    "orden": 0
+  },
+  {
+    "id": 7,
+    "nombre": "Electrodomesticos",
+    "slug": "electrodomesticos",
+    "imagen": "imagenes/cuando-comprar-electrodomesticos.webp",
+    "orden": 0
   }
 ]
