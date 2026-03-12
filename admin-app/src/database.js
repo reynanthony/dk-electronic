@@ -84,7 +84,12 @@ class DKDatabase {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 page_slug TEXT NOT NULL UNIQUE,
                 title TEXT,
+                descripcion TEXT,
                 content TEXT,
+                section1_title TEXT,
+                section1_content TEXT,
+                section2_title TEXT,
+                section2_content TEXT,
                 activo INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -132,6 +137,7 @@ class DKDatabase {
             this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Televisores', 'televisores', 1)");
             this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Aires Acondicionados', 'aires', 2)");
             this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Electrodomésticos', 'electrodomesticos', 3)");
+            this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Pulseras', 'pulseras', 4)");
         }
 
         const brandCount = this.db.exec('SELECT COUNT(*) as count FROM brands')[0]?.values[0][0] || 0;
@@ -142,6 +148,12 @@ class DKDatabase {
             this.db.run("INSERT INTO brands (nombre, activo, orden) VALUES ('Sony', 1, 3)");
             this.db.run("INSERT INTO brands (nombre, activo, orden) VALUES ('Midea', 1, 4)");
             this.db.run("INSERT INTO brands (nombre, activo, orden) VALUES ('Whirlpool', 1, 5)");
+        }
+
+        const promotionCount = this.db.exec('SELECT COUNT(*) as count FROM promotions')[0]?.values[0][0] || 0;
+        
+        if (promotionCount === 0) {
+            this.db.run("INSERT INTO promotions (titulo, descripcion, video_url, activo, fecha_inicio, fecha_fin) VALUES ('Promoción Especial', 'Gran descuento en toda la tienda', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1, '2026-01-01', '2026-12-31')");
         }
 
         const settingsCount = this.db.exec('SELECT COUNT(*) as count FROM site_settings')[0]?.values[0][0] || 0;
@@ -315,12 +327,18 @@ class DKDatabase {
     savePage(page) {
         const existing = this.getPageBySlug(page.page_slug);
         if (existing) {
-            this.db.run('UPDATE page_content SET title=?, content=?, activo=?, updated_at=CURRENT_TIMESTAMP WHERE page_slug=?', [
-                page.title || '', page.content || '', page.activo ? 1 : 0, page.page_slug
+            this.db.run(`UPDATE page_content SET title=?, descripcion=?, content=?, section1_title=?, section1_content=?, section2_title=?, section2_content=?, activo=?, updated_at=CURRENT_TIMESTAMP WHERE page_slug=?`, [
+                page.title || '', page.descripcion || '', page.content || '', 
+                page.section1_title || '', page.section1_content || '',
+                page.section2_title || '', page.section2_content || '',
+                page.activo ? 1 : 0, page.page_slug
             ]);
         } else {
-            this.db.run('INSERT INTO page_content (page_slug, title, content, activo) VALUES (?, ?, ?, ?)', [
-                page.page_slug, page.title || '', page.content || '', page.activo ? 1 : 0
+            this.db.run('INSERT INTO page_content (page_slug, title, descripcion, content, section1_title, section1_content, section2_title, section2_content, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                page.page_slug, page.title || '', page.descripcion || '', page.content || '',
+                page.section1_title || '', page.section1_content || '',
+                page.section2_title || '', page.section2_content || '',
+                page.activo ? 1 : 0
             ]);
         }
         this.save();
