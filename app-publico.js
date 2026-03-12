@@ -205,17 +205,11 @@
             const nav = document.getElementById('main-nav');
             if (!nav) return;
 
-            const categories = DataLoader.getCategories();
-            const categoryNames = {
-                'televisores': 'Televisores',
-                'aires': 'Aires',
-                'electrodomesticos': 'Electrodomésticos',
-                'pulceras': 'Pulceras'
-            };
+            const categories = DataLoader.getCategoriesFull();
 
             const links = categories.map(cat => {
-                const name = categoryNames[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
-                return `<a href="${cat}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>`;
+                const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
+                return `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${cat.nombre}</a>`;
             }).join('');
 
             nav.innerHTML = `<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>` + links;
