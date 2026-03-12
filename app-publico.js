@@ -121,6 +121,69 @@
         }
     };
 
+    const BrandRenderer = {
+        render() {
+            const container = document.getElementById('brands-container');
+            if (!container) return;
+
+            const brands = DataLoader.getBrands();
+
+            if (brands.length === 0) {
+                container.innerHTML = '<p class="text-gray-400">No hay marcas disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = brands.map(brand => {
+                const logo = brand.logo_url || '';
+                if (logo) {
+                    return `<img src="${logo}" alt="${brand.nombre}" class="h-12 object-contain" loading="lazy">`;
+                }
+                return `<span class="text-lg font-medium text-gray-600">${brand.nombre}</span>`;
+            }).join('');
+        }
+    };
+
+    const PromotionRenderer = {
+        render() {
+            const container = document.getElementById('promo-container');
+            if (!container) return;
+
+            const promotions = DataLoader.getPromotions();
+
+            if (promotions.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const promo = promotions[0];
+            
+            if (promo.video_url) {
+                let videoUrl = promo.video_url;
+                if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                    const videoId = videoUrl.split('v=')[1] || videoUrl.split('/').pop();
+                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                }
+                container.innerHTML = `
+                    <div class="w-full h-64 md:h-80 relative">
+                        <iframe src="${videoUrl}" class="w-full h-full object-cover" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                    </div>
+                `;
+            } else if (promo.imagen) {
+                container.innerHTML = `
+                    <div class="w-full h-64 md:h-80 relative">
+                        <img src="${promo.imagen}" alt="${promo.titulo}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                            <div class="p-6 text-white">
+                                <h3 class="text-2xl font-bold">${promo.titulo}</h3>
+                                ${promo.descripcion ? `<p class="mt-2">${promo.descripcion}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    };
+
     const NavRenderer = {
         render() {
             const nav = document.getElementById('main-nav');
@@ -346,6 +409,8 @@
                 ProductRenderer.render(DataLoader.getProducts());
                 CategoryFilter.init();
                 CategoryRenderer.render();
+                BrandRenderer.render();
+                PromotionRenderer.render();
                 NavRenderer.render();
             }
         }
