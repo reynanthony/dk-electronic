@@ -180,8 +180,8 @@
                 }
                 
                 container.innerHTML = `
-                    <div class="w-full h-[800px] relative bg-black">
-                        <iframe src="${videoUrl}" class="w-full h-full absolute inset-0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="relative w-full" style="padding-bottom: 56.25%;">
+                        <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;
             } else if (promo.imagen) {
