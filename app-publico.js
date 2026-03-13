@@ -247,6 +247,7 @@
 const PromotionRenderer = {
         currentIndex: 0,
         promotions: [],
+        timer: null,
         
         render() {
             const container = document.getElementById('promo-container');
@@ -271,25 +272,12 @@ const PromotionRenderer = {
         },
 
         startRotation() {
-            const container = document.getElementById('promo-single');
-            if (!container) return;
+            // Use timer-based rotation since we can't control YouTube iframes
+            if (this.timer) clearTimeout(this.timer);
             
-            // Check for video element
-            const video = container.querySelector('video');
-            if (video) {
-                video.onended = () => {
-                    this.nextPromotion();
-                };
-                // Also handle errors with fallback
-                video.onerror = () => {
-                    setTimeout(() => this.nextPromotion(), 5000);
-                };
-            } else {
-                // For YouTube iframes, wait 30 seconds then rotate
-                setTimeout(() => {
-                    this.nextPromotion();
-                }, 30000);
-            }
+            this.timer = setTimeout(() => {
+                this.nextPromotion();
+            }, 15000); // Rotate every 15 seconds
         },
 
         nextPromotion() {
@@ -313,16 +301,16 @@ const PromotionRenderer = {
                     } else {
                         videoId = videoUrl.split('/').pop();
                     }
-                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
+                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playlist=${videoId}&rel=0`;
                     return `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onload="startRotation()"></iframe>
                         </div>
                     `;
                 } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
                     return `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
+                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay muted playsinline onloadeddata="PromotionRenderer.startRotation()">
                                 <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
                             </video>
