@@ -18,17 +18,32 @@
         async load() {
             const timestamp = Date.now();
             
-            const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
-                fetch(`productos.json?_=${timestamp}`),
-                fetch(`categorias.json?_=${timestamp}`),
-                fetch(`marcas.json?_=${timestamp}`),
-                fetch(`promociones.json?_=${timestamp}`)
-            ]);
+            try {
+                const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
+                    fetch(`productos.json?_=${timestamp}`),
+                    fetch(`categorias.json?_=${timestamp}`),
+                    fetch(`marcas.json?_=${timestamp}`),
+                    fetch(`promociones.json?_=${timestamp}`)
+                ]);
 
-            this.data = productosRes.ok ? await productosRes.json() : { productos: [] };
-            this.categorias = categoriasRes.ok ? await categoriasRes.json() : [];
-            this.marcas = marcasRes.ok ? await marcasRes.json() : [];
-            this.promociones = promocionesRes.ok ? await promocionesRes.json() : [];
+                this.data = productosRes.ok ? await productosRes.json() : { productos: [] };
+                this.categorias = categoriasRes.ok ? await categoriasRes.json() : [];
+                this.marcas = marcasRes.ok ? await marcasRes.json() : [];
+                this.promociones = promocionesRes.ok ? await promocionesRes.json() : [];
+                
+                console.log('Datos cargados:', { 
+                    productos: this.data?.productos?.length, 
+                    categorias: this.categorias.length,
+                    marcas: this.marcas.length,
+                    promociones: this.promociones.length 
+                });
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                this.data = { productos: [] };
+                this.categorias = [];
+                this.marcas = [];
+                this.promociones = [];
+            }
             
             return this.data;
         },
@@ -375,8 +390,11 @@
     const App = {
         async init() {
             try {
+                console.log('Iniciando app...');
                 await DataLoader.load();
+                console.log('Renderizando...');
                 this.render();
+                console.log('Renderizado completo');
             } catch (e) {
                 console.error('Error initializing app:', e);
                 const container = document.getElementById('productos');
