@@ -38,12 +38,12 @@ class Exporter {
                 nombre: settings.nombre_tienda || 'DK Electronic',
                 whatsapp: settings.whatsapp || '18293686994'
             },
-            productos: products.map(p => ({
+productos: products.map(p => ({
                 id: p.id,
                 nombre: p.nombre,
                 descripcion: p.descripcion,
                 precio: p.precio,
-                categoria: p.categoria_nombre ? p.categoria_nombre.toLowerCase().replace(/\s+/g, '') : 'otros',
+                categoria: p.categoria_slug || p.categoria_nombre?.toLowerCase().replace(/\s+/g, '') || 'otros',
                 categoria_id: p.categoria_id,
                 imagen: p.imagen,
                 destacado: p.destacado === 1,

@@ -176,7 +176,7 @@ class DKDatabase {
     // PRODUCTOS
     getAllProducts() {
         const stmt = this.db.prepare(`
-            SELECT p.*, c.nombre as categoria_nombre 
+            SELECT p.*, c.nombre as categoria_nombre, c.slug as categoria_slug 
             FROM products p 
             LEFT JOIN categories c ON p.categoria_id = c.id 
             ORDER BY p.orden, p.id

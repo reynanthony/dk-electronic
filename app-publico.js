@@ -152,7 +152,7 @@
             }).join('');
 
             container.innerHTML = `
-                <div class="overflow-hidden py-6 bg-orange-50">
+                <div class="overflow-hidden py-6 bg-white">
                     <div class="marquee-track">
                         ${brandsItems}
                         ${brandsItems}
