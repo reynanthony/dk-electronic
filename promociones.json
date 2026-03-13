@@ -1,5 +1,14 @@
 [
   {
+    "id": 2,
+    "titulo": "samsun",
+    "descripcion": "",
+    "imagen": "",
+    "video_url": "videos/videoplayback.mp4",
+    "fecha_inicio": "2026-03-13",
+    "fecha_fin": "2026-03-16"
+  },
+  {
     "id": 1,
     "titulo": "Promoción Especial",
     "descripcion": "Gran descuento en toda la tienda",
