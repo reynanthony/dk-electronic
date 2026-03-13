@@ -48,5 +48,15 @@
     "hero_imagen": "",
     "hero_titulo": "",
     "hero_subtitulo": ""
+  },
+  {
+    "id": 8,
+    "nombre": "comida",
+    "slug": "comida",
+    "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
+    "orden": 6,
+    "hero_imagen": "imagenes/restaurantes-carne-santo-domingo-1000x630.jpg",
+    "hero_titulo": "comida",
+    "hero_subtitulo": "COMIDA"
   }
 ]
