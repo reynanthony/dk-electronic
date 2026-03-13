@@ -1333,10 +1333,14 @@
 
         async function deleteProduct(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.')) {
-                await window.api.products.delete(id);
-                showToast('Producto eliminado correctamente', 'success');
-                await loadProducts();
-                await loadDashboard();
+                try {
+                    await window.api.products.delete(id);
+                    showToast('Producto eliminado correctamente', 'success');
+                    await loadProducts();
+                    await loadDashboard();
+                } catch (error) {
+                    showToast('Error al eliminar: ' + error.message, 'error');
+                }
             }
         }
 
@@ -1413,9 +1417,13 @@
 
         async function deleteCategory(id) {
             if (confirm('¿Estás seguro de que deseas eliminar esta categoría?')) {
-                await window.api.categories.delete(id);
-                showToast('Categoría eliminada correctamente', 'success');
-                await loadCategories();
+                try {
+                    await window.api.categories.delete(id);
+                    showToast('Categoría eliminada correctamente', 'success');
+                    await loadCategories();
+                } catch (error) {
+                    showToast('Error al eliminar: ' + error.message, 'error');
+                }
             }
         }
 
@@ -1457,8 +1465,9 @@
                     <input type="text" id="brandNombre" value="${brand?.nombre || ''}" placeholder="Ej: Samsung" required>
                 </div>
                 <div class="form-group">
-                    <label>URL del Logo</label>
+                    <label>Logo de la Marca</label>
                     <input type="text" id="brandLogo" value="${brand?.logo_url || ''}" placeholder="https://...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('brandLogo')">Seleccionar imagen</button>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1486,9 +1495,13 @@
 
         async function deleteBrand(id) {
             if (confirm('¿Estás seguro de que deseas eliminar esta marca?')) {
-                await window.api.brands.delete(id);
-                showToast('Marca eliminada correctamente', 'success');
-                await loadBrands();
+                try {
+                    await window.api.brands.delete(id);
+                    showToast('Marca eliminada correctamente', 'success');
+                    await loadBrands();
+                } catch (error) {
+                    showToast('Error al eliminar: ' + error.message, 'error');
+                }
             }
         }
 
@@ -1536,8 +1549,9 @@
                     <textarea id="promDesc" rows="3" placeholder="Descripción de la promoción...">${promotion?.descripcion || ''}</textarea>
                 </div>
                 <div class="form-group">
-                    <label>Imagen (URL)</label>
+                    <label>Imagen de la Promoción</label>
                     <input type="text" id="promImagen" value="${promotion?.imagen || ''}" placeholder="https://...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('promImagen')">Seleccionar imagen</button>
                 </div>
                 <div class="form-group">
                     <label>Video (URL de YouTube o video)</label>
@@ -1573,9 +1587,13 @@
 
         async function deletePromotion(id) {
             if (confirm('¿Estás seguro de que deseas eliminar esta promoción?')) {
-                await window.api.promotions.delete(id);
-                showToast('Promoción eliminada correctamente', 'success');
-                await loadPromotions();
+                try {
+                    await window.api.promotions.delete(id);
+                    showToast('Promoción eliminada correctamente', 'success');
+                    await loadPromotions();
+                } catch (error) {
+                    showToast('Error al eliminar: ' + error.message, 'error');
+                }
             }
         }
 
@@ -1708,103 +1726,142 @@
             currentEditId = null;
         }
 
-        async function saveModal() {
-            switch(currentView) {
+        function validateForm(view) {
+            switch(view) {
                 case 'products':
-                    const prodData = {
-                        nombre: document.getElementById('prodNombre').value,
-                        descripcion: document.getElementById('prodDescripcion').value,
-                        precio: parseFloat(document.getElementById('prodPrecio').value),
-                        categoria_id: parseInt(document.getElementById('prodCategoria').value) || null,
-                        imagen: document.getElementById('prodImagen').value,
-                        destacado: document.getElementById('prodDestacado').checked,
-                        activo: document.getElementById('prodActivo').checked,
-                        garantia: document.getElementById('prodGarantia').checked
-                    };
-                    if (currentEditId) {
-                        await window.api.products.update(currentEditId, prodData);
-                        showToast('Producto actualizado correctamente', 'success');
-                    } else {
-                        await window.api.products.create(prodData);
-                        showToast('Producto creado correctamente', 'success');
-                    }
-                    await loadProducts();
-                    await loadDashboard();
+                    const prodNombre = document.getElementById('prodNombre').value.trim();
+                    const prodPrecio = document.getElementById('prodPrecio').value;
+                    if (!prodNombre) return 'El nombre del producto es obligatorio';
+                    if (!prodPrecio || isNaN(prodPrecio)) return 'El precio es obligatorio y debe ser un número';
                     break;
-
                 case 'categories':
-                    const catData = {
-                        nombre: document.getElementById('catNombre').value,
-                        slug: document.getElementById('catSlug').value,
-                        imagen: document.getElementById('catImagen').value,
-                        orden: parseInt(document.getElementById('catOrden').value) || 0,
-                        activo: document.getElementById('catActivo').checked
-                    };
-                    if (currentEditId) {
-                        await window.api.categories.update(currentEditId, catData);
-                        showToast('Categoría actualizada correctamente', 'success');
-                    } else {
-                        await window.api.categories.create(catData);
-                        showToast('Categoría creada correctamente', 'success');
-                    }
-                    await loadCategories();
+                    const catNombre = document.getElementById('catNombre').value.trim();
+                    if (!catNombre) return 'El nombre de la categoría es obligatorio';
                     break;
-
                 case 'brands':
-                    const brandData = {
-                        nombre: document.getElementById('brandNombre').value,
-                        logo_url: document.getElementById('brandLogo').value,
-                        orden: parseInt(document.getElementById('brandOrden').value) || 0,
-                        activo: document.getElementById('brandActivo').checked
-                    };
-                    if (currentEditId) {
-                        await window.api.brands.update(currentEditId, brandData);
-                        showToast('Marca actualizada correctamente', 'success');
-                    } else {
-                        await window.api.brands.create(brandData);
-                        showToast('Marca creada correctamente', 'success');
-                    }
-                    await loadBrands();
+                    const brandNombre = document.getElementById('brandNombre').value.trim();
+                    if (!brandNombre) return 'El nombre de la marca es obligatorio';
                     break;
-
                 case 'promotions':
-                    const promData = {
-                        titulo: document.getElementById('promTitulo').value,
-                        descripcion: document.getElementById('promDesc').value,
-                        imagen: document.getElementById('promImagen').value,
-                        video_url: document.getElementById('promVideo').value,
-                        fecha_inicio: document.getElementById('promFechaInicio').value,
-                        fecha_fin: document.getElementById('promFechaFin').value,
-                        activo: document.getElementById('promActivo').checked
-                    };
-                    if (currentEditId) {
-                        await window.api.promotions.update(currentEditId, promData);
-                        showToast('Promoción actualizada correctamente', 'success');
-                    } else {
-                        await window.api.promotions.create(promData);
-                        showToast('Promoción creada correctamente', 'success');
-                    }
-                    await loadPromotions();
+                    const promTitulo = document.getElementById('promTitulo').value.trim();
+                    if (!promTitulo) return 'El título de la promoción es obligatorio';
                     break;
-
                 case 'pages':
-                    const pageData = {
-                        page_slug: document.getElementById('pageSlug').value,
-                        title: document.getElementById('pageTitle').value,
-                        descripcion: document.getElementById('pageDesc').value,
-                        content: document.getElementById('pageContent').value,
-                        section1_title: document.getElementById('pageSection1Title').value,
-                        section1_content: document.getElementById('pageSection1Content').value,
-                        section2_title: document.getElementById('pageSection2Title').value,
-                        section2_content: document.getElementById('pageSection2Content').value,
-                        activo: document.getElementById('pageActivo').checked
-                    };
-                    await window.api.pages.save(pageData);
-                    showToast('Página guardada correctamente', 'success');
-                    await loadPages();
+                    const pageTitle = document.getElementById('pageTitle').value.trim();
+                    if (!pageTitle) return 'El título de la página es obligatorio';
                     break;
             }
-            closeModal();
+            return null;
+        }
+
+        async function saveModal() {
+            const validationError = validateForm(currentView);
+            if (validationError) {
+                showToast(validationError, 'error');
+                return;
+            }
+
+            try {
+                switch(currentView) {
+                    case 'products':
+                        const prodData = {
+                            nombre: document.getElementById('prodNombre').value.trim(),
+                            descripcion: document.getElementById('prodDescripcion').value.trim(),
+                            precio: parseFloat(document.getElementById('prodPrecio').value),
+                            categoria_id: parseInt(document.getElementById('prodCategoria').value) || null,
+                            imagen: document.getElementById('prodImagen').value.trim(),
+                            destacado: document.getElementById('prodDestacado').checked,
+                            activo: document.getElementById('prodActivo').checked,
+                            garantia: document.getElementById('prodGarantia').checked
+                        };
+                        if (currentEditId) {
+                            await window.api.products.update(currentEditId, prodData);
+                            showToast('Producto actualizado correctamente', 'success');
+                        } else {
+                            await window.api.products.create(prodData);
+                            showToast('Producto creado correctamente', 'success');
+                        }
+                        await loadProducts();
+                        await loadDashboard();
+                        break;
+
+                    case 'categories':
+                        const catData = {
+                            nombre: document.getElementById('catNombre').value.trim(),
+                            slug: document.getElementById('catSlug').value.trim(),
+                            imagen: document.getElementById('catImagen').value.trim(),
+                            orden: parseInt(document.getElementById('catOrden').value) || 0,
+                            activo: document.getElementById('catActivo').checked
+                        };
+                        if (currentEditId) {
+                            await window.api.categories.update(currentEditId, catData);
+                            showToast('Categoría actualizada correctamente', 'success');
+                        } else {
+                            await window.api.categories.create(catData);
+                            showToast('Categoría creada correctamente', 'success');
+                        }
+                        await loadCategories();
+                        break;
+
+                    case 'brands':
+                        const brandData = {
+                            nombre: document.getElementById('brandNombre').value.trim(),
+                            logo_url: document.getElementById('brandLogo').value.trim(),
+                            orden: parseInt(document.getElementById('brandOrden').value) || 0,
+                            activo: document.getElementById('brandActivo').checked
+                        };
+                        if (currentEditId) {
+                            await window.api.brands.update(currentEditId, brandData);
+                            showToast('Marca actualizada correctamente', 'success');
+                        } else {
+                            await window.api.brands.create(brandData);
+                            showToast('Marca creada correctamente', 'success');
+                        }
+                        await loadBrands();
+                        break;
+
+                    case 'promotions':
+                        const promData = {
+                            titulo: document.getElementById('promTitulo').value.trim(),
+                            descripcion: document.getElementById('promDesc').value.trim(),
+                            imagen: document.getElementById('promImagen').value.trim(),
+                            video_url: document.getElementById('promVideo').value.trim(),
+                            fecha_inicio: document.getElementById('promFechaInicio').value,
+                            fecha_fin: document.getElementById('promFechaFin').value,
+                            activo: document.getElementById('promActivo').checked
+                        };
+                        if (currentEditId) {
+                            await window.api.promotions.update(currentEditId, promData);
+                            showToast('Promoción actualizada correctamente', 'success');
+                        } else {
+                            await window.api.promotions.create(promData);
+                            showToast('Promoción creada correctamente', 'success');
+                        }
+                        await loadPromotions();
+                        break;
+
+                    case 'pages':
+                        const pageData = {
+                            page_slug: document.getElementById('pageSlug').value,
+                            title: document.getElementById('pageTitle').value.trim(),
+                            descripcion: document.getElementById('pageDesc').value.trim(),
+                            content: document.getElementById('pageContent').value,
+                            section1_title: document.getElementById('pageSection1Title').value.trim(),
+                            section1_content: document.getElementById('pageSection1Content').value,
+                            section2_title: document.getElementById('pageSection2Title').value.trim(),
+                            section2_content: document.getElementById('pageSection2Content').value,
+                            activo: document.getElementById('pageActivo').checked
+                        };
+                        await window.api.pages.save(pageData);
+                        showToast('Página guardada correctamente', 'success');
+                        await loadPages();
+                        break;
+                }
+                closeModal();
+            } catch (error) {
+                console.error('Error guardando:', error);
+                showToast('Error al guardar: ' + error.message, 'error');
+            }
         }
 
         // Select Image
