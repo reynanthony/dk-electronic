@@ -11,7 +11,9 @@ log.transports.console.level = 'debug';
 let mainWindow;
 let db;
 
-const git = simpleGit(path.join(__dirname, '..'));
+// Git inicializado en la raíz del proyecto (donde están los JSON)
+const projectRoot = path.resolve(__dirname, '..', '..');
+const git = simpleGit(projectRoot);
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -260,9 +262,6 @@ ipcMain.handle('git:pull', async () => {
 ipcMain.handle('git:exportAndPush', async () => {
     try {
         log.info('=== INICIANDO SYNCRONIZACIÓN COMPLETA ===');
-        
-        // Ruta absoluta al directorio raíz del proyecto
-        const projectRoot = path.resolve(__dirname, '..', '..');
         log.info('Directorio del proyecto:', projectRoot);
         
         // Crear exporter con ruta correcta
