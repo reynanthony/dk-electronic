@@ -244,7 +244,7 @@
         }
     };
 
-    const PromotionRenderer = {
+const PromotionRenderer = {
         render() {
             const container = document.getElementById('promo-container');
             if (!container) return;
@@ -256,8 +256,10 @@
                 return;
             }
 
-            const promo = promotions[0];
-            
+            container.innerHTML = promotions.map(promo => this.renderPromotion(promo)).join('');
+        },
+
+        renderPromotion(promo) {
             if (promo.video_url) {
                 let videoUrl = promo.video_url;
                 
@@ -271,16 +273,16 @@
                         videoId = videoUrl.split('/').pop();
                     }
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
-                    container.innerHTML = `
-                        <div class="relative w-full" style="padding-bottom: 56.25%;">
+                    return `
+                        <div class="relative w-full mb-8" style="padding-bottom: 56.25%;">
                             <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
                 } 
                 // Local video file
                 else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
-                    container.innerHTML = `
-                        <div class="relative w-full" style="padding-bottom: 56.25%;">
+                    return `
+                        <div class="relative w-full mb-8" style="padding-bottom: 56.25%;">
                             <video class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
                                 <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
@@ -289,8 +291,8 @@
                     `;
                 }
             } else if (promo.imagen) {
-                container.innerHTML = `
-                    <div class="w-full h-64 md:h-80 relative">
+                return `
+                    <div class="w-full h-64 md:h-80 relative mb-8">
                         <img src="${promo.imagen}" alt="${promo.titulo}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                             <div class="p-6 text-white">
@@ -301,6 +303,7 @@
                     </div>
                 `;
             }
+            return '';
         }
     };
 
