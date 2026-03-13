@@ -66,7 +66,10 @@ productos: products.map(p => ({
             nombre: c.nombre,
             slug: c.slug,
             imagen: c.imagen || '',
-            orden: c.orden
+            orden: c.orden,
+            hero_imagen: c.hero_imagen || '',
+            hero_titulo: c.hero_titulo || '',
+            hero_subtitulo: c.hero_subtitulo || ''
         }));
 
         const filePath = path.join(this.outputPath, 'categorias.json');

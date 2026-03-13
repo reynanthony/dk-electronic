@@ -13,56 +13,50 @@
         default: {
             primary: '#c2410c',
             primaryLight: '#ea580c',
-            gradient: 'from-orange-500 to-amber-600',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
             heroTitle: 'Los mejores',
-            heroSubtitle: 'electrodomésticos',
-            icon: '🏠'
+            heroSubtitle: 'electrodomésticos'
         },
         televisiores: {
             primary: '#1e293b',
             primaryLight: '#475569',
-            gradient: 'from-slate-800 to-slate-900',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1920&q=80',
             heroTitle: 'Smart TVs',
-            heroSubtitle: 'de las mejores marcas',
-            icon: '📺'
+            heroSubtitle: 'de las mejores marcas'
         },
         aires: {
             primary: '#0284c7',
             primaryLight: '#0ea5e9',
-            gradient: 'from-sky-500 to-cyan-400',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1631545806609-8e9a8f342d3a?w=1920&q=80',
             heroTitle: 'Aires',
-            heroSubtitle: 'frescura para tu hogar',
-            icon: '❄️'
+            heroSubtitle: 'frescura para tu hogar'
         },
         electrodomesticos: {
             primary: '#c2410c',
             primaryLight: '#ea580c',
-            gradient: 'from-orange-500 to-amber-600',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
             heroTitle: 'Electrodomésticos',
-            heroSubtitle: 'calidad garantizada',
-            icon: '🔌'
+            heroSubtitle: 'calidad garantizada'
         },
         pulseras: {
             primary: '#d97706',
             primaryLight: '#f59e0b',
-            gradient: 'from-amber-500 to-yellow-400',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=1920&q=80',
             heroTitle: 'Pulseras',
-            heroSubtitle: 'joyería y accesorios',
-            icon: '💍'
+            heroSubtitle: 'joyería y accesorios'
         },
         viajes: {
             primary: '#0d9488',
             primaryLight: '#14b8a6',
-            gradient: 'from-teal-500 to-emerald-400',
+            gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=80',
             heroTitle: 'Viajes',
-            heroSubtitle: 'experiencias únicas',
-            icon: '✈️'
+            heroSubtitle: 'experiencias únicas'
         }
     };
 
@@ -505,6 +499,11 @@
             const cat = categories.find(c => c.slug === categorySlug);
             const categoryName = cat ? cat.nombre : categorySlug;
             
+            // Check if category has custom hero config
+            const heroImage = (cat && cat.hero_imagen) ? cat.hero_imagen : theme.heroImage;
+            const heroTitle = (cat && cat.hero_titulo) ? cat.hero_titulo : theme.heroTitle;
+            const heroSubtitle = (cat && cat.hero_subtitulo) ? cat.hero_subtitulo : theme.heroSubtitle;
+            
             // Create or update hero banner
             let hero = document.getElementById('category-hero');
             if (!hero) {
@@ -519,18 +518,13 @@
             
             hero.innerHTML = `
                 <div class="absolute inset-0">
-                    <img src="${theme.heroImage}" alt="${categoryName}" class="w-full h-full object-cover" loading="eager">
-                    <div class="absolute inset-0 bg-gradient-to-r ${theme.gradient} opacity-80"></div>
+                    <img src="${heroImage}" alt="${categoryName}" class="w-full h-full object-cover" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/40"></div>
                 </div>
                 <div class="relative h-full flex items-center">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                        <div class="flex items-center gap-4">
-                            <span class="text-5xl">${theme.icon}</span>
-                            <div>
-                                <h1 class="text-4xl md:text-5xl font-bold text-white">${theme.heroTitle}</h1>
-                                <p class="text-xl text-white/90">${theme.heroSubtitle}</p>
-                            </div>
-                        </div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-white">${heroTitle}</h1>
+                        <p class="text-xl text-white/90 mt-2">${heroSubtitle}</p>
                     </div>
                 </div>
             `;

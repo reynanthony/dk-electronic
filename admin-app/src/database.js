@@ -47,6 +47,9 @@ class DKDatabase {
                 imagen TEXT,
                 activo INTEGER DEFAULT 1,
                 orden INTEGER DEFAULT 0,
+                hero_imagen TEXT,
+                hero_titulo TEXT,
+                hero_subtitulo TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
@@ -229,7 +232,16 @@ class DKDatabase {
 
     createCategory(category) {
         const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden) VALUES (?, ?, ?, ?, ?)', [category.nombre, slug, category.imagen || '', category.activo ? 1 : 0, category.orden || 0]);
+        this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden, hero_imagen, hero_titulo, hero_subtitulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
+            category.nombre, 
+            slug, 
+            category.imagen || '', 
+            category.activo ? 1 : 0, 
+            category.orden || 0,
+            category.hero_imagen || '',
+            category.hero_titulo || '',
+            category.hero_subtitulo || ''
+        ]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
         this.save();
         return { id: lastId, ...category, slug };
@@ -237,7 +249,17 @@ class DKDatabase {
 
     updateCategory(id, category) {
         const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [category.nombre, slug, category.imagen || '', category.activo ? 1 : 0, category.orden || 0, id]);
+        this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, hero_imagen=?, hero_titulo=?, hero_subtitulo=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [
+            category.nombre, 
+            slug, 
+            category.imagen || '', 
+            category.activo ? 1 : 0, 
+            category.orden || 0,
+            category.hero_imagen || '',
+            category.hero_titulo || '',
+            category.hero_subtitulo || '',
+            id
+        ]);
         this.save();
         return { id, ...category, slug };
     }

@@ -430,6 +430,27 @@
             grid-template-columns: 1fr 1fr 1fr;
         }
 
+        .form-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .form-section h4 {
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .form-section .text-muted {
+            color: #64748b;
+            font-size: 13px;
+            margin: 0;
+        }
+
         /* Modal */
         .modal-overlay {
             position: fixed;
@@ -1391,6 +1412,25 @@
                     <input type="text" id="catImagen" value="${category?.imagen || ''}" placeholder="https://...">
                     <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('catImagen')">Seleccionar imagen</button>
                 </div>
+                <div class="form-section">
+                    <h4>Configuración del Banner (Hero)</h4>
+                    <p class="text-muted">Personaliza cómo se ve esta categoría en su página</p>
+                </div>
+                <div class="form-group">
+                    <label>Imagen de Fondo del Banner</label>
+                    <input type="text" id="catHeroImagen" value="${category?.hero_imagen || ''}" placeholder="https://images.unsplash.com/...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('catHeroImagen')">Seleccionar imagen</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Título del Banner</label>
+                        <input type="text" id="catHeroTitulo" value="${category?.hero_titulo || ''}" placeholder="ej: Smart TVs">
+                    </div>
+                    <div class="form-group">
+                        <label>Subtítulo del Banner</label>
+                        <input type="text" id="catHeroSubtitulo" value="${category?.hero_subtitulo || ''}" placeholder="ej: de las mejores marcas">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Orden</label>
@@ -1792,7 +1832,10 @@
                             slug: document.getElementById('catSlug').value.trim(),
                             imagen: document.getElementById('catImagen').value.trim(),
                             orden: parseInt(document.getElementById('catOrden').value) || 0,
-                            activo: document.getElementById('catActivo').checked
+                            activo: document.getElementById('catActivo').checked,
+                            hero_imagen: document.getElementById('catHeroImagen').value.trim(),
+                            hero_titulo: document.getElementById('catHeroTitulo').value.trim(),
+                            hero_subtitulo: document.getElementById('catHeroSubtitulo').value.trim()
                         };
                         if (currentEditId) {
                             await window.api.categories.update(currentEditId, catData);
