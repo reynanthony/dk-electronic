@@ -247,6 +247,7 @@
 const PromotionRenderer = {
         currentIndex: 0,
         promotions: [],
+        rotationTimer: null,
         
         render() {
             const container = document.getElementById('promo-container');
@@ -259,46 +260,37 @@ const PromotionRenderer = {
                 return;
             }
 
-            // Only show one promotion at a time
-            container.innerHTML = `
-                <div id="promo-single">
-                    ${this.renderPromotion(this.promotions[0])}
-                </div>
-            `;
-            
+            // Clear any existing timer
+            if (this.rotationTimer) {
+                clearTimeout(this.rotationTimer);
+                this.rotationTimer = null;
+            }
+
             this.currentIndex = 0;
-            
-            // Wait for DOM to update then start rotation
-            setTimeout(() => this.startRotation(), 100);
+            this.showCurrentPromotion();
         },
 
-        startRotation() {
-            const container = document.getElementById('promo-single');
-            if (!container) return;
-            
-            // Check for video element
-            const video = container.querySelector('video');
-            if (video && video.duration && isFinite(video.duration)) {
-                // Use actual video duration + 1 second buffer
-                const duration = Math.ceil(video.duration) * 1000 + 1000;
-                setTimeout(() => this.nextPromotion(), duration);
-            } else {
-                // For YouTube or unknown duration, use 30 seconds default
-                setTimeout(() => this.nextPromotion(), 30000);
-            }
+        showCurrentPromotion() {
+            const container = document.getElementById('promo-container');
+            if (!container || !this.promotions.length) return;
+
+            const promo = this.promotions[this.currentIndex];
+            container.innerHTML = this.renderPromotion(promo);
+
+            // Schedule next promotion - use fixed 20 second interval for stability
+            this.rotationTimer = setTimeout(() => {
+                this.nextPromotion();
+            }, 20000);
         },
 
         nextPromotion() {
             this.currentIndex = (this.currentIndex + 1) % this.promotions.length;
-            const container = document.getElementById('promo-single');
-            if (container) {
-                container.innerHTML = this.renderPromotion(this.promotions[this.currentIndex]);
-            }
-            // Wait for DOM and video to be ready before starting rotation
-            setTimeout(() => this.startRotation(), 500);
+            this.showCurrentPromotion();
         },
 
         renderPromotion(promo) {
+            if (!promo) return '';
+            
             if (promo.video_url) {
                 let videoUrl = promo.video_url;
                 
@@ -310,34 +302,13 @@ const PromotionRenderer = {
                     } else {
                         videoId = videoUrl.split('/').pop();
                     }
-                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playlist=${videoId}&rel=0`;
-                    return `
-                        <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    `;
+                    videoUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&rel=0';
+                    return '<div class="relative w-full" style="padding-bottom: 56.25%;"><iframe src="' + videoUrl + '" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
                 } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
-                    return `
-                        <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay muted playsinline>
-                                <source src="${videoUrl}" type="video/mp4">
-                                Tu navegador no soporta videos.
-                            </video>
-                        </div>
-                    `;
+                    return '<div class="relative w-full" style="padding-bottom: 56.25%;"><video class="absolute top-0 left-0 w-full h-full" controls autoplay muted playsinline><source src="' + videoUrl + '" type="video/mp4">Tu navegador no soporta videos.</video></div>';
                 }
             } else if (promo.imagen) {
-                return `
-                    <div class="w-full h-64 md:h-80 relative">
-                        <img src="${promo.imagen}" alt="${promo.titulo}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                            <div class="p-6 text-white">
-                                <h3 class="text-2xl font-bold">${promo.titulo}</h3>
-                                ${promo.descripcion ? `<p class="mt-2">${promo.descripcion}</p>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
+                return '<div class="w-full h-64 md:h-80 relative"><img src="' + promo.imagen + '" alt="' + promo.titulo + '" class="w-full h-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end"><div class="p-6 text-white"><h3 class="text-2xl font-bold">' + promo.titulo + '</h3>' + (promo.descripcion ? '<p class="mt-2">' + promo.descripcion + '</p>' : '') + '</div></div></div>';
             }
             return '';
         }
