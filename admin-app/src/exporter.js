@@ -9,7 +9,7 @@ class Exporter {
     }
 
     async exportAll() {
-        log.info('Iniciando exportación a:', this.outputPath);
+        log.info('Iniciando exportacin a:', this.outputPath);
         
         // Asegurar que existe el directorio
         if (!fs.existsSync(this.outputPath)) {
@@ -26,7 +26,7 @@ class Exporter {
         await this.exportPromotions();
         await this.exportPages();
         
-        log.info('Exportación completada');
+        log.info('Exportacin completada');
         return true;
     }
 
@@ -50,7 +50,7 @@ class Exporter {
     async exportProducts() {
         const products = this.db.getAllProducts().filter(p => p.activo);
         
-        // Obtener configuración de la tienda
+        // Obtener configuracin de la tienda
         const settings = this.db.getSettings();
         
         const data = {
@@ -94,7 +94,7 @@ productos: products.map(p => ({
 
         const filePath = path.join(this.outputPath, 'categorias.json');
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-        log.info('Categorías exportadas:', filePath);
+        log.info('Categorias exportadas:', filePath);
     }
 
     async exportBrands() {
@@ -143,7 +143,7 @@ productos: products.map(p => ({
 
         const filePath = path.join(this.outputPath, 'paginas.json');
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-        log.info('Páginas exportadas:', filePath);
+        log.info('Pginas exportadas:', filePath);
 
         // Create HTML pages for categories automatically
         await this.createCategoryPages();
@@ -206,11 +206,11 @@ body { font-family: 'Outfit', sans-serif; }
 <img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-10 w-10 object-contain" width="40" height="40">
 <span class="text-xl font-bold tracking-tight">DK <span class="text-primary">Electronic</span></span>
 </a>
-<nav class="hidden md:flex items-center gap-8" aria-label="Navegación principal">
+<nav class="hidden md:flex items-center gap-8" aria-label="Navegacin principal">
 <a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>
 <a href="televisores.html" class="text-sm font-medium hover:text-primary transition-colors">Televisores</a>
 <a href="aires.html" class="text-sm font-medium hover:text-primary transition-colors">Aires</a>
-<a href="electrodomesticos.html" class="text-sm font-medium hover:text-primary transition-colors">Electrodomésticos</a>
+<a href="electrodomesticos.html" class="text-sm font-medium hover:text-primary transition-colors">Electrodomsticos</a>
 <a href="pulseras.html" class="text-sm font-medium hover:text-primary transition-colors">Pulseras</a>
 </nav>
 <div class="flex items-center gap-3">
@@ -246,33 +246,33 @@ body { font-family: 'Outfit', sans-serif; }
 <img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8 object-contain" width="32" height="32">
 <span class="font-bold">DK <span class="text-primary">Electronic</span></span>
 </div>
-<p class="text-sm text-muted">Los mejores electrodomésticos con garantía y servicio técnico en República Dominicana.</p>
+<p class="text-sm text-muted">Los mejores electrodomsticos con garanta y servicio tcnico en Repblica Dominicana.</p>
 </div>
 <div>
-<h4 class="font-medium mb-4">Categorías</h4>
+<h4 class="font-medium mb-4">Categorias</h4>
 <ul class="space-y-2 text-sm text-muted">
 <li><a href="televisores.html" class="hover:text-primary transition-colors">Televisores</a></li>
 <li><a href="aires.html" class="hover:text-primary transition-colors">Aires</a></li>
-<li><a href="electrodomesticos.html" class="hover:text-primary transition-colors">Electrodomésticos</a></li>
+<li><a href="electrodomesticos.html" class="hover:text-primary transition-colors">Electrodomsticos</a></li>
 <li><a href="pulseras.html" class="hover:text-primary transition-colors">Pulseras</a></li>
 </ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Ayuda</h4>
 <ul class="space-y-2 text-sm text-muted">
-<li><a href="envios.html" class="hover:text-primary transition-colors">Envíos</a></li>
-<li><a href="garantia.html" class="hover:text-primary transition-colors">Garantía</a></li>
+<li><a href="envios.html" class="hover:text-primary transition-colors">Envos</a></li>
+<li><a href="garantia.html" class="hover:text-primary transition-colors">Garanta</a></li>
 <li><a href="contacto.html" class="hover:text-primary transition-colors">Contacto</a></li>
 </ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Contacto</h4>
 <p class="text-sm text-muted">+1 (829) 368-6994</p>
-<p class="text-sm text-muted">República Dominicana</p>
+<p class="text-sm text-muted">Repblica Dominicana</p>
 </div>
 </div>
 <div class="pt-8 border-t text-center text-sm text-muted">
-© 2024 DK Electronic. Todos los derechos reservados.
+ 2024 DK Electronic. Todos los derechos reservados.
 </div>
 </div>
 </footer>
@@ -296,7 +296,7 @@ const CATEGORIA = '{SLUG}';
                     .replace(/{SLUG}/g, slug);
                 
                 fs.writeFileSync(pagePath, pageContent, 'utf8');
-                log.info('Página creada:', pagePath);
+                log.info('Pgina creada:', pagePath);
             }
         }
 
@@ -317,30 +317,21 @@ const CATEGORIA = '{SLUG}';
             for (const cat of categories) {
                 const slug = cat.slug;
                 const name = cat.nombre;
-                const headerLink = `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>`;
-                const footerLink = `<li><a href="${slug}.html" class="hover:text-primary transition-colors">${name}</a></li>`;
+                const headerLink = '<a href="' + slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + name + '</a>';
+                const footerLink = '<li><a href="' + slug + '.html" class="hover:text-primary transition-colors">' + name + '</a></li>';
                 
-                // Add to header nav if not exists
-                if (!content.includes(`href="${slug}.html"`)) {
-                    // Find the nav closing tag and add before it
-                    const navMatch = content.match(/<nav class="hidden md:flex items-center gap-8" aria-label="Navegación principal">([\s\S]*?)<\/nav>/);
-                    if (navMatch && !navMatch[1].includes(slug)) {
-                        content = content.replace(/(\/nav>[\s\S]*?<div class="flex items-center gap-3">[\s\S]*?<\/header>)/, `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>\n</nav>$1`);
-                        content = content.replace('</nav>\n<div class="flex items-center gap-3">', `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>\n</nav>\n<div class="flex items-center gap-3">');
-                        modified = true;
-                    }
-                    
-                    // Add to footer categorías if not exists
-                    if (!content.includes(`>${name}</a></li>`) && content.includes('<h4 class="font-medium mb-4">Categorías</h4>')) {
-                        content = content.replace(/(<h4 class="font-medium mb-4">Categorías<\/h4>[\s\S]*?<ul class="space-y-2 text-sm text-muted">)/, `$1\n${footerLink}`);
-                        modified = true;
-                    }
+                if (!content.includes('href="' + slug + '.html"')) {
+                    modified = true;
+                }
+                
+                if (!content.includes('>' + name + '</a></li>') && content.includes('<h4 class="font-medium mb-4">Categorias</h4>')) {
+                    modified = true;
                 }
             }
             
             if (modified) {
                 fs.writeFileSync(pagePath, content, 'utf8');
-                log.info('Página actualizada:', pagePath);
+                log.info('Pagina actualizada:', pagePath);
             }
         }
     }
