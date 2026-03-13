@@ -134,10 +134,10 @@ class DKDatabase {
         const categoryCount = this.db.exec('SELECT COUNT(*) as count FROM categories')[0]?.values[0][0] || 0;
         
         if (categoryCount === 0) {
-            this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Televisores', 'televisores', 1)");
-            this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Aires Acondicionados', 'aires', 2)");
-            this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Electrodomésticos', 'electrodomesticos', 3)");
-            this.db.run("INSERT INTO categories (nombre, slug, orden) VALUES ('Pulseras', 'pulseras', 4)");
+            this.db.run("INSERT INTO categories (nombre, slug, imagen, orden) VALUES ('Televisores', 'televisores', 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80', 1)");
+            this.db.run("INSERT INTO categories (nombre, slug, imagen, orden) VALUES ('Aires Acondicionados', 'aires', 'https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600&q=80', 2)");
+            this.db.run("INSERT INTO categories (nombre, slug, imagen, orden) VALUES ('Electrodomésticos', 'electrodomesticos', 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&q=80', 3)");
+            this.db.run("INSERT INTO categories (nombre, slug, imagen, orden) VALUES ('Pulseras', 'pulseras', 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=600&q=80', 4)");
         }
 
         const brandCount = this.db.exec('SELECT COUNT(*) as count FROM brands')[0]?.values[0][0] || 0;
