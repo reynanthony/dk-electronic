@@ -246,14 +246,15 @@
 
 const PromotionRenderer = {
         currentIndex: 0,
+        promotions: [],
         
         render() {
             const container = document.getElementById('promo-container');
             if (!container) return;
 
-            const promotions = DataLoader.getPromotions();
+            this.promotions = DataLoader.getPromotions();
 
-            if (promotions.length === 0) {
+            if (this.promotions.length === 0) {
                 container.innerHTML = '';
                 return;
             }
@@ -261,50 +262,43 @@ const PromotionRenderer = {
             // Only show one promotion at a time
             container.innerHTML = `
                 <div id="promo-single">
-                    ${this.renderPromotion(promotions[0])}
+                    ${this.renderPromotion(this.promotions[0])}
                 </div>
             `;
             
             this.currentIndex = 0;
-            this.startRotation(promotions);
+            this.startRotation();
         },
 
-        startRotation(promotions) {
-            // Wait for current video to end, then show next
-            const checkVideo = () => {
-                const video = document.querySelector('#promo-single video');
-                if (video) {
-                    video.onended = () => {
-                        this.nextPromotion(promotions);
-                    };
-                } else {
-                    // If no video or iframe, wait 10 seconds then rotate
-                    setTimeout(() => {
-                        this.nextPromotion(promotions);
-                    }, 10000);
-                }
-            };
+        startRotation() {
+            const container = document.getElementById('promo-single');
+            if (!container) return;
             
-            checkVideo();
-            
-            // Also listen for loadedmetadata in case video wasn't ready
-            const video = document.querySelector('#promo-single video');
+            // Check for video element
+            const video = container.querySelector('video');
             if (video) {
-                video.addEventListener('loadedmetadata', () => {
-                    video.onended = () => {
-                        this.nextPromotion(promotions);
-                    };
-                });
+                video.onended = () => {
+                    this.nextPromotion();
+                };
+                // Also handle errors with fallback
+                video.onerror = () => {
+                    setTimeout(() => this.nextPromotion(), 5000);
+                };
+            } else {
+                // For YouTube iframes, wait 30 seconds then rotate
+                setTimeout(() => {
+                    this.nextPromotion();
+                }, 30000);
             }
         },
 
-        nextPromotion(promotions) {
-            this.currentIndex = (this.currentIndex + 1) % promotions.length;
+        nextPromotion() {
+            this.currentIndex = (this.currentIndex + 1) % this.promotions.length;
             const container = document.getElementById('promo-single');
             if (container) {
-                container.innerHTML = this.renderPromotion(promotions[this.currentIndex]);
+                container.innerHTML = this.renderPromotion(this.promotions[this.currentIndex]);
             }
-            this.startRotation(promotions);
+            this.startRotation();
         },
 
         renderPromotion(promo) {
@@ -322,7 +316,7 @@ const PromotionRenderer = {
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
                     return `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
                 } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
