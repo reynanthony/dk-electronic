@@ -25,12 +25,5 @@
     "lang": "es",
     "dir": "ltr",
     "scope": "/",
-    "prefer_related_applications": false,
-    "shortcuts": [
-        {
-            "name": "WhatsApp",
-            "url": "https://wa.me/18293686994",
-            "icons": [{ "src": "logo/dklogo-removebg-preview.png", "sizes": "96x96" }]
-        }
-    ]
+    "prefer_related_applications": false
 }

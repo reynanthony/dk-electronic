@@ -13,7 +13,7 @@
       "categoria_id": 1,
       "imagen": "imagenes/ua77 lg 55.jpg",
       "destacado": true,
-      "garantia": false,
+      "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
     }
