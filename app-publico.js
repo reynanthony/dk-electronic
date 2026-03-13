@@ -19,10 +19,10 @@
             const timestamp = Date.now();
             
             const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
-                fetch(`data/productos.json?_=${timestamp}`),
-                fetch(`data/categorias.json?_=${timestamp}`),
-                fetch(`data/marcas.json?_=${timestamp}`),
-                fetch(`data/promociones.json?_=${timestamp}`)
+                fetch(`productos.json?_=${timestamp}`),
+                fetch(`categorias.json?_=${timestamp}`),
+                fetch(`marcas.json?_=${timestamp}`),
+                fetch(`promociones.json?_=${timestamp}`)
             ]);
 
             this.data = productosRes.ok ? await productosRes.json() : { productos: [] };

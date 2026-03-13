@@ -6,109 +6,14 @@
   "productos": [
     {
       "id": 1,
-      "nombre": "Smart TV Samsung 55\" 4K",
-      "descripcion": "Televisor inteligente 55 pulgadas 4K UHD con sistema operativo Tizen",
-      "precio": 45999,
+      "nombre": "LG UA77 55",
+      "descripcion": "",
+      "precio": 26000,
       "categoria": "televisores",
-      "imagen": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600",
-      "destacado": true
-    },
-    {
-      "id": 2,
-      "nombre": "Smart TV LG 50\" OLED",
-      "descripcion": "Televisor OLED 50 pulgadas con HDR y webOS",
-      "precio": 52999,
-      "categoria": "televisores",
-      "imagen": "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600",
-      "destacado": true
-    },
-    {
-      "id": 3,
-      "nombre": "Aire Split Inverter 12000 BTU",
-      "descripcion": "Aire acondicionado split inverter frío/calor 12000 BTU",
-      "precio": 18999,
-      "categoria": "aires",
-      "imagen": "https://images.unsplash.com/photo-1630694093867-4b947d812bf0?w=600",
-      "destacado": true
-    },
-    {
-      "id": 4,
-      "nombre": "Aire Split 24000 BTU",
-      "descripcion": "Aire acondicionado split 24000 BTU alta eficiencia",
-      "precio": 28999,
-      "categoria": "aires",
-      "imagen": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600",
-      "destacado": false
-    },
-    {
-      "id": 5,
-      "nombre": "Refrigeradora Samsung 500L",
-      "descripcion": "Refrigerador no frost 500 litros con dispensador de agua",
-      "precio": 34999,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=600",
-      "destacado": true
-    },
-    {
-      "id": 6,
-      "nombre": "Lavadora LG 16kg",
-      "descripcion": "Lavadora carga frontal 16kg con tecnología inverter",
-      "precio": 27999,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600",
-      "destacado": true
-    },
-    {
-      "id": 7,
-      "nombre": "Smart TV Sony 65\" 4K",
-      "descripcion": "Televisor 65 pulgadas 4K HDR con Android TV",
-      "precio": 68999,
-      "categoria": "televisores",
-      "imagen": "https://images.unsplash.com/photo-1461151304267-38535e780c79?w=600",
-      "destacado": false
-    },
-    {
-      "id": 8,
-      "nombre": "Aire Portátil 12000 BTU",
-      "descripcion": "Aire acondicionado portátil sin instalación",
-      "precio": 15999,
-      "categoria": "aires",
-      "imagen": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600",
-      "destacado": false
-    },
-    {
-      "id": 9,
-      "nombre": "Refrigerador Doble Puerta 450L",
-      "descripcion": "Refrigerador doble puerta 450 litros no frost",
-      "precio": 21000,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600",
-      "destacado": false,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 10,
-      "nombre": "Microondas 30L Digital",
-      "descripcion": "Horno microondas digital 30 litros",
-      "precio": 3500,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600",
-      "destacado": false,
-      "garantia": true,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 11,
-      "nombre": "Cocina Empotrada 5 Quemadores",
-      "descripcion": "Cocina empotrada de gas con 5 quemadores",
-      "precio": 18500,
-      "categoria": "electrodomesticos",
-      "imagen": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600",
-      "destacado": false,
-      "garantia": true,
+      "categoria_id": 1,
+      "imagen": "imagenes/ua77 lg 55.jpg",
+      "destacado": true,
+      "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
     }
