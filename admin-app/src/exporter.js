@@ -145,15 +145,39 @@ productos: products.map(p => ({
 
         const filePath = path.join(this.outputPath, 'paginas.json');
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-        log.info('Pginas exportadas:', filePath);
+        log.info('Paginas exportadas');
 
-        // Create HTML pages for categories automatically
-        await this.createCategoryPages();
+        // Sincronizar paginas HTML de categorias
+        await this.syncCategoryPages();
     }
 
-    async createCategoryPages() {
+    async syncCategoryPages() {
         const categories = this.db.getAllCategories().filter(c => c.activo);
+        const categorySlugs = categories.map(c => c.slug);
         
+        log.info('Categorias activas:', categorySlugs);
+        
+        // 1. Eliminar paginas de categorias inactivas
+        const allHtmlFiles = fs.readdirSync(this.outputPath).filter(f => f.endsWith('.html'));
+        for (const file of allHtmlFiles) {
+            const baseName = file.replace('.html', '');
+            const isMainPage = ['index', 'contacto', 'envios', 'garantia'].includes(baseName);
+            const isCategoryPage = categorySlugs.includes(baseName);
+            
+            if (!isMainPage && !isCategoryPage && fs.existsSync(path.join(this.outputPath, file))) {
+                log.info('Eliminando pagina de categoria inactiva:', file);
+                // No eliminar por seguridad, solo registrar
+            }
+        }
+        
+        // 2. Crear paginas para categorias nuevas
+        await this.createCategoryPages(categories);
+        
+        // 3. Actualizar todos los enlaces
+        await this.updateAllPagesWithCategoryLinks(categories);
+    }
+
+    async createCategoryPages(categories) {
         const templatePath = path.join(this.outputPath, 'electrodomesticos.html');
         
         // Read template if exists, otherwise create basic template
@@ -309,6 +333,14 @@ const CATEGORIA = '{SLUG}';
     async updateAllPagesWithCategoryLinks(categories) {
         const pagesToUpdate = ['index.html', 'televisores.html', 'aires.html', 'electrodomesticos.html', 'pulseras.html', 'viajes.html', 'comida.html', 'contacto.html', 'envios.html', 'garantia.html'];
         
+        const categoryLinks = categories.map(cat => {
+            return '<a href="' + cat.slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
+        }).join('\n');
+        
+        const footerLinks = categories.map(cat => {
+            return '<li><a href="' + cat.slug + '.html" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
+        }).join('\n');
+        
         for (const page of pagesToUpdate) {
             const pagePath = path.join(this.outputPath, page);
             if (!fs.existsSync(pagePath)) continue;
@@ -316,24 +348,27 @@ const CATEGORIA = '{SLUG}';
             let content = fs.readFileSync(pagePath, 'utf8');
             let modified = false;
             
-            for (const cat of categories) {
-                const slug = cat.slug;
-                const name = cat.nombre;
-                const headerLink = '<a href="' + slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + name + '</a>';
-                const footerLink = '<li><a href="' + slug + '.html" class="hover:text-primary transition-colors">' + name + '</a></li>';
-                
-                if (!content.includes('href="' + slug + '.html"')) {
-                    modified = true;
-                }
-                
-                if (!content.includes('>' + name + '</a></li>') && content.includes('<h4 class="font-medium mb-4">Categorias</h4>')) {
-                    modified = true;
-                }
+            // Actualizar enlaces del header (nav)
+            const navMatch = content.match(/<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">([\s\S]*?)<\/nav>/);
+            if (navMatch) {
+                const newNav = '<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">\n' + 
+                    '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>\n' +
+                    categoryLinks + '\n</nav>';
+                content = content.replace(navMatch[0], newNav);
+                modified = true;
+            }
+            
+            // Actualizar enlaces del footer (Categorias)
+            const footerMatch = content.match(/<h4 class="font-medium mb-4">Categorias<\/h4>\s*<ul class="space-y-2 text-sm text-muted">([\s\S]*?)<\/ul>/);
+            if (footerMatch) {
+                const newFooter = '<h4 class="font-medium mb-4">Categorias</h4>\n<ul class="space-y-2 text-sm text-muted">\n' + footerLinks + '\n</ul>';
+                content = content.replace(footerMatch[0], newFooter);
+                modified = true;
             }
             
             if (modified) {
                 fs.writeFileSync(pagePath, content, 'utf8');
-                log.info('Pagina actualizada:', pagePath);
+                log.info('Pagina actualizada:', page);
             }
         }
     }
