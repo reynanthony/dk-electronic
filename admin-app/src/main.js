@@ -234,7 +234,7 @@ ipcMain.handle('git:exportAndPush', async () => {
     try {
         log.info('Iniciando exportación y push...');
         
-        const exporter = new Exporter(db, path.join(__dirname, '..', 'data'));
+        const exporter = new Exporter(db, path.join(__dirname, '..', '..'));
         await exporter.exportAll();
         log.info('Datos exportados');
 
