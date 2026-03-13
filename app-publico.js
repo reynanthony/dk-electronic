@@ -268,7 +268,9 @@ const PromotionRenderer = {
             `;
             
             this.currentIndex = 0;
-            this.startRotation();
+            
+            // Wait for DOM to update then start rotation
+            setTimeout(() => this.startRotation(), 100);
         },
 
         startRotation() {
@@ -304,13 +306,13 @@ const PromotionRenderer = {
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playlist=${videoId}&rel=0`;
                     return `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onload="startRotation()"></iframe>
+                            <iframe id="promo-iframe" src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
                 } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
                     return `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay muted playsinline onloadeddata="PromotionRenderer.startRotation()">
+                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay muted playsinline>
                                 <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
                             </video>
