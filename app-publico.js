@@ -89,22 +89,26 @@
         promociones: [],
         loadError: null,
         currentVersion: 0,
+        cacheBuster: 0,
 
         async load() {
             this.loadError = null;
+            this.cacheBuster = Date.now();
             
             try {
-                const versionRes = await fetch('version.json?v=' + Date.now());
+                const versionRes = await fetch('version.json?v=' + this.cacheBuster);
                 const versionData = versionRes.ok ? await versionRes.json() : { v: 0 };
                 this.currentVersion = versionData.v;
                 
-                const dataVersion = 'v=' + versionData.v + '_' + Date.now();
+                const dataVersion = 'v=' + versionData.v + '_cb=' + this.cacheBuster;
+                
+                console.log('Cargando datos con versión:', versionData.v, 'cacheBuster:', this.cacheBuster);
                 
                 const results = await Promise.allSettled([
-                    fetch('productos.json?' + dataVersion),
-                    fetch('categorias.json?' + dataVersion),
-                    fetch('marcas.json?' + dataVersion),
-                    fetch('promociones.json?' + dataVersion)
+                    fetch('productos.json?' + dataVersion, { cache: 'no-store' }),
+                    fetch('categorias.json?' + dataVersion, { cache: 'no-store' }),
+                    fetch('marcas.json?' + dataVersion, { cache: 'no-store' }),
+                    fetch('promociones.json?' + dataVersion, { cache: 'no-store' })
                 ]);
 
                 const [productosRes, categoriasRes, marcasRes, promocionesRes] = results.map(r => r.value || { ok: false });
@@ -118,7 +122,7 @@
                     this.loadError = 'Algunos datos no pudieron cargarse';
                 }
                 
-                console.log('Datos cargados v' + versionData.v + ':', { 
+                console.log('✓ Datos cargados v' + versionData.v + ':', { 
                     productos: this.data?.productos?.length || 0, 
                     categorias: this.categorias.length,
                     marcas: this.marcas.length,

@@ -259,28 +259,43 @@ ipcMain.handle('git:pull', async () => {
 
 ipcMain.handle('git:exportAndPush', async () => {
     try {
-        log.info('Iniciando exportación y push...');
+        log.info('=== INICIANDO SYNCRONIZACIÓN COMPLETA ===');
         
-        const exporter = new Exporter(db, path.join(__dirname, '..', '..'));
+        // Ruta absoluta al directorio raíz del proyecto
+        const projectRoot = path.resolve(__dirname, '..', '..');
+        log.info('Directorio del proyecto:', projectRoot);
+        
+        // Crear exporter con ruta correcta
+        const exporter = new Exporter(db, projectRoot);
         await exporter.exportAll();
-        log.info('Datos exportados');
+        log.info('Datos exportados correctamente');
 
+        // Forzar recarga de status de git
+        await git.status();
+        
         const status = await git.status();
+        log.info('Archivos modificados:', status.files);
+        
         if (status.files.length === 0) {
             return { success: false, message: 'No hay cambios para guardar' };
         }
 
+        // Agregar todos los archivos incluyendo JSONs
         await git.add('.');
         await git.commit('Actualización de productos desde admin');
         log.info('Commit realizado');
 
         await git.push();
         log.info('Push completado');
+        
+        // Verificar push
+        const newStatus = await git.status();
+        log.info('Estado después de push:', newStatus);
 
-        return { success: true, message: 'Exportado y subido a GitHub' };
+        return { success: true, message: 'Sincronizado con GitHub (v' + status.current + ')' };
     } catch (error) {
-        log.error('Git export/push error:', error);
-        return { success: false, message: error.message };
+        log.error('ERROR en sincronización:', error);
+        return { success: false, message: 'Error: ' + error.message };
     }
 });
 

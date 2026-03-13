@@ -9,10 +9,12 @@ class Exporter {
     }
 
     async exportAll() {
-        log.info('Iniciando exportacin a:', this.outputPath);
+        log.info('=== INICIO DE EXPORTACIÓN ===');
+        log.info('Ruta de exportación:', this.outputPath);
         
         // Asegurar que existe el directorio
         if (!fs.existsSync(this.outputPath)) {
+            log.info('Creando directorio:', this.outputPath);
             fs.mkdirSync(this.outputPath, { recursive: true });
         }
 
@@ -26,7 +28,7 @@ class Exporter {
         await this.exportPromotions();
         await this.exportPages();
         
-        log.info('Exportacin completada');
+        log.info('=== EXPORTACIÓN COMPLETADA ===');
         return true;
     }
 
