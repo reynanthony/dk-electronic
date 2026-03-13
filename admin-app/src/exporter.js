@@ -299,6 +299,50 @@ const CATEGORIA = '{SLUG}';
                 log.info('Página creada:', pagePath);
             }
         }
+
+        // Update all existing pages with new category links
+        await this.updateAllPagesWithCategoryLinks(categories);
+    }
+
+    async updateAllPagesWithCategoryLinks(categories) {
+        const pagesToUpdate = ['index.html', 'televisores.html', 'aires.html', 'electrodomesticos.html', 'pulseras.html', 'viajes.html', 'comida.html', 'contacto.html', 'envios.html', 'garantia.html'];
+        
+        for (const page of pagesToUpdate) {
+            const pagePath = path.join(this.outputPath, page);
+            if (!fs.existsSync(pagePath)) continue;
+            
+            let content = fs.readFileSync(pagePath, 'utf8');
+            let modified = false;
+            
+            for (const cat of categories) {
+                const slug = cat.slug;
+                const name = cat.nombre;
+                const headerLink = `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>`;
+                const footerLink = `<li><a href="${slug}.html" class="hover:text-primary transition-colors">${name}</a></li>`;
+                
+                // Add to header nav if not exists
+                if (!content.includes(`href="${slug}.html"`)) {
+                    // Find the nav closing tag and add before it
+                    const navMatch = content.match(/<nav class="hidden md:flex items-center gap-8" aria-label="Navegación principal">([\s\S]*?)<\/nav>/);
+                    if (navMatch && !navMatch[1].includes(slug)) {
+                        content = content.replace(/(\/nav>[\s\S]*?<div class="flex items-center gap-3">[\s\S]*?<\/header>)/, `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>\n</nav>$1`);
+                        content = content.replace('</nav>\n<div class="flex items-center gap-3">', `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${name}</a>\n</nav>\n<div class="flex items-center gap-3">');
+                        modified = true;
+                    }
+                    
+                    // Add to footer categorías if not exists
+                    if (!content.includes(`>${name}</a></li>`) && content.includes('<h4 class="font-medium mb-4">Categorías</h4>')) {
+                        content = content.replace(/(<h4 class="font-medium mb-4">Categorías<\/h4>[\s\S]*?<ul class="space-y-2 text-sm text-muted">)/, `$1\n${footerLink}`);
+                        modified = true;
+                    }
+                }
+            }
+            
+            if (modified) {
+                fs.writeFileSync(pagePath, content, 'utf8');
+                log.info('Página actualizada:', pagePath);
+            }
+        }
     }
 
     async exportStore() {
