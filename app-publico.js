@@ -7,6 +7,70 @@
     'use strict';
 
     // ==========================================
+    // MÓDULO: Temas visuales por categoría
+    // ==========================================
+    const CategoryThemes = {
+        default: {
+            primary: '#c2410c',
+            primaryLight: '#ea580c',
+            gradient: 'from-orange-500 to-amber-600',
+            heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
+            heroTitle: 'Los mejores',
+            heroSubtitle: 'electrodomésticos',
+            icon: '🏠'
+        },
+        televisiores: {
+            primary: '#1e293b',
+            primaryLight: '#475569',
+            gradient: 'from-slate-800 to-slate-900',
+            heroImage: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1920&q=80',
+            heroTitle: 'Smart TVs',
+            heroSubtitle: 'de las mejores marcas',
+            icon: '📺'
+        },
+        aires: {
+            primary: '#0284c7',
+            primaryLight: '#0ea5e9',
+            gradient: 'from-sky-500 to-cyan-400',
+            heroImage: 'https://images.unsplash.com/photo-1631545806609-8e9a8f342d3a?w=1920&q=80',
+            heroTitle: 'Aires',
+            heroSubtitle: 'frescura para tu hogar',
+            icon: '❄️'
+        },
+        electrodomesticos: {
+            primary: '#c2410c',
+            primaryLight: '#ea580c',
+            gradient: 'from-orange-500 to-amber-600',
+            heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
+            heroTitle: 'Electrodomésticos',
+            heroSubtitle: 'calidad garantizada',
+            icon: '🔌'
+        },
+        pulseras: {
+            primary: '#d97706',
+            primaryLight: '#f59e0b',
+            gradient: 'from-amber-500 to-yellow-400',
+            heroImage: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=1920&q=80',
+            heroTitle: 'Pulseras',
+            heroSubtitle: 'joyería y accesorios',
+            icon: '💍'
+        },
+        viajes: {
+            primary: '#0d9488',
+            primaryLight: '#14b8a6',
+            gradient: 'from-teal-500 to-emerald-400',
+            heroImage: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=80',
+            heroTitle: 'Viajes',
+            heroSubtitle: 'experiencias únicas',
+            icon: '✈️'
+        }
+    };
+
+    function getCategoryTheme(categorySlug) {
+        return CategoryThemes[categorySlug] || CategoryThemes.default;
+    }
+
+    // ==========================================
     // MÓDULO: DataLoader - Carga datos del servidor
     // ==========================================
     const DataLoader = {
@@ -418,6 +482,8 @@
                 if (CATEGORIA === 'garantia') {
                     WarrantyRenderer.render();
                 } else {
+                    // Add hero banner for category pages
+                    this.renderCategoryHero(CATEGORIA);
                     const filtered = DataLoader.getByCategory(CATEGORIA);
                     ProductRenderer.render(filtered);
                 }
@@ -429,6 +495,45 @@
                 PromotionRenderer.render();
                 NavRenderer.render();
             }
+        },
+
+        renderCategoryHero(categorySlug) {
+            const theme = getCategoryTheme(categorySlug);
+            
+            // Get category name from loaded categories
+            const categories = DataLoader.getCategoriesFull();
+            const cat = categories.find(c => c.slug === categorySlug);
+            const categoryName = cat ? cat.nombre : categorySlug;
+            
+            // Create or update hero banner
+            let hero = document.getElementById('category-hero');
+            if (!hero) {
+                hero = document.createElement('section');
+                hero.id = 'category-hero';
+                const main = document.querySelector('main');
+                if (main) main.prepend(hero);
+            }
+            
+            hero.className = `relative h-64 md:h-80 overflow-hidden`;
+            hero.setAttribute('aria-label', categoryName);
+            
+            hero.innerHTML = `
+                <div class="absolute inset-0">
+                    <img src="${theme.heroImage}" alt="${categoryName}" class="w-full h-full object-cover" loading="eager">
+                    <div class="absolute inset-0 bg-gradient-to-r ${theme.gradient} opacity-80"></div>
+                </div>
+                <div class="relative h-full flex items-center">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                        <div class="flex items-center gap-4">
+                            <span class="text-5xl">${theme.icon}</span>
+                            <div>
+                                <h1 class="text-4xl md:text-5xl font-bold text-white">${theme.heroTitle}</h1>
+                                <p class="text-xl text-white/90">${theme.heroSubtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
     };
 
