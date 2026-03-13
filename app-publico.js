@@ -245,6 +245,8 @@
     };
 
 const PromotionRenderer = {
+        currentIndex: 0,
+        
         render() {
             const container = document.getElementById('promo-container');
             if (!container) return;
@@ -256,7 +258,53 @@ const PromotionRenderer = {
                 return;
             }
 
-            container.innerHTML = promotions.map(promo => this.renderPromotion(promo)).join('');
+            // Only show one promotion at a time
+            container.innerHTML = `
+                <div id="promo-single">
+                    ${this.renderPromotion(promotions[0])}
+                </div>
+            `;
+            
+            this.currentIndex = 0;
+            this.startRotation(promotions);
+        },
+
+        startRotation(promotions) {
+            // Wait for current video to end, then show next
+            const checkVideo = () => {
+                const video = document.querySelector('#promo-single video');
+                if (video) {
+                    video.onended = () => {
+                        this.nextPromotion(promotions);
+                    };
+                } else {
+                    // If no video or iframe, wait 10 seconds then rotate
+                    setTimeout(() => {
+                        this.nextPromotion(promotions);
+                    }, 10000);
+                }
+            };
+            
+            checkVideo();
+            
+            // Also listen for loadedmetadata in case video wasn't ready
+            const video = document.querySelector('#promo-single video');
+            if (video) {
+                video.addEventListener('loadedmetadata', () => {
+                    video.onended = () => {
+                        this.nextPromotion(promotions);
+                    };
+                });
+            }
+        },
+
+        nextPromotion(promotions) {
+            this.currentIndex = (this.currentIndex + 1) % promotions.length;
+            const container = document.getElementById('promo-single');
+            if (container) {
+                container.innerHTML = this.renderPromotion(promotions[this.currentIndex]);
+            }
+            this.startRotation(promotions);
         },
 
         renderPromotion(promo) {
@@ -273,14 +321,14 @@ const PromotionRenderer = {
                     }
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
                     return `
-                        <div class="relative w-full mb-4" style="padding-bottom: 56.25%;">
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
                             <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
                 } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
                     return `
-                        <div class="relative w-full mb-4" style="padding-bottom: 56.25%;">
-                            <video class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
+                            <video id="promo-video" class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
                                 <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
                             </video>
@@ -289,7 +337,7 @@ const PromotionRenderer = {
                 }
             } else if (promo.imagen) {
                 return `
-                    <div class="w-full h-64 md:h-80 relative mb-4">
+                    <div class="w-full h-64 md:h-80 relative">
                         <img src="${promo.imagen}" alt="${promo.titulo}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                             <div class="p-6 text-white">
