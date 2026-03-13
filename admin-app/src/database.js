@@ -26,6 +26,7 @@ class DKDatabase {
         }
         
         this.createTables();
+        this.migrate();
         this.seedDefaultData();
         this.save();
         
@@ -131,6 +132,18 @@ class DKDatabase {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
+    }
+
+    migrate() {
+        try {
+            this.db.run("ALTER TABLE categories ADD COLUMN hero_imagen TEXT DEFAULT ''");
+        } catch(e) {}
+        try {
+            this.db.run("ALTER TABLE categories ADD COLUMN hero_titulo TEXT DEFAULT ''");
+        } catch(e) {}
+        try {
+            this.db.run("ALTER TABLE categories ADD COLUMN hero_subtitulo TEXT DEFAULT ''");
+        } catch(e) {}
     }
 
     seedDefaultData() {
