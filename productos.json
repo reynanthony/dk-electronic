@@ -42,6 +42,19 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 5,
+      "nombre": "pulsera indu",
+      "descripcion": "",
+      "precio": 800,
+      "categoria": "pulseras",
+      "categoria_id": 4,
+      "imagen": "imagenes/61Q81uh0MFL._AC_UL600_SR600,600_.jpg",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
