@@ -3,28 +3,28 @@
     "id": 1,
     "nombre": "Televisores",
     "slug": "televisores",
-    "imagen": "",
+    "imagen": "imagenes/1200_900.jpeg",
     "orden": 1
   },
   {
     "id": 2,
     "nombre": "Aires Acondicionados",
     "slug": "aires",
-    "imagen": "",
+    "imagen": "imagenes/aire.jpg",
     "orden": 2
   },
   {
     "id": 3,
     "nombre": "Electrodomésticos",
     "slug": "electrodomesticos",
-    "imagen": "",
+    "imagen": "imagenes/cuando-comprar-electrodomesticos.webp",
     "orden": 3
   },
   {
     "id": 4,
     "nombre": "Pulseras",
     "slug": "pulseras",
-    "imagen": "",
+    "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
     "orden": 4
   }
 ]
