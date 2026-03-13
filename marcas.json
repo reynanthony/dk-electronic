@@ -3,35 +3,30 @@
     "id": 1,
     "nombre": "Samsung",
     "logo_url": "imagenes/samsung.jpg",
-    "orden": 1,
-    "activo": true
+    "orden": 1
   },
   {
     "id": 2,
     "nombre": "LG",
     "logo_url": "imagenes/LG-Logo.webp",
-    "orden": 2,
-    "activo": true
+    "orden": 2
   },
   {
     "id": 3,
     "nombre": "Sony",
     "logo_url": "imagenes/sony_logo_icon_181261.png",
-    "orden": 3,
-    "activo": true
+    "orden": 3
   },
   {
     "id": 4,
     "nombre": "Midea",
     "logo_url": "imagenes/Midea-logo.png",
-    "orden": 4,
-    "activo": true
+    "orden": 4
   },
   {
     "id": 5,
     "nombre": "Whirlpool",
     "logo_url": "imagenes/whirlpool-logo-0.png",
-    "orden": 5,
-    "activo": true
+    "orden": 5
   }
 ]

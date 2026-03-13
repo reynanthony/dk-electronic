@@ -88,20 +88,23 @@
         marcas: [],
         promociones: [],
         loadError: null,
+        currentVersion: 0,
 
         async load() {
-            const version = Date.now();
             this.loadError = null;
             
             try {
-                const versionRes = await fetch(`version.json?v=${version}`);
+                const versionRes = await fetch('version.json?v=' + Date.now());
                 const versionData = versionRes.ok ? await versionRes.json() : { v: 0 };
+                this.currentVersion = versionData.v;
+                
+                const dataVersion = 'v=' + versionData.v + '_' + Date.now();
                 
                 const results = await Promise.allSettled([
-                    fetch(`productos.json?v=${versionData.v}`),
-                    fetch(`categorias.json?v=${versionData.v}`),
-                    fetch(`marcas.json?v=${versionData.v}`),
-                    fetch(`promociones.json?v=${versionData.v}`)
+                    fetch('productos.json?' + dataVersion),
+                    fetch('categorias.json?' + dataVersion),
+                    fetch('marcas.json?' + dataVersion),
+                    fetch('promociones.json?' + dataVersion)
                 ]);
 
                 const [productosRes, categoriasRes, marcasRes, promocionesRes] = results.map(r => r.value || { ok: false });
@@ -115,7 +118,7 @@
                     this.loadError = 'Algunos datos no pudieron cargarse';
                 }
                 
-                console.log('Datos cargados:', { 
+                console.log('Datos cargados v' + versionData.v + ':', { 
                     productos: this.data?.productos?.length || 0, 
                     categorias: this.categorias.length,
                     marcas: this.marcas.length,
