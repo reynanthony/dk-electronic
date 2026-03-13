@@ -102,11 +102,7 @@
     // MÓDULO: ProductRenderer - Renderiza productos
     // ==========================================
     const CategoryRenderer = {
-        defaultImages: {
-            'televisores': 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&q=80',
-            'aires': 'https://images.unsplash.com/photo-1631545806609-8da4a5c5d9b0?w=600&q=80',
-            'electrodomesticos': 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&q=80'
-        },
+        defaultImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
         render() {
             const container = document.getElementById('categorias-container');
             if (!container) return;
@@ -122,7 +118,7 @@
                 const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
                 const name = cat.nombre;
                 const desc = 'Ver productos';
-                const img = cat.imagen || this.defaultImages[slug] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80';
+                const img = cat.imagen || this.defaultImage;
                 return `<a href="${slug}.html" class="group relative rounded-2xl overflow-hidden">
                     <img src="${img}" alt="${name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
