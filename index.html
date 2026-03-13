@@ -265,15 +265,10 @@
 </footer>
 
 <script src="app-publico.js?v=5"></script>
+<!-- Service Worker deshabilitado temporalmente
 <script>
-    // Registrar Service Worker para PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('SW registrado'))
-                .catch(err => console.log('SW error:', err));
-        });
-    }
+    // Service Worker deshabilitado
 </script>
+-->
 </body>
 </html>
