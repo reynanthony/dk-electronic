@@ -16,7 +16,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
             heroTitle: 'Los mejores',
-            heroSubtitle: 'electrodomésticos'
+            heroSubtitle: 'electrodomésticos',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V-10a6.75 6.75 0 00-6.75-6.75h-.875A6.75 6.75 0 003.75 3.75v12.5z" /></svg>'
         },
         televisiores: {
             primary: '#1e293b',
@@ -24,7 +25,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1920&q=80',
             heroTitle: 'Smart TVs',
-            heroSubtitle: 'de las mejores marcas'
+            heroSubtitle: 'de las mejores marcas',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.15c0 .621.504 1.125 1.125 1.125z" /></svg>'
         },
         aires: {
             primary: '#0284c7',
@@ -32,7 +34,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1631545806609-8e9a8f342d3a?w=1920&q=80',
             heroTitle: 'Aires',
-            heroSubtitle: 'frescura para tu hogar'
+            heroSubtitle: 'frescura para tu hogar',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>'
         },
         electrodomesticos: {
             primary: '#c2410c',
@@ -40,7 +43,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80',
             heroTitle: 'Electrodomésticos',
-            heroSubtitle: 'calidad garantizada'
+            heroSubtitle: 'calidad garantizada',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V-10a6.75 6.75 0 00-6.75-6.75h-.875A6.75 6.75 0 003.75 3.75v12.5z" /></svg>'
         },
         pulseras: {
             primary: '#d97706',
@@ -48,7 +52,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=1920&q=80',
             heroTitle: 'Pulseras',
-            heroSubtitle: 'joyería y accesorios'
+            heroSubtitle: 'joyería y accesorios',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>'
         },
         viajes: {
             primary: '#0d9488',
@@ -56,7 +61,8 @@
             gradient: 'from-black/70 via-black/50 to-black/30',
             heroImage: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=80',
             heroTitle: 'Viajes',
-            heroSubtitle: 'experiencias únicas'
+            heroSubtitle: 'experiencias únicas',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>'
         }
     };
 
@@ -177,12 +183,17 @@
                 const name = cat.nombre;
                 const desc = 'Ver productos';
                 const img = cat.imagen || this.defaultImage;
+                const theme = getCategoryTheme(slug);
+                
                 return `<a href="${slug}.html" class="group relative rounded-2xl overflow-hidden">
                     <img src="${img}" alt="${name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-5">
-                        <h3 class="text-xl font-bold text-white">${name}</h3>
-                        <p class="text-white/80 text-sm">${desc}</p>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-5 flex items-end gap-3">
+                        <div class="text-white">${theme.icon}</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">${name}</h3>
+                            <p class="text-white/80 text-sm">${desc}</p>
+                        </div>
                     </div>
                 </a>`;
             }).join('');
