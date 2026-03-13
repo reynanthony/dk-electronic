@@ -245,6 +245,9 @@
     };
 
 const PromotionRenderer = {
+        currentIndex: 0,
+        interval: null,
+        
         render() {
             const container = document.getElementById('promo-container');
             if (!container) return;
@@ -256,14 +259,55 @@ const PromotionRenderer = {
                 return;
             }
 
-            container.innerHTML = promotions.map(promo => this.renderPromotion(promo)).join('');
+            if (promotions.length === 1) {
+                container.innerHTML = this.renderPromotion(promotions[0]);
+                return;
+            }
+
+            // Carousel for multiple promotions
+            container.innerHTML = `
+                <div class="relative w-full" id="promo-carousel">
+                    ${promotions.map((p, i) => this.renderPromotion(p, i === 0)).join('')}
+                </div>
+                <div class="flex justify-center gap-2 mt-4" id="promo-dots">
+                    ${promotions.map((_, i) => `<button class="w-2 h-2 rounded-full bg-gray-300 promo-dot" data-index="${i}"></button>`).join('')}
+                </div>
+            `;
+            
+            this.currentIndex = 0;
+            this.showPromotion(0);
+            
+            // Auto-rotate every 8 seconds
+            if (this.interval) clearInterval(this.interval);
+            this.interval = setInterval(() => {
+                this.currentIndex = (this.currentIndex + 1) % promotions.length;
+                this.showPromotion(this.currentIndex);
+            }, 8000);
         },
 
-        renderPromotion(promo) {
+        showPromotion(index) {
+            const carousel = document.getElementById('promo-carousel');
+            const dots = document.querySelectorAll('.promo-dot');
+            if (!carousel) return;
+            
+            const promotions = carousel.children;
+            for (let i = 0; i < promotions.length; i++) {
+                promotions[i].style.display = i === index ? 'block' : 'none';
+            }
+            
+            dots.forEach((dot, i) => {
+                dot.className = `w-2 h-2 rounded-full promo-dot transition-colors ${i === index ? 'bg-primary' : 'bg-gray-300'}`;
+            });
+            
+            this.currentIndex = index;
+        },
+
+        renderPromotion(promo, isActive = true) {
+            let content = '';
+            
             if (promo.video_url) {
                 let videoUrl = promo.video_url;
                 
-                // YouTube video
                 if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
                     let videoId = '';
                     if (videoUrl.includes('v=')) {
@@ -273,16 +317,14 @@ const PromotionRenderer = {
                         videoId = videoUrl.split('/').pop();
                     }
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
-                    return `
-                        <div class="relative w-full mb-8" style="padding-bottom: 56.25%;">
+                    content = `
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
                             <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
-                } 
-                // Local video file
-                else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
-                    return `
-                        <div class="relative w-full mb-8" style="padding-bottom: 56.25%;">
+                } else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
+                    content = `
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
                             <video class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
                                 <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
@@ -291,8 +333,8 @@ const PromotionRenderer = {
                     `;
                 }
             } else if (promo.imagen) {
-                return `
-                    <div class="w-full h-64 md:h-80 relative mb-8">
+                content = `
+                    <div class="w-full h-64 md:h-80 relative">
                         <img src="${promo.imagen}" alt="${promo.titulo}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                             <div class="p-6 text-white">
@@ -303,7 +345,8 @@ const PromotionRenderer = {
                     </div>
                 `;
             }
-            return '';
+            
+            return `<div class="promo-slide" style="display: ${isActive ? 'block' : 'none'};">${content}</div>`;
         }
     };
 
