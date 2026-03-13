@@ -153,7 +153,7 @@ class DKDatabase {
         const promotionCount = this.db.exec('SELECT COUNT(*) as count FROM promotions')[0]?.values[0][0] || 0;
         
         if (promotionCount === 0) {
-            this.db.run("INSERT INTO promotions (titulo, descripcion, video_url, activo, fecha_inicio, fecha_fin) VALUES ('Promoción Especial', 'Gran descuento en toda la tienda', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1, '2026-01-01', '2026-12-31')");
+            this.db.run("INSERT INTO promotions (titulo, descripcion, video_url, activo, fecha_inicio, fecha_fin) VALUES ('Promoción Especial', 'Gran descuento en toda la tienda', '', 1, '2026-01-01', '2026-12-31')");
         }
 
         const settingsCount = this.db.exec('SELECT COUNT(*) as count FROM site_settings')[0]?.values[0][0] || 0;
