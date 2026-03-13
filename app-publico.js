@@ -306,17 +306,24 @@
 
     const NavRenderer = {
         render() {
-            const nav = document.getElementById('main-nav');
-            if (!nav) return;
+            // Find all nav elements in header
+            const navs = document.querySelectorAll('header nav');
+            if (navs.length === 0) return;
 
             const categories = DataLoader.getCategoriesFull();
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
             const links = categories.map(cat => {
                 const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
-                return `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors">${cat.nombre}</a>`;
+                const isActive = (slug + '.html') === currentPage;
+                return `<a href="${slug}.html" class="text-sm font-medium hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}">${cat.nombre}</a>`;
             }).join('');
 
-            nav.innerHTML = `<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>` + links;
+            const navContent = `<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors ${currentPage === 'index.html' ? 'text-primary' : ''}">Inicio</a>` + links;
+
+            navs.forEach(nav => {
+                nav.innerHTML = navContent;
+            });
         }
     };
 
