@@ -197,11 +197,10 @@
                 } 
                 // Local video file
                 else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
-                    const cacheBuster = Date.now();
                     container.innerHTML = `
                         <div class="relative w-full" style="padding-bottom: 56.25%;">
                             <video class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
-                                <source src="${videoUrl}?v=${cacheBuster}" type="video/mp4">
+                                <source src="${videoUrl}" type="video/mp4">
                                 Tu navegador no soporta videos.
                             </video>
                         </div>
