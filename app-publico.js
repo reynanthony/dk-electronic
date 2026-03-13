@@ -272,20 +272,30 @@ const PromotionRenderer = {
             setTimeout(() => this.startRotation(), 100);
         },
 
-        // Wait for DOM and video to be ready before starting rotation
-            setTimeout(() => {
-                const video = container?.querySelector('video');
-                if (video) {
-                    video.play().catch(() => {}); // Ensure video plays
-                    if (video.duration && isFinite(video.duration)) {
-                        const duration = Math.ceil(video.duration) * 1000 + 1000;
-                        setTimeout(() => this.nextPromotion(), duration);
-                        return;
-                    }
-                }
-                // Default fallback
+        startRotation() {
+            const container = document.getElementById('promo-single');
+            if (!container) return;
+            
+            // Check for video element
+            const video = container.querySelector('video');
+            if (video && video.duration && isFinite(video.duration)) {
+                // Use actual video duration + 1 second buffer
+                const duration = Math.ceil(video.duration) * 1000 + 1000;
+                setTimeout(() => this.nextPromotion(), duration);
+            } else {
+                // For YouTube or unknown duration, use 30 seconds default
                 setTimeout(() => this.nextPromotion(), 30000);
-            }, 500);
+            }
+        },
+
+        nextPromotion() {
+            this.currentIndex = (this.currentIndex + 1) % this.promotions.length;
+            const container = document.getElementById('promo-single');
+            if (container) {
+                container.innerHTML = this.renderPromotion(this.promotions[this.currentIndex]);
+            }
+            // Wait for DOM and video to be ready before starting rotation
+            setTimeout(() => this.startRotation(), 500);
         },
 
         renderPromotion(promo) {
