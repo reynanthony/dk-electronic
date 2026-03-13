@@ -6,12 +6,13 @@
   "productos": [
     {
       "id": 1,
-      "nombre": "prueba",
-      "descripcion": "probando esta funcion",
-      "precio": 800,
-      "categoria": "pulceras",
-      "imagen": "",
-      "destacado": false,
+      "nombre": "LG UA77 55",
+      "descripcion": "",
+      "precio": 26000,
+      "categoria": "televisores",
+      "categoria_id": 1,
+      "imagen": "imagenes/ua77 lg 55.jpg",
+      "destacado": true,
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
