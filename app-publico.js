@@ -19,7 +19,7 @@
             heroSubtitle: 'electrodomésticos',
             icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V-10a6.75 6.75 0 00-6.75-6.75h-.875A6.75 6.75 0 003.75 3.75v12.5z" /></svg>'
         },
-        televisiores: {
+        televisores: {
             primary: '#1e293b',
             primaryLight: '#475569',
             gradient: 'from-black/70 via-black/50 to-black/30',
@@ -87,42 +87,58 @@
         categorias: [],
         marcas: [],
         promociones: [],
+        loadError: null,
 
         async load() {
             const version = Date.now();
+            this.loadError = null;
             
             try {
-                // First, check version to ensure we have latest data
                 const versionRes = await fetch(`version.json?v=${version}`);
                 const versionData = versionRes.ok ? await versionRes.json() : { v: 0 };
                 
-                const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
+                const results = await Promise.allSettled([
                     fetch(`productos.json?v=${versionData.v}`),
                     fetch(`categorias.json?v=${versionData.v}`),
                     fetch(`marcas.json?v=${versionData.v}`),
                     fetch(`promociones.json?v=${versionData.v}`)
                 ]);
 
-                this.data = productosRes.ok ? await productosRes.json() : { productos: [] };
+                const [productosRes, categoriasRes, marcasRes, promocionesRes] = results.map(r => r.value || { ok: false });
+                
+                this.data = productosRes.ok ? await productosRes.json() : { productos: [], tienda: {} };
                 this.categorias = categoriasRes.ok ? await categoriasRes.json() : [];
                 this.marcas = marcasRes.ok ? await marcasRes.json() : [];
                 this.promociones = promocionesRes.ok ? await promocionesRes.json() : [];
                 
+                if (!productosRes.ok || !categoriasRes.ok) {
+                    this.loadError = 'Algunos datos no pudieron cargarse';
+                }
+                
                 console.log('Datos cargados:', { 
-                    productos: this.data?.productos?.length, 
+                    productos: this.data?.productos?.length || 0, 
                     categorias: this.categorias.length,
                     marcas: this.marcas.length,
                     promociones: this.promociones.length 
                 });
             } catch (error) {
                 console.error('Error cargando datos:', error);
-                this.data = { productos: [] };
+                this.loadError = 'Error de conexión';
+                this.data = { productos: [], tienda: {} };
                 this.categorias = [];
                 this.marcas = [];
                 this.promociones = [];
             }
             
             return this.data;
+        },
+
+        hasError() {
+            return this.loadError !== null;
+        },
+
+        getErrorMessage() {
+            return this.loadError || '';
         },
 
         getProducts() {
@@ -187,7 +203,7 @@
             const categories = DataLoader.getCategoriesFull();
 
             if (categories.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-500">No hay categorías disponibles</p>';
+                container.innerHTML = '<div class="col-span-full text-center py-12"><svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg><p class="text-gray-500 text-lg">No hay categorías disponibles</p></div>';
                 return;
             }
 
@@ -221,14 +237,14 @@
             const brands = DataLoader.getBrands();
 
             if (brands.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-4">No hay marcas disponibles</p>';
+                container.innerHTML = '';
                 return;
             }
 
             const brandsItems = brands.map(brand => {
                 const logo = brand.logo_url || '';
                 if (logo) {
-                    return `<div class="flex-shrink-0 mx-10"><img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain" loading="lazy"></div>`;
+                    return `<div class="flex-shrink-0 mx-10"><img src="${logo}" alt="${brand.nombre}" class="h-20 object-contain" loading="lazy" onerror="this.style.display='none'"></div>`;
                 }
                 return `<div class="flex-shrink-0 mx-10"><span class="text-2xl font-medium text-gray-600">${brand.nombre}</span></div>`;
             }).join('');
@@ -343,7 +359,7 @@ const PromotionRenderer = {
             if (!container) return;
 
             if (!list || list.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-500">No hay productos disponibles</p>';
+                container.innerHTML = '<div class="col-span-full text-center py-12"><svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><p class="text-gray-500 text-lg">No hay productos disponibles</p><p class="text-gray-400 text-sm mt-1">Pronto tendremos nuevos productos</p></div>';
                 return;
             }
 
@@ -501,13 +517,25 @@ const PromotionRenderer = {
                 console.log('Renderizando...');
                 this.render();
                 console.log('Renderizado completo');
+                
+                if (DataLoader.hasError()) {
+                    this.showErrorBanner(DataLoader.getErrorMessage());
+                }
             } catch (e) {
                 console.error('Error initializing app:', e);
-                const container = document.getElementById('productos');
-                if (container) {
-                    container.innerHTML = '<p class="col-span-full text-center py-10 text-red-500">Error al cargar los productos. Por favor recarga la página.</p>';
-                }
+                this.showErrorBanner('Error de conexión. Por favor recarga la página.');
             }
+        },
+
+        showErrorBanner(message) {
+            const existing = document.getElementById('error-banner');
+            if (existing) existing.remove();
+            
+            const banner = document.createElement('div');
+            banner.id = 'error-banner';
+            banner.className = 'bg-amber-50 border-b border-amber-200 text-amber-800 px-4 py-3 text-center text-sm';
+            banner.innerHTML = `<div class="max-w-7xl mx-auto flex items-center justify-center gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>${message}</span></div>`;
+            document.body.insertBefore(banner, document.body.firstChild);
         },
 
         render() {
