@@ -247,7 +247,6 @@
 const PromotionRenderer = {
         currentIndex: 0,
         promotions: [],
-        timer: null,
         
         render() {
             const container = document.getElementById('promo-container');
@@ -274,12 +273,19 @@ const PromotionRenderer = {
         },
 
         startRotation() {
-            // Use timer-based rotation since we can't control YouTube iframes
-            if (this.timer) clearTimeout(this.timer);
+            const container = document.getElementById('promo-single');
+            if (!container) return;
             
-            this.timer = setTimeout(() => {
-                this.nextPromotion();
-            }, 15000); // Rotate every 15 seconds
+            // Check for video element
+            const video = container.querySelector('video');
+            if (video && video.duration && isFinite(video.duration)) {
+                // Use actual video duration + 1 second buffer
+                const duration = Math.ceil(video.duration) * 1000 + 1000;
+                setTimeout(() => this.nextPromotion(), duration);
+            } else {
+                // For YouTube or unknown duration, use 30 seconds default
+                setTimeout(() => this.nextPromotion(), 30000);
+            }
         },
 
         nextPromotion() {
@@ -288,7 +294,7 @@ const PromotionRenderer = {
             if (container) {
                 container.innerHTML = this.renderPromotion(this.promotions[this.currentIndex]);
             }
-            this.startRotation();
+            setTimeout(() => this.startRotation(), 100);
         },
 
         renderPromotion(promo) {
