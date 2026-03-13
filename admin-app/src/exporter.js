@@ -16,6 +16,9 @@ class Exporter {
             fs.mkdirSync(this.outputPath, { recursive: true });
         }
 
+        // Update version number for cache busting
+        await this.exportVersion();
+        
         await this.exportProducts();
         await this.exportStore();
         await this.exportCategories();
@@ -25,6 +28,23 @@ class Exporter {
         
         log.info('Exportación completada');
         return true;
+    }
+
+    async exportVersion() {
+        let version = 1;
+        const versionPath = path.join(this.outputPath, 'version.json');
+        
+        if (fs.existsSync(versionPath)) {
+            try {
+                const data = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+                version = (data.v || 0) + 1;
+            } catch(e) {
+                version = 1;
+            }
+        }
+        
+        fs.writeFileSync(versionPath, JSON.stringify({ v: version }, null, 2), 'utf8');
+        log.info('Version exportada:', version);
     }
 
     async exportProducts() {

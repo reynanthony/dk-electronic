@@ -80,14 +80,18 @@
         promociones: [],
 
         async load() {
-            const timestamp = Date.now();
+            const version = Date.now();
             
             try {
+                // First, check version to ensure we have latest data
+                const versionRes = await fetch(`version.json?v=${version}`);
+                const versionData = versionRes.ok ? await versionRes.json() : { v: 0 };
+                
                 const [productosRes, categoriasRes, marcasRes, promocionesRes] = await Promise.all([
-                    fetch(`productos.json?_=${timestamp}`),
-                    fetch(`categorias.json?_=${timestamp}`),
-                    fetch(`marcas.json?_=${timestamp}`),
-                    fetch(`promociones.json?_=${timestamp}`)
+                    fetch(`productos.json?v=${versionData.v}`),
+                    fetch(`categorias.json?v=${versionData.v}`),
+                    fetch(`marcas.json?v=${versionData.v}`),
+                    fetch(`promociones.json?v=${versionData.v}`)
                 ]);
 
                 this.data = productosRes.ok ? await productosRes.json() : { productos: [] };

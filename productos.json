@@ -29,6 +29,19 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 3,
+      "nombre": "Model:   WRX735SDHZ  36-Inch Wide French Door Refrigerator - 25 cu. ft.",
+      "descripcion": "",
+      "precio": 46000,
+      "categoria": "electrodomesticos",
+      "categoria_id": 3,
+      "imagen": "imagenes/3324496-1.jpg",
+      "destacado": false,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
