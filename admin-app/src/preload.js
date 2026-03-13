@@ -58,6 +58,11 @@ contextBridge.exposeInMainWorld('api', {
         select: () => ipcRenderer.invoke('image:select')
     },
 
+    // Videos
+    video: {
+        select: () => ipcRenderer.invoke('video:select')
+    },
+
     // Git
     git: {
         status: () => ipcRenderer.invoke('git:status'),

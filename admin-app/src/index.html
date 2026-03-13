@@ -1554,8 +1554,9 @@
                     <button type="button" class="btn btn-secondary mt-2" onclick="selectImage('promImagen')">Seleccionar imagen</button>
                 </div>
                 <div class="form-group">
-                    <label>Video (URL de YouTube o video)</label>
+                    <label>Video (URL de YouTube o archivo de video)</label>
                     <input type="text" id="promVideo" value="${promotion?.video_url || ''}" placeholder="https://www.youtube.com/watch?v=...">
+                    <button type="button" class="btn btn-secondary mt-2" onclick="selectVideo('promVideo')">Seleccionar video</button>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1869,6 +1870,14 @@
             const imagePath = await window.api.image.select();
             if (imagePath) {
                 document.getElementById(inputId).value = imagePath;
+            }
+        }
+
+        // Select Video
+        async function selectVideo(inputId) {
+            const videoPath = await window.api.video.select();
+            if (videoPath) {
+                document.getElementById(inputId).value = videoPath;
             }
         }
 

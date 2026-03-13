@@ -186,6 +186,33 @@ ipcMain.handle('image:select', async () => {
     return 'imagenes/' + fileName;
 });
 
+ipcMain.handle('video:select', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+        filters: [
+            { name: 'Videos', extensions: ['mp4', 'webm', 'ogg', 'mov', 'avi'] }
+        ],
+        defaultPath: path.join(__dirname, '..', '..', 'videos')
+    });
+    
+    if (!result.filePaths[0]) return null;
+    
+    const sourcePath = result.filePaths[0];
+    const fileName = path.basename(sourcePath);
+    const videosFolder = path.join(__dirname, '..', '..', 'videos');
+    const destPath = path.join(videosFolder, fileName);
+    
+    if (!fs.existsSync(videosFolder)) {
+        fs.mkdirSync(videosFolder, { recursive: true });
+    }
+    
+    if (sourcePath !== destPath) {
+        fs.copyFileSync(sourcePath, destPath);
+    }
+    
+    return 'videos/' + fileName;
+});
+
 // IPC Handlers - Git
 ipcMain.handle('git:status', async () => {
     try {

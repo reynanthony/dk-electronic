@@ -178,9 +178,10 @@
             
             if (promo.video_url) {
                 let videoUrl = promo.video_url;
-                let videoId = '';
                 
+                // YouTube video
                 if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                    let videoId = '';
                     if (videoUrl.includes('v=')) {
                         const params = videoUrl.split('v=')[1];
                         videoId = params.split('&')[0];
@@ -188,13 +189,23 @@
                         videoId = videoUrl.split('/').pop();
                     }
                     videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
+                    container.innerHTML = `
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
+                            <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    `;
+                } 
+                // Local video file
+                else if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi)$/i)) {
+                    container.innerHTML = `
+                        <div class="relative w-full" style="padding-bottom: 56.25%;">
+                            <video class="absolute top-0 left-0 w-full h-full" controls autoplay loop muted playsinline>
+                                <source src="${videoUrl}" type="video/mp4">
+                                Tu navegador no soporta videos.
+                            </video>
+                        </div>
+                    `;
                 }
-                
-                container.innerHTML = `
-                    <div class="relative w-full" style="padding-bottom: 56.25%;">
-                        <iframe src="${videoUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                `;
             } else if (promo.imagen) {
                 container.innerHTML = `
                     <div class="w-full h-64 md:h-80 relative">
