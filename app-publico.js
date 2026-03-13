@@ -187,7 +187,7 @@
                     } else {
                         videoId = videoUrl.split('/').pop();
                     }
-                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                    videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0`;
                 }
                 
                 container.innerHTML = `

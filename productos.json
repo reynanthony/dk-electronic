@@ -16,6 +16,19 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 2,
+      "nombre": "11900 Btu/h WindFree™ Aire acondicionado de pared con Bespoke AI con AI Energy Mode",
+      "descripcion": "alto rendimiento",
+      "precio": 25500,
+      "categoria": "airesacondicionados",
+      "categoria_id": 2,
+      "imagen": "imagenes/aire samsung.jpg",
+      "destacado": true,
+      "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
