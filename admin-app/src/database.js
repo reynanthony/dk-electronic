@@ -297,7 +297,8 @@ class DKDatabase {
     }
 
     updateBrand(id, brand) {
-        this.db.run('UPDATE brands SET nombre=?, logo_url=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [brand.nombre, brand.logo_url || '', brand.activo ? 1 : 0, brand.orden || 0, id]);
+        this.db.run('UPDATE brands SET nombre=?, logo_url=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [brand.nombre, brand.logo_url || '', brand.activo ? 1 : 0, brand.orden || 0, id]
+        );
         this.save();
         return { id, ...brand };
     }
