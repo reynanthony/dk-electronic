@@ -1456,11 +1456,24 @@
         }
 
         async function deleteCategory(id) {
-            if (confirm('¿Estás seguro de que deseas eliminar esta categoría?')) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta categoría? Esto también eliminará todos los productos asociados.')) {
                 try {
+                    // Get category info first
+                    const category = categories.find(c => c.id === id);
+                    if (category) {
+                        // Delete all products with this category_id
+                        const productsToDelete = products.filter(p => p.categoria_id === id);
+                        for (const p of productsToDelete) {
+                            await window.api.products.delete(p.id);
+                        }
+                        if (productsToDelete.length > 0) {
+                            showToast(productsToDelete.length + ' producto(s) eliminado(s)', 'success');
+                        }
+                    }
                     await window.api.categories.delete(id);
                     showToast('Categoría eliminada correctamente', 'success');
                     await loadCategories();
+                    await loadProducts();
                 } catch (error) {
                     showToast('Error al eliminar: ' + error.message, 'error');
                 }

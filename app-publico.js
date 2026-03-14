@@ -182,6 +182,48 @@
     };
 
     // ==========================================
+    // MÓDULO: DynamicNav - Navegación dinámica desde JSON
+    // ==========================================
+    const DynamicNav = {
+        async render() {
+            const navContainer = document.getElementById('main-nav');
+            if (!navContainer) return;
+            
+            try {
+                const categories = DataLoader.getCategoriesFull();
+                const isHome = !document.getElementById('productos')?.dataset?.category;
+                
+                let html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
+                html += categories.map(cat => {
+                    const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
+                    return '<a href="categoria.html?slug=' + slug + '" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
+                }).join('');
+                
+                navContainer.innerHTML = html;
+            } catch(e) {
+                console.error('Error rendering nav:', e);
+            }
+        },
+
+        async renderFooter() {
+            const footerContainer = document.getElementById('footer-categorias');
+            if (!footerContainer) return;
+            
+            try {
+                const categories = DataLoader.getCategoriesFull();
+                const html = categories.map(cat => {
+                    const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
+                    return '<li><a href="categoria.html?slug=' + slug + '" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
+                }).join('');
+                
+                footerContainer.innerHTML = html;
+            } catch(e) {
+                console.error('Error rendering footer:', e);
+            }
+        }
+    };
+
+    // ==========================================
     // MÓDULO: URL Builder - Construcción de URLs
     // ==========================================
     const UrlBuilder = {
@@ -221,7 +263,7 @@
                 const img = cat.imagen || this.defaultImage;
                 const theme = getCategoryTheme(slug);
                 
-                return `<a href="${slug}.html" class="group relative rounded-2xl overflow-hidden">
+                return `<a href="categoria.html?slug=${slug}" class="group relative rounded-2xl overflow-hidden">
                     <img src="${img}" alt="${name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-5 flex items-end gap-3">
@@ -563,7 +605,8 @@ const PromotionRenderer = {
                 CategoryRenderer.render();
                 BrandRenderer.render();
                 PromotionRenderer.render();
-                NavRenderer.render();
+                DynamicNav.render();
+                DynamicNav.renderFooter();
             }
         },
 
