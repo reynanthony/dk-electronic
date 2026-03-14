@@ -155,26 +155,158 @@ productos: products.map(p => ({
         const categories = this.db.getAllCategories().filter(c => c.activo);
         const categorySlugs = categories.map(c => c.slug);
         
-        log.info('Categorias activas:', categorySlugs);
+        log.info('=== SYNC CATEGORIES ===');
+        log.info('Categorias activas en BD:', categorySlugs);
         
-        // 1. Eliminar paginas de categorias inactivas
-        const allHtmlFiles = fs.readdirSync(this.outputPath).filter(f => f.endsWith('.html'));
-        for (const file of allHtmlFiles) {
-            const baseName = file.replace('.html', '');
-            const isMainPage = ['index', 'contacto', 'envios', 'garantia'].includes(baseName);
-            const isCategoryPage = categorySlugs.includes(baseName);
+        const outputPath = this.outputPath;
+        const allFiles = fs.readdirSync(outputPath).filter(f => f.endsWith('.html'));
+        
+        // 1. Eliminar paginas de categorias que ya no existen
+        const paginasPrincipales = ['index.html', 'contacto.html', 'envios.html', 'garantia.html'];
+        
+        for (const file of allFiles) {
+            const esPaginaPrincipal = paginasPrincipales.includes(file);
+            const slugBase = file.replace('.html', '');
+            const existeEnCategorias = categorySlugs.includes(slugBase);
             
-            if (!isMainPage && !isCategoryPage && fs.existsSync(path.join(this.outputPath, file))) {
-                log.info('Eliminando pagina de categoria inactiva:', file);
-                // No eliminar por seguridad, solo registrar
+            if (!esPaginaPrincipal && !existeEnCategorias) {
+                log.info('Eliminando pagina:', file);
+                try {
+                    fs.unlinkSync(path.join(outputPath, file));
+                } catch(e) {
+                    log.info('No se pudo eliminar:', file);
+                }
             }
         }
         
         // 2. Crear paginas para categorias nuevas
-        await this.createCategoryPages(categories);
+        const template = this.getCategoryTemplate();
+        for (const cat of categories) {
+            const pageFile = cat.slug + '.html';
+            const pagePath = path.join(outputPath, pageFile);
+            
+            if (!fs.existsSync(pagePath)) {
+                const pageContent = template
+                    .replace(/{CATEGORY_NAME}/g, cat.nombre)
+                    .replace(/{SLUG}/g, cat.slug);
+                
+                fs.writeFileSync(pagePath, pageContent, 'utf8');
+                log.info('Creando pagina:', pageFile);
+            }
+        }
         
-        // 3. Actualizar todos los enlaces
+        // 3. Actualizar TODOS los enlaces en TODAS las paginas
         await this.updateAllPagesWithCategoryLinks(categories);
+        
+        log.info('=== FIN SYNC ===');
+    }
+
+    getCategoryTemplate() {
+        return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta name="description" content="{CATEGORY_NAME} | DK Electronic"/>
+<meta name="keywords" content="{CATEGORY_NAME}, dk electronic, republica dominicana"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://reynanthony.github.io/dk-electronic/{SLUG}.html"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#c2410c"/>
+<title>{CATEGORY_NAME} | DK Electronic</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                primary: '#c2410c',
+                'primary-light': '#ea580c',
+                surface: '#ffffff',
+                background: '#f8fafc',
+                muted: '#94a3b8',
+                dark: '#0f172a',
+            },
+            fontFamily: {
+                sans: ['Outfit', 'sans-serif'],
+            }
+        }
+    }
+}
+</script>
+<style>
+body { font-family: 'Outfit', sans-serif; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+</head>
+<body class="bg-background text-dark font-sans">
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<a href="index.html" class="flex items-center gap-3">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-10 w-10 object-contain">
+<span class="text-xl font-bold tracking-tight">DK <span class="text-primary">Electronic</span></span>
+</a>
+<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">
+<!-- NAV_LINKS -->
+</nav>
+<div class="flex items-center gap-3">
+<a href="https://wa.me/18293686994" target="_blank" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700">
+WhatsApp
+</a>
+</div>
+</div>
+</div>
+</header>
+<main class="py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="mb-8">
+<h1 class="text-3xl font-bold">{CATEGORY_NAME}</h1>
+</div>
+<div id="productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div class="col-span-full text-center py-12 text-muted">Cargando...</div>
+</div>
+</div>
+</main>
+<footer class="bg-white py-12 border-t">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid md:grid-cols-4 gap-10">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8">
+<span class="font-bold">DK <span class="text-primary">Electronic</span></span>
+</div>
+<p class="text-sm text-muted">Los mejores electrodomesticos.</p>
+</div>
+<div>
+<h4 class="font-medium mb-4">Categorias</h4>
+<ul class="space-y-2 text-sm text-muted">
+<!-- FOOTER_LINKS -->
+</ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Ayuda</h4>
+<ul class="space-y-2 text-sm text-muted">
+<li><a href="envios.html" class="hover:text-primary">Envios</a></li>
+<li><a href="garantia.html" class="hover:text-primary">Garantia</a></li>
+<li><a href="contacto.html" class="hover:text-primary">Contacto</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Contacto</h4>
+<p class="text-sm text-muted">+1 (829) 368-6994</p>
+</div>
+</div>
+</div>
+</footer>
+<script>
+const CATEGORIA = '{SLUG}';
+</script>
+<script src="app-publico.js"></script>
+</body>
+</html>`;
     }
 
     async createCategoryPages(categories) {

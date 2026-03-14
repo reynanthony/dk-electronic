@@ -21,7 +21,7 @@
   },
   {
     "id": 3,
-    "nombre": "Electrodomésticos",
+    "nombre": "Electrodomesticos",
     "slug": "electrodomesticos",
     "imagen": "imagenes/cuando-comprar-electrodomesticos.webp",
     "orden": 3,
@@ -30,9 +30,9 @@
     "hero_subtitulo": ""
   },
   {
-    "id": 9,
-    "nombre": "PULSERAS",
-    "slug": "Puslas para hombres",
+    "id": 4,
+    "nombre": "Pulseras",
+    "slug": "pulseras",
     "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
     "orden": 4,
     "hero_imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
