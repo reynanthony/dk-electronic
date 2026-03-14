@@ -28,5 +28,15 @@
     "hero_imagen": "",
     "hero_titulo": "",
     "hero_subtitulo": ""
+  },
+  {
+    "id": 10,
+    "nombre": "Pulseras",
+    "slug": "pulseras",
+    "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
+    "orden": 4,
+    "hero_imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
+    "hero_titulo": "Lulas",
+    "hero_subtitulo": "pulseras de calidad"
   }
 ]
