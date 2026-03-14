@@ -82,28 +82,8 @@ body { font-family: 'Outfit', sans-serif; }
 </div>
 </footer>
 
+<script src="navigation.js"></script>
 <script>
-async function renderNavCategorias() {
-    try {
-        const res = await fetch('categorias.json?v=' + Date.now());
-        const cats = await res.json();
-        const nav = document.getElementById('nav-categorias');
-        if (!nav) return;
-        nav.innerHTML = '<a href="index.html" class="text-sm font-medium hover:text-primary">Inicio</a>' + 
-            cats.map(c => '<a href="categoria.html?slug=' + c.slug + '" class="text-sm font-medium hover:text-primary">' + c.nombre + '</a>').join('');
-    } catch(e) { console.error('Error nav', e); }
-}
-
-async function renderFooterCategorias() {
-    try {
-        const res = await fetch('categorias.json?v=' + Date.now());
-        const cats = await res.json();
-        const foot = document.getElementById('footer-categorias');
-        if (!foot) return;
-        foot.innerHTML = cats.map(c => '<li><a href="categoria.html?slug=' + c.slug + '" class="hover:text-primary">' + c.nombre + '</a></li>').join('');
-    } catch(e) { console.error('Error footer', e); }
-}
-
 async function cargarCategoria() {
     try {
         const params = new URLSearchParams(window.location.search);
@@ -143,8 +123,9 @@ async function cargarCategoria() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderNavCategorias();
-    renderFooterCategorias();
+    if (typeof Navigation !== 'undefined') {
+        Navigation.renderAll();
+    }
     cargarCategoria();
 });
 </script>

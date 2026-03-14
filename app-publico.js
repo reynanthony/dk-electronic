@@ -183,42 +183,24 @@
 
     // ==========================================
     // MÓDULO: DynamicNav - Navegación dinámica desde JSON
+    // Usa el módulo Navigation centralizado
     // ==========================================
     const DynamicNav = {
         async render() {
-            const navContainer = document.getElementById('main-nav');
-            if (!navContainer) return;
-            
-            try {
-                const categories = DataLoader.getCategoriesFull();
-                const isHome = !document.getElementById('productos')?.dataset?.category;
-                
-                let html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
-                html += categories.map(cat => {
-                    const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
-                    return '<a href="categoria.html?slug=' + slug + '" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
-                }).join('');
-                
-                navContainer.innerHTML = html;
-            } catch(e) {
-                console.error('Error rendering nav:', e);
+            if (typeof Navigation !== 'undefined') {
+                await Navigation.renderHeader();
             }
         },
 
         async renderFooter() {
-            const footerContainer = document.getElementById('footer-categorias');
-            if (!footerContainer) return;
-            
-            try {
-                const categories = DataLoader.getCategoriesFull();
-                const html = categories.map(cat => {
-                    const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
-                    return '<li><a href="categoria.html?slug=' + slug + '" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
-                }).join('');
-                
-                footerContainer.innerHTML = html;
-            } catch(e) {
-                console.error('Error rendering footer:', e);
+            if (typeof Navigation !== 'undefined') {
+                await Navigation.renderFooter();
+            }
+        },
+
+        invalidateCache() {
+            if (typeof Navigation !== 'undefined') {
+                Navigation.invalidateCache();
             }
         }
     };
