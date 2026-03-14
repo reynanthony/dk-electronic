@@ -7,14 +7,5 @@
     "video_url": "videos/videoplayback.mp4",
     "fecha_inicio": "2026-03-13",
     "fecha_fin": "2026-03-16"
-  },
-  {
-    "id": 1,
-    "titulo": "Promoción Especial",
-    "descripcion": "Gran descuento en toda la tienda",
-    "imagen": "",
-    "video_url": "videos/YTDown.com_YouTube_Televisores-LG-con-ThinQ-AI-Inteligencia_Media_PLmsffh9iyE_001_1080p.mp4",
-    "fecha_inicio": "2026-01-01",
-    "fecha_fin": "2026-12-31"
   }
 ]
