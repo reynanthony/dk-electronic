@@ -82,10 +82,13 @@ body { font-family: 'Outfit', sans-serif; }
 </div>
 </footer>
 
+<script src="dataStore.js"></script>
 <script src="navigation.js"></script>
 <script>
 async function cargarCategoria() {
     try {
+        await DataStore.cargarDatos();
+        
         const params = new URLSearchParams(window.location.search);
         const slug = params.get('slug');
         if (!slug) {
@@ -93,21 +96,13 @@ async function cargarCategoria() {
             return;
         }
         
-        const [catsRes, prodsRes] = await Promise.all([
-            fetch('categorias.json?v=' + Date.now()),
-            fetch('productos.json?v=' + Date.now())
-        ]);
-        
-        const cats = await catsRes.json();
-        const prods = await prodsRes.json();
-        
-        const cat = cats.find(c => c.slug === slug);
+        const cat = DataStore.getCategoriaBySlug(slug);
         if (cat) {
             document.getElementById('categoria-titulo').textContent = cat.nombre;
             document.title = cat.nombre + ' | DK Electronic';
         }
         
-        const filtrados = (prods.productos || []).filter(p => p.categoria === slug);
+        const filtrados = DataStore.getProductosByCategoria(slug);
         const container = document.getElementById('productos');
         
         if (filtrados.length === 0) {
@@ -123,9 +118,6 @@ async function cargarCategoria() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof Navigation !== 'undefined') {
-        Navigation.renderAll();
-    }
     cargarCategoria();
 });
 </script>

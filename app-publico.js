@@ -80,53 +80,18 @@
     }
 
     // ==========================================
-    // MÓDULO: DataLoader - Carga datos del servidor
+    // MÓDULO: DataLoader - Usa DataStore centralizado
     // ==========================================
     const DataLoader = {
-        data: null,
-        categorias: [],
-        marcas: [],
-        promociones: [],
-        loadError: null,
-        currentVersion: 0,
-        cacheBuster: 0,
-
         async load() {
-            this.loadError = null;
-            this.cacheBuster = Date.now();
-            
-            try {
-                const versionRes = await fetch('version.json?v=' + this.cacheBuster);
-                const versionData = versionRes.ok ? await versionRes.json() : { v: 0 };
-                this.currentVersion = versionData.v;
-                
-                const dataVersion = 'v=' + versionData.v + '_cb=' + this.cacheBuster;
-                
-                console.log('Cargando datos con versión:', versionData.v, 'cacheBuster:', this.cacheBuster);
-                
-                const results = await Promise.allSettled([
-                    fetch('productos.json?' + dataVersion, { cache: 'no-store' }),
-                    fetch('categorias.json?' + dataVersion, { cache: 'no-store' }),
-                    fetch('marcas.json?' + dataVersion, { cache: 'no-store' }),
-                    fetch('promociones.json?' + dataVersion, { cache: 'no-store' })
-                ]);
-
-                const [productosRes, categoriasRes, marcasRes, promocionesRes] = results.map(r => r.value || { ok: false });
-                
-                this.data = productosRes.ok ? await productosRes.json() : { productos: [], tienda: {} };
-                this.categorias = categoriasRes.ok ? await categoriasRes.json() : [];
-                this.marcas = marcasRes.ok ? await marcasRes.json() : [];
-                this.promociones = promocionesRes.ok ? await promocionesRes.json() : [];
-                
-                if (!productosRes.ok || !categoriasRes.ok) {
-                    this.loadError = 'Algunos datos no pudieron cargarse';
-                }
-                
-                console.log('✓ Datos cargados v' + versionData.v + ':', { 
-                    productos: this.data?.productos?.length || 0, 
-                    categorias: this.categorias.length,
-                    marcas: this.marcas.length,
-                    promociones: this.promociones.length 
+            await DataStore.cargarDatos();
+            this.data = DataStore.getStore().productos;
+            this.categorias = DataStore.getCategorias();
+            this.marcas = DataStore.getMarcas();
+            this.promociones = DataStore.getPromociones();
+            console.log('DataLoader: Datos sincronizados desde DataStore');
+            return this.data;
+        }, 
                 });
             } catch (error) {
                 console.error('Error cargando datos:', error);

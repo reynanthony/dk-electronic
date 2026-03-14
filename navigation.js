@@ -1,34 +1,15 @@
 /**
- * Navigation Module - Centralized navigation management
- * Carga categorías desde categorias.json y genera navegación dinámica
+ * Navigation Module - Uses DataStore for centralized data
  */
 
 const Navigation = (function() {
-    let categoriasCache = null;
-
-    async function obtenerCategorias() {
-        if (categoriasCache) return categoriasCache;
-        
-        try {
-            const res = await fetch('categorias.json?v=' + Date.now());
-            const data = await res.json();
-            categoriasCache = data;
-            return data;
-        } catch(error) {
-            console.error('Error cargando categorías:', error);
-            return [];
-        }
-    }
-
-    function invalidateCache() {
-        categoriasCache = null;
-    }
 
     async function renderHeader() {
         const nav = document.getElementById('nav-categorias');
         if (!nav) return;
 
-        const categorias = await obtenerCategorias();
+        await DataStore.cargarDatos();
+        const categorias = DataStore.getCategorias();
         
         let html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
         html += categorias.map(cat => {
@@ -43,7 +24,8 @@ const Navigation = (function() {
         const footer = document.getElementById('footer-categorias');
         if (!footer) return;
 
-        const categorias = await obtenerCategorias();
+        await DataStore.cargarDatos();
+        const categorias = DataStore.getCategorias();
         
         const html = categorias.map(cat => {
             const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
@@ -54,12 +36,11 @@ const Navigation = (function() {
     }
 
     async function renderAll() {
+        await DataStore.cargarDatos();
         await Promise.all([renderHeader(), renderFooter()]);
     }
 
     return {
-        obtenerCategorias,
-        invalidateCache,
         renderHeader,
         renderFooter,
         renderAll
