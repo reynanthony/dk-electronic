@@ -91,18 +91,6 @@
             this.promociones = DataStore.getPromociones();
             console.log('DataLoader: Datos sincronizados desde DataStore');
             return this.data;
-        }, 
-                });
-            } catch (error) {
-                console.error('Error cargando datos:', error);
-                this.loadError = 'Error de conexión';
-                this.data = { productos: [], tienda: {} };
-                this.categorias = [];
-                this.marcas = [];
-                this.promociones = [];
-            }
-            
-            return this.data;
         },
 
         hasError() {
