@@ -337,19 +337,35 @@ const PromotionRenderer = {
         }
     };
 
-    const ProductRenderer = {
-        render(list, containerId = 'productos') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+  const ProductRenderer = {
+  render(list, containerId = 'productos') {
 
-            if (!list || list.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center py-12"><svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><p class="text-gray-500 text-lg">No hay productos disponibles</p><p class="text-gray-400 text-sm mt-1">Pronto tendremos nuevos productos</p></div>';
-                return;
-            }
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
-            container.innerHTML = list.map(p => this.renderProduct(p)).join('');
-        },
+    // Validación robusta
+    if (!Array.isArray(list) || list.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor"
+               viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10" />
+          </svg>
 
+          <p class="text-gray-500 text-lg">No hay productos disponibles</p>
+          <p class="text-gray-400 text-sm mt-1">Pronto tendremos nuevos productos</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = list
+      .map(p => this.renderProduct(p))
+      .join('');
+  }
+};
         renderProduct(product) {
             const price = product.precio.toLocaleString();
             const wsLink = UrlBuilder.getWhatsAppLink(product);
@@ -413,7 +429,10 @@ const PromotionRenderer = {
         render() {
             const container = document.getElementById('productos');
             const products = (DataLoader.getProducts() || []).filter(p => p.garantia);
-            ProductRenderer.render(products, 'productos');
+            console.log("LIST TYPE:", typeof list);
+            console.log("IS ARRAY:", Array.isArray(list));
+            console.log("LIST VALUE:", list);
+            ProductRenderer.render(DataStore.products);
             this.renderInfo();
         },
 
