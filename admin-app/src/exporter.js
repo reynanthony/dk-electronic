@@ -331,7 +331,7 @@ const CATEGORIA = '{SLUG}';
     }
 
     async updateAllPagesWithCategoryLinks(categories) {
-        const pagesToUpdate = ['index.html', 'televisores.html', 'aires.html', 'electrodomesticos.html', 'pulseras.html', 'viajes.html', 'comida.html', 'contacto.html', 'envios.html', 'garantia.html'];
+        const pagesToUpdate = ['index.html', 'televisores.html', 'aires.html', 'electrodomesticos.html', 'pulseras.html', 'viajes.html', 'contacto.html', 'envios.html', 'garantia.html'];
         
         const categoryLinks = categories.map(cat => {
             return '<a href="' + cat.slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
@@ -348,27 +348,30 @@ const CATEGORIA = '{SLUG}';
             let content = fs.readFileSync(pagePath, 'utf8');
             let modified = false;
             
-            // Actualizar enlaces del header (nav)
-            const navMatch = content.match(/<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">([\s\S]*?)<\/nav>/);
+            // 1. Actualizar nav - eliminar todos los enlaces de categorias y agregar solo los activos
+            const navRegex = /<nav class="hidden md:flex items-center gap-8" aria-label="Navegaci(?:ó|o)n principal">([\s\S]*?)<\/nav>/;
+            const navMatch = content.match(navRegex);
             if (navMatch) {
-                const newNav = '<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">\n' + 
+                const newNav = '<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">\n' +
                     '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>\n' +
                     categoryLinks + '\n</nav>';
                 content = content.replace(navMatch[0], newNav);
                 modified = true;
+                log.info('Nav actualizado en:', page);
             }
             
-            // Actualizar enlaces del footer (Categorias)
-            const footerMatch = content.match(/<h4 class="font-medium mb-4">Categorias<\/h4>\s*<ul class="space-y-2 text-sm text-muted">([\s\S]*?)<\/ul>/);
+            // 2. Actualizar footer Categorias
+            const footerRegex = /<h4 class="font-medium mb-4">Categor[ií]as<\/h4>\s*<ul class="space-y-2 text-sm text-muted">([\s\S]*?)<\/ul>/;
+            const footerMatch = content.match(footerRegex);
             if (footerMatch) {
                 const newFooter = '<h4 class="font-medium mb-4">Categorias</h4>\n<ul class="space-y-2 text-sm text-muted">\n' + footerLinks + '\n</ul>';
                 content = content.replace(footerMatch[0], newFooter);
                 modified = true;
+                log.info('Footer actualizado en:', page);
             }
             
             if (modified) {
                 fs.writeFileSync(pagePath, content, 'utf8');
-                log.info('Pagina actualizada:', page);
             }
         }
     }
