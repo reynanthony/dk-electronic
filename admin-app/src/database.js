@@ -19,8 +19,8 @@ class DKDatabase {
         this.SQL = await initSqlJs();
         
         if (fs.existsSync(this.dbPath)) {
-            const buffer = fs.promises ? await fs.promises.readFile(this.dbPath) : fs.readFileSync(this.dbPath);
-            this.db = new this.SQL.Database(buffer);
+            const buffer = fs.readFileSync(this.dbPath);
+            this.db = new this.SQL.Database(new Uint8Array(buffer));
         } else {
             this.db = new this.SQL.Database();
         }

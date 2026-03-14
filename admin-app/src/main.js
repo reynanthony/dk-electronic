@@ -35,6 +35,13 @@ function createWindow() {
         mainWindow = null;
     });
 
+    // Capturar errores del frontend
+    mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+        if (level >= 2) { // 2 = warning, 3 = error
+            log.error(`[Renderer Error] ${message} (Línea: ${line}, Source: ${sourceId})`);
+        }
+    });
+
     log.info('Aplicación iniciada');
 }
 
