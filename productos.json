@@ -42,6 +42,19 @@
       "garantia": true,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 6,
+      "nombre": "PUCA",
+      "descripcion": "BRAZALETE",
+      "precio": 650,
+      "categoria": "pulseras",
+      "categoria_id": 10,
+      "imagen": "imagenes/61Q81uh0MFL._AC_UL600_SR600,600_.jpg",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
