@@ -3,7 +3,7 @@ const path = require('path');
 const log = require('electron-log');
 const Database = require('./database');
 const Exporter = require('./exporter');
-const simpleGit = require('simple-git');
+const AutoSync = require('./autoSync');
 
 log.transports.file.level = 'info';
 log.transports.console.level = 'debug';
@@ -13,7 +13,7 @@ let db;
 
 // Git inicializado en la raíz del proyecto (donde están los JSON)
 const projectRoot = path.resolve(__dirname, '..', '..');
-const git = simpleGit(projectRoot);
+const autoSync = new AutoSync(projectRoot);
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -218,7 +218,7 @@ ipcMain.handle('video:select', async () => {
 // IPC Handlers - Git
 ipcMain.handle('git:status', async () => {
     try {
-        const status = await git.status();
+        const status = await autoSync.git.status();
         return { success: true, status };
     } catch (error) {
         log.error('Git status error:', error);
@@ -227,71 +227,30 @@ ipcMain.handle('git:status', async () => {
 });
 
 ipcMain.handle('git:commitAndPush', async (event, message) => {
-    try {
-        log.info('Iniciando commit y push...');
-        
-        const status = await git.status();
-        if (status.files.length === 0) {
-            return { success: false, message: 'No hay cambios para guardar' };
-        }
-
-        await git.add('.');
-        await git.commit(message || 'Actualización de productos desde admin');
-        log.info('Commit realizado');
-
-        await git.push();
-        log.info('Push completado');
-
-        return { success: true, message: 'Cambios guardados y subidos a GitHub' };
-    } catch (error) {
-        log.error('Git commit/push error:', error);
-        return { success: false, message: error.message };
-    }
+    return await autoSync.sync();
 });
 
 ipcMain.handle('git:pull', async () => {
-    try {
-        await git.pull();
-        return { success: true, message: 'Actualizado desde GitHub' };
-    } catch (error) {
-        log.error('Git pull error:', error);
-        return { success: false, message: error.message };
-    }
+    return await autoSync.pull();
 });
 
 ipcMain.handle('git:exportAndPush', async () => {
     try {
-        log.info('=== INICIANDO SYNCRONIZACIÓN COMPLETA ===');
-        log.info('Directorio del proyecto:', projectRoot);
+        log.info('=== INICIANDO EXPORTACIÓN Y SINCRONIZACIÓN ===');
         
-        // Crear exporter con ruta correcta
+        // Exportar datos a JSON
         const exporter = new Exporter(db, projectRoot);
         await exporter.exportAll();
         log.info('Datos exportados correctamente');
 
-        // Forzar recarga de status de git
-        await git.status();
+        // Auto-sync con GitHub
+        const result = await autoSync.sync();
         
-        const status = await git.status();
-        log.info('Archivos modificados:', status.files);
-        
-        if (status.files.length === 0) {
-            return { success: false, message: 'No hay cambios para guardar' };
+        if (result.success) {
+            return { success: true, message: 'Exportado y sincronizado con GitHub' };
+        } else {
+            return { success: true, message: result.message };
         }
-
-        // Agregar todos los archivos incluyendo JSONs
-        await git.add('.');
-        await git.commit('Actualización de productos desde admin');
-        log.info('Commit realizado');
-
-        await git.push();
-        log.info('Push completado');
-        
-        // Verificar push
-        const newStatus = await git.status();
-        log.info('Estado después de push:', newStatus);
-
-        return { success: true, message: 'Sincronizado con GitHub (v' + status.current + ')' };
     } catch (error) {
         log.error('ERROR en sincronización:', error);
         return { success: false, message: 'Error: ' + error.message };
