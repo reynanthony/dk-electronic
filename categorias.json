@@ -38,5 +38,15 @@
     "hero_imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
     "hero_titulo": "Lulas",
     "hero_subtitulo": "pulseras de calidad"
+  },
+  {
+    "id": 11,
+    "nombre": "Comer",
+    "slug": "comer",
+    "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
+    "orden": 5,
+    "hero_imagen": "imagenes/restaurantes-carne-santo-domingo-1000x630.jpg",
+    "hero_titulo": "La Comida",
+    "hero_subtitulo": "lo mejor del pais"
   }
 ]
