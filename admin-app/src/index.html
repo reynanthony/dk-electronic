@@ -1180,6 +1180,11 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
         let currentView = 'dashboard';
         let currentEditId = null;
         let products = [];
@@ -1262,11 +1267,11 @@
                 <tr>
                     <td>
                         <div class="product-info">
-                            <strong>${p.nombre}</strong>
-                            <small>${p.descripcion?.substring(0, 60) || 'Sin descripción'}${p.descripcion?.length > 60 ? '...' : ''}</small>
+                            <strong>${escapeHTML(p.nombre)}</strong>
+                            <small>${escapeHTML(p.descripcion?.substring(0, 60) || 'Sin descripción')}${p.descripcion?.length > 60 ? '...' : ''}</small>
                         </div>
                     </td>
-                    <td>${p.categoria_nombre || '<span class="text-muted">Sin categoría</span>'}</td>
+                    <td>${escapeHTML(p.categoria_nombre) || '<span class="text-muted">Sin categoría</span>'}</td>
                     <td><strong>RD$ ${p.precio.toLocaleString()}</strong></td>
                     <td>
                         ${p.destacado ? '<span class="badge badge-featured">★ Destacado</span>' : ''}
@@ -1302,11 +1307,11 @@
             const modalContent = `
                 <div class="form-group">
                     <label>Nombre del Producto *</label>
-                    <input type="text" id="prodNombre" value="${product?.nombre || ''}" placeholder="Ej: Smart TV 55 pulgadas" required>
+                    <input type="text" id="prodNombre" value="${escapeHTML(product?.nombre || '')}" placeholder="Ej: Smart TV 55 pulgadas" required>
                 </div>
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea id="prodDescripcion" rows="3" placeholder="Descripción detallada del producto...">${product?.descripcion || ''}</textarea>
+                    <textarea id="prodDescripcion" rows="3" placeholder="Descripción detallada del producto...">${escapeHTML(product?.descripcion || '')}</textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1379,8 +1384,8 @@
             }
             tbody.innerHTML = categories.map(c => `
                 <tr>
-                    <td><strong>${c.nombre}</strong></td>
-                    <td><code class="text-muted">${c.slug}</code></td>
+                    <td><strong>${escapeHTML(c.nombre)}</strong></td>
+                    <td><code class="text-muted">${escapeHTML(c.slug)}</code></td>
                     <td>${c.orden}</td>
                     <td>${c.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
                     <td>
@@ -1400,11 +1405,11 @@
             const modalContent = `
                 <div class="form-group">
                     <label>Nombre de la Categoría *</label>
-                    <input type="text" id="catNombre" value="${category?.nombre || ''}" placeholder="Ej: Televisores" required>
+                    <input type="text" id="catNombre" value="${escapeHTML(category?.nombre || '')}" placeholder="Ej: Televisores" required>
                 </div>
                 <div class="form-group">
                     <label>Slug (URL)</label>
-                    <input type="text" id="catSlug" value="${category?.slug || ''}" placeholder="televisores">
+                    <input type="text" id="catSlug" value="${escapeHTML(category?.slug || '')}" placeholder="televisores">
                     <small class="text-muted text-sm">Se genera automáticamente si se deja vacío</small>
                 </div>
                 <div class="form-group">
@@ -1424,11 +1429,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Título del Banner</label>
-                        <input type="text" id="catHeroTitulo" value="${category?.hero_titulo || ''}" placeholder="ej: Smart TVs">
+                        <input type="text" id="catHeroTitulo" value="${escapeHTML(category?.hero_titulo || '')}" placeholder="ej: Smart TVs">
                     </div>
                     <div class="form-group">
                         <label>Subtítulo del Banner</label>
-                        <input type="text" id="catHeroSubtitulo" value="${category?.hero_subtitulo || ''}" placeholder="ej: de las mejores marcas">
+                        <input type="text" id="catHeroSubtitulo" value="${escapeHTML(category?.hero_subtitulo || '')}" placeholder="ej: de las mejores marcas">
                     </div>
                 </div>
                 <div class="form-row">
@@ -1495,7 +1500,7 @@
             tbody.innerHTML = brands.map(b => `
                 <tr>
                     <td><img src="${b.logo_url || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect fill=%22%23f3f4f6%22 width=%2248%22 height=%2248%22 rx=%228%22/><text x=%2224%22 y=%2230%22 text-anchor=%22middle%22 fill=%22%239ca3af%22 font-size=%2212%22>Sin logo</text></svg>'}" class="brand-logo"></td>
-                    <td><strong>${b.nombre}</strong></td>
+                    <td><strong>${escapeHTML(b.nombre)}</strong></td>
                     <td>${b.orden}</td>
                     <td>${b.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
                     <td>
@@ -1515,7 +1520,7 @@
             const modalContent = `
                 <div class="form-group">
                     <label>Nombre de la Marca *</label>
-                    <input type="text" id="brandNombre" value="${brand?.nombre || ''}" placeholder="Ej: Samsung" required>
+                    <input type="text" id="brandNombre" value="${escapeHTML(brand?.nombre || '')}" placeholder="Ej: Samsung" required>
                 </div>
                 <div class="form-group">
                     <label>Logo de la Marca</label>
@@ -1575,7 +1580,7 @@
             tbody.innerHTML = promotions.map(p => `
                 <tr>
                     <td><img src="${p.imagen || 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect fill=%22%23f3f4f6%22 width=%2248%22 height=%2248%22 rx=%228%22/><text x=%2224%22 y=%2230%22 text-anchor=%22middle%22 fill=%22%239ca3af%22 font-size=%2210%22>Sin img</text></svg>'}" class="brand-logo"></td>
-                    <td><strong>${p.titulo}</strong></td>
+                    <td><strong>${escapeHTML(p.titulo)}</strong></td>
                     <td>${p.video_url ? '<span class="badge badge-info">Sí</span>' : '<span class="text-muted">-'}</span>}</td>
                     <td>${p.activo ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-inactive">Inactivo</span>'}</td>
                     <td>
@@ -1595,11 +1600,11 @@
             const modalContent = `
                 <div class="form-group">
                     <label>Título de la Promoción *</label>
-                    <input type="text" id="promTitulo" value="${promotion?.titulo || ''}" placeholder="Ej: Verano de Descuentos" required>
+                    <input type="text" id="promTitulo" value="${escapeHTML(promotion?.titulo || '')}" placeholder="Ej: Verano de Descuentos" required>
                 </div>
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea id="promDesc" rows="3" placeholder="Descripción de la promoción...">${promotion?.descripcion || ''}</textarea>
+                    <textarea id="promDesc" rows="3" placeholder="Descripción de la promoción...">${escapeHTML(promotion?.descripcion || '')}</textarea>
                 </div>
                 <div class="form-group">
                     <label>Imagen de la Promoción</label>
@@ -1674,7 +1679,7 @@
                 return `
                     <tr>
                         <td><strong>${p.name}</strong></td>
-                        <td>${page.title || '<span class="text-muted">Sin título</span>'}</td>
+                        <td>${escapeHTML(page.title) || '<span class="text-muted">Sin título</span>'}</td>
                         <td>${page.activo ? '<span class="badge badge-active">Activa</span>' : '<span class="badge badge-inactive">Inactiva</span>'}</td>
                         <td>
                             <div class="action-buttons">
@@ -1703,34 +1708,34 @@
                 </div>
                 <div class="form-group">
                     <label>Título Principal</label>
-                    <input type="text" id="pageTitle" value="${page.title || ''}" placeholder="Ej: Política de Envíos">
+                    <input type="text" id="pageTitle" value="${escapeHTML(page.title || '')}" placeholder="Ej: Política de Envíos">
                 </div>
                 <div class="form-group">
                     <label>Descripción Corta</label>
-                    <textarea id="pageDesc" rows="2" placeholder="Breve descripción para SEO...">${page.descripcion || ''}</textarea>
+                    <textarea id="pageDesc" rows="2" placeholder="Breve descripción para SEO...">${escapeHTML(page.descripcion || '')}</textarea>
                 </div>
                 <div class="form-group">
                     <label>Contenido Principal (HTML)</label>
-                    <textarea id="pageContent" rows="10" style="font-family:monospace;font-size:12px;" placeholder="<div class='contenido'>...HTML...</div>">${page.content || ''}</textarea>
+                    <textarea id="pageContent" rows="10" style="font-family:monospace;font-size:12px;" placeholder="<div class='contenido'>...HTML...</div>">${escapeHTML(page.content || '')}</textarea>
                     <small class="text-muted text-sm">Puedes usar HTML y clases de estilo inline</small>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Sección 1 - Título</label>
-                        <input type="text" id="pageSection1Title" value="${page.section1_title || ''}" placeholder="Título de sección">
+                        <input type="text" id="pageSection1Title" value="${escapeHTML(page.section1_title || '')}" placeholder="Título de sección">
                     </div>
                     <div class="form-group">
                         <label>Sección 2 - Título</label>
-                        <input type="text" id="pageSection2Title" value="${page.section2_title || ''}" placeholder="Título de sección">
+                        <input type="text" id="pageSection2Title" value="${escapeHTML(page.section2_title || '')}" placeholder="Título de sección">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Sección 1 - Contenido (HTML)</label>
-                    <textarea id="pageSection1Content" rows="3" style="font-family:monospace;font-size:12px;" placeholder="Contenido HTML...">${page.section1_content || ''}</textarea>
+                    <textarea id="pageSection1Content" rows="3" style="font-family:monospace;font-size:12px;" placeholder="Contenido HTML...">${escapeHTML(page.section1_content || '')}</textarea>
                 </div>
                 <div class="form-group">
                     <label>Sección 2 - Contenido (HTML)</label>
-                    <textarea id="pageSection2Content" rows="3" style="font-family:monospace;font-size:12px;" placeholder="Contenido HTML...">${page.section2_content || ''}</textarea>
+                    <textarea id="pageSection2Content" rows="3" style="font-family:monospace;font-size:12px;" placeholder="Contenido HTML...">${escapeHTML(page.section2_content || '')}</textarea>
                 </div>
                 <div class="checkbox-group">
                     <div class="checkbox-item">

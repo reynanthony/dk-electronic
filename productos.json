@@ -55,6 +55,19 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 7,
+      "nombre": "hamburguesa",
+      "descripcion": "",
+      "precio": 750,
+      "categoria": "viajes",
+      "categoria_id": 12,
+      "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }

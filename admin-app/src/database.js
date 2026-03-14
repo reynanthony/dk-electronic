@@ -19,7 +19,7 @@ class DKDatabase {
         this.SQL = await initSqlJs();
         
         if (fs.existsSync(this.dbPath)) {
-            const buffer = fs.readFileSync(this.dbPath);
+            const buffer = fs.promises ? await fs.promises.readFile(this.dbPath) : fs.readFileSync(this.dbPath);
             this.db = new this.SQL.Database(buffer);
         } else {
             this.db = new this.SQL.Database();
@@ -28,15 +28,16 @@ class DKDatabase {
         this.createTables();
         this.migrate();
         this.seedDefaultData();
-        this.save();
+        await this.save();
         
         log.info('Base de datos inicializada');
     }
 
-    save() {
+    async save() {
+        if (!this.db) return;
         const data = this.db.export();
         const buffer = Buffer.from(data);
-        fs.writeFileSync(this.dbPath, buffer);
+        await fs.promises.writeFile(this.dbPath, buffer);
     }
 
     createTables() {
@@ -207,33 +208,33 @@ class DKDatabase {
         return results[0] || null;
     }
 
-    createProduct(product) {
+    async createProduct(product) {
         this.db.run(`
             INSERT INTO products (nombre, descripcion, precio, categoria_id, imagen, destacado, activo, garantia, garantia_anios, garantia_cond, orden)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
-            product.nombre, product.descripcion || '', product.precio, product.categoria_id || null,
-            product.imagen || '', product.destacado ? 1 : 0, product.activo !== false ? 1 : 0,
-            product.garantia ? 1 : 0, product.garantia_anios || 1, product.garantia_cond || '', product.orden || 0
+            String(product.nombre), String(product.descripcion || ''), parseFloat(product.precio) || 0, product.categoria_id ? parseInt(product.categoria_id, 10) : null,
+            String(product.imagen || ''), product.destacado ? 1 : 0, product.activo !== false ? 1 : 0,
+            product.garantia ? 1 : 0, parseInt(product.garantia_anios, 10) || 1, String(product.garantia_cond || ''), parseInt(product.orden, 10) || 0
         ]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
-        this.save();
+        await this.save();
         return { id: lastId, ...product };
     }
 
-    updateProduct(id, product) {
+    async updateProduct(id, product) {
         this.db.run(`UPDATE products SET nombre=?, descripcion=?, precio=?, categoria_id=?, imagen=?, destacado=?, activo=?, garantia=?, garantia_anios=?, garantia_cond=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`, [
-            product.nombre, product.descripcion || '', product.precio, product.categoria_id || null,
-            product.imagen || '', product.destacado ? 1 : 0, product.activo !== false ? 1 : 0,
-            product.garantia ? 1 : 0, product.garantia_anios || 1, product.garantia_cond || '', product.orden || 0, id
+            String(product.nombre), String(product.descripcion || ''), parseFloat(product.precio) || 0, product.categoria_id ? parseInt(product.categoria_id, 10) : null,
+            String(product.imagen || ''), product.destacado ? 1 : 0, product.activo !== false ? 1 : 0,
+            product.garantia ? 1 : 0, parseInt(product.garantia_anios, 10) || 1, String(product.garantia_cond || ''), parseInt(product.orden, 10) || 0, parseInt(id, 10)
         ]);
-        this.save();
+        await this.save();
         return { id, ...product };
     }
 
-    deleteProduct(id) {
-        this.db.run('DELETE FROM products WHERE id = ?', [id]);
-        this.save();
+    async deleteProduct(id) {
+        this.db.run('DELETE FROM products WHERE id = ?', [parseInt(id, 10)]);
+        await this.save();
         return { changes: 1 };
     }
 
@@ -243,43 +244,43 @@ class DKDatabase {
         return this._rowsToObjects(stmt);
     }
 
-    createCategory(category) {
-        const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+    async createCategory(category) {
+        const slug = String(category.slug || category.nombre).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
         this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden, hero_imagen, hero_titulo, hero_subtitulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
-            category.nombre, 
+            String(category.nombre), 
             slug, 
-            category.imagen || '', 
+            String(category.imagen || ''), 
             category.activo ? 1 : 0, 
-            category.orden || 0,
-            category.hero_imagen || '',
-            category.hero_titulo || '',
-            category.hero_subtitulo || ''
+            parseInt(category.orden, 10) || 0,
+            String(category.hero_imagen || ''),
+            String(category.hero_titulo || ''),
+            String(category.hero_subtitulo || '')
         ]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
-        this.save();
+        await this.save();
         return { id: lastId, ...category, slug };
     }
 
-    updateCategory(id, category) {
-        const slug = category.slug || category.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+    async updateCategory(id, category) {
+        const slug = String(category.slug || category.nombre).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
         this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, hero_imagen=?, hero_titulo=?, hero_subtitulo=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [
-            category.nombre, 
+            String(category.nombre), 
             slug, 
-            category.imagen || '', 
+            String(category.imagen || ''), 
             category.activo ? 1 : 0, 
-            category.orden || 0,
-            category.hero_imagen || '',
-            category.hero_titulo || '',
-            category.hero_subtitulo || '',
-            id
+            parseInt(category.orden, 10) || 0,
+            String(category.hero_imagen || ''),
+            String(category.hero_titulo || ''),
+            String(category.hero_subtitulo || ''),
+            parseInt(id, 10)
         ]);
-        this.save();
+        await this.save();
         return { id, ...category, slug };
     }
 
-    deleteCategory(id) {
-        this.db.run('DELETE FROM categories WHERE id = ?', [id]);
-        this.save();
+    async deleteCategory(id) {
+        this.db.run('DELETE FROM categories WHERE id = ?', [parseInt(id, 10)]);
+        await this.save();
         return { changes: 1 };
     }
 
@@ -289,23 +290,26 @@ class DKDatabase {
         return this._rowsToObjects(stmt);
     }
 
-    createBrand(brand) {
-        this.db.run('INSERT INTO brands (nombre, logo_url, activo, orden) VALUES (?, ?, ?, ?)', [brand.nombre, brand.logo_url || '', brand.activo ? 1 : 0, brand.orden || 0]);
+    async createBrand(brand) {
+        this.db.run('INSERT INTO brands (nombre, logo_url, activo, orden) VALUES (?, ?, ?, ?)', [
+            String(brand.nombre), String(brand.logo_url || ''), brand.activo ? 1 : 0, parseInt(brand.orden, 10) || 0
+        ]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
-        this.save();
+        await this.save();
         return { id: lastId, ...brand };
     }
 
-    updateBrand(id, brand) {
-        this.db.run('UPDATE brands SET nombre=?, logo_url=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [brand.nombre, brand.logo_url || '', brand.activo ? 1 : 0, brand.orden || 0, id]
-        );
-        this.save();
+    async updateBrand(id, brand) {
+        this.db.run('UPDATE brands SET nombre=?, logo_url=?, activo=?, orden=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [
+            String(brand.nombre), String(brand.logo_url || ''), brand.activo ? 1 : 0, parseInt(brand.orden, 10) || 0, parseInt(id, 10)
+        ]);
+        await this.save();
         return { id, ...brand };
     }
 
-    deleteBrand(id) {
-        this.db.run('DELETE FROM brands WHERE id = ?', [id]);
-        this.save();
+    async deleteBrand(id) {
+        this.db.run('DELETE FROM brands WHERE id = ?', [parseInt(id, 10)]);
+        await this.save();
         return { changes: 1 };
     }
 
@@ -322,28 +326,28 @@ class DKDatabase {
         return results[0] || null;
     }
 
-    createPromotion(promotion) {
+    async createPromotion(promotion) {
         this.db.run(`INSERT INTO promotions (titulo, descripcion, imagen, video_url, activo, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
-            promotion.titulo, promotion.descripcion || '', promotion.imagen || '', promotion.video_url || '', 
-            promotion.activo ? 1 : 0, promotion.fecha_inicio || null, promotion.fecha_fin || null
+            String(promotion.titulo), String(promotion.descripcion || ''), String(promotion.imagen || ''), String(promotion.video_url || ''), 
+            promotion.activo ? 1 : 0, promotion.fecha_inicio ? String(promotion.fecha_inicio) : null, promotion.fecha_fin ? String(promotion.fecha_fin) : null
         ]);
         const lastId = this.db.exec('SELECT last_insert_rowid()')[0].values[0][0];
-        this.save();
+        await this.save();
         return { id: lastId, ...promotion };
     }
 
-    updatePromotion(id, promotion) {
+    async updatePromotion(id, promotion) {
         this.db.run(`UPDATE promotions SET titulo=?, descripcion=?, imagen=?, video_url=?, activo=?, fecha_inicio=?, fecha_fin=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`, [
-            promotion.titulo, promotion.descripcion || '', promotion.imagen || '', promotion.video_url || '',
-            promotion.activo ? 1 : 0, promotion.fecha_inicio || null, promotion.fecha_fin || null, id
+            String(promotion.titulo), String(promotion.descripcion || ''), String(promotion.imagen || ''), String(promotion.video_url || ''),
+            promotion.activo ? 1 : 0, promotion.fecha_inicio ? String(promotion.fecha_inicio) : null, promotion.fecha_fin ? String(promotion.fecha_fin) : null, parseInt(id, 10)
         ]);
-        this.save();
+        await this.save();
         return { id, ...promotion };
     }
 
-    deletePromotion(id) {
-        this.db.run('DELETE FROM promotions WHERE id = ?', [id]);
-        this.save();
+    async deletePromotion(id) {
+        this.db.run('DELETE FROM promotions WHERE id = ?', [parseInt(id, 10)]);
+        await this.save();
         return { changes: 1 };
     }
 
@@ -360,24 +364,25 @@ class DKDatabase {
         return results[0] || null;
     }
 
-    savePage(page) {
+    async savePage(page) {
         const existing = this.getPageBySlug(page.page_slug);
+        const slug = String(page.page_slug);
         if (existing) {
             this.db.run(`UPDATE page_content SET title=?, descripcion=?, content=?, section1_title=?, section1_content=?, section2_title=?, section2_content=?, activo=?, updated_at=CURRENT_TIMESTAMP WHERE page_slug=?`, [
-                page.title || '', page.descripcion || '', page.content || '', 
-                page.section1_title || '', page.section1_content || '',
-                page.section2_title || '', page.section2_content || '',
-                page.activo ? 1 : 0, page.page_slug
+                String(page.title || ''), String(page.descripcion || ''), String(page.content || ''), 
+                String(page.section1_title || ''), String(page.section1_content || ''),
+                String(page.section2_title || ''), String(page.section2_content || ''),
+                page.activo ? 1 : 0, slug
             ]);
         } else {
             this.db.run('INSERT INTO page_content (page_slug, title, descripcion, content, section1_title, section1_content, section2_title, section2_content, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-                page.page_slug, page.title || '', page.descripcion || '', page.content || '',
-                page.section1_title || '', page.section1_content || '',
-                page.section2_title || '', page.section2_content || '',
+                slug, String(page.title || ''), String(page.descripcion || ''), String(page.content || ''),
+                String(page.section1_title || ''), String(page.section1_content || ''),
+                String(page.section2_title || ''), String(page.section2_content || ''),
                 page.activo ? 1 : 0
             ]);
         }
-        this.save();
+        await this.save();
         return page;
     }
 
@@ -388,16 +393,16 @@ class DKDatabase {
         return results[0] || {};
     }
 
-    updateSettings(settings) {
+    async updateSettings(settings) {
         this.db.run(`UPDATE site_settings SET nombre_tienda=?, whatsapp=?, telefono=?, email=?, direccion=?, logo_url=?, updated_at=CURRENT_TIMESTAMP WHERE id=1`, [
-            settings.nombre_tienda, settings.whatsapp, settings.telefono || '', settings.email || '', settings.direccion || '', settings.logo_url || ''
+            String(settings.nombre_tienda || ''), String(settings.whatsapp || ''), String(settings.telefono || ''), String(settings.email || ''), String(settings.direccion || ''), String(settings.logo_url || '')
         ]);
-        this.save();
+        await this.save();
         return settings;
     }
 
-    close() {
-        if (this.db) { this.save(); this.db.close(); }
+    async close() {
+        if (this.db) { await this.save(); this.db.close(); }
     }
 }
 
