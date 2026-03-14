@@ -28,15 +28,5 @@
     "hero_imagen": "",
     "hero_titulo": "",
     "hero_subtitulo": ""
-  },
-  {
-    "id": 9,
-    "nombre": "PULSERAS",
-    "slug": "Puslas para hombres",
-    "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
-    "orden": 4,
-    "hero_imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
-    "hero_titulo": "PULSERAS DE PRIMERA",
-    "hero_subtitulo": "Las mas finas del pais"
   }
 ]
