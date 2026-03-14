@@ -38,15 +38,5 @@
     "hero_imagen": "",
     "hero_titulo": "",
     "hero_subtitulo": ""
-  },
-  {
-    "id": 5,
-    "nombre": "Viajes",
-    "slug": "viajes",
-    "imagen": "imagenes/consejos-viaje-al-extranjero_a65b7706-37e8-426f-ab46-b026aacd2282.webp",
-    "orden": 5,
-    "hero_imagen": "",
-    "hero_titulo": "",
-    "hero_subtitulo": ""
   }
 ]
