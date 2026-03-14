@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DK Electronic - Frontend Público (Solo Lectura)
  * Versión limpia sin administración
  */
@@ -196,8 +196,7 @@
                 const desc = 'Ver productos';
                 const img = cat.imagen || this.defaultImage;
                 const theme = getCategoryTheme(slug);
-                
-                return `<a href="categoria.html?slug=${slug}" class="group relative rounded-2xl overflow-hidden">
+                return `<a href="${slug}.html" class="group relative rounded-2xl overflow-hidden">
                     <img src="${img}" alt="${name}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" width="600" height="224" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-5 flex items-end gap-3">
@@ -386,6 +385,6 @@ const PromotionRenderer = {
         ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>' + (product.garantiaAnios || 1) + ' año' + ((product.garantiaAnios || 1) > 1 ? 's' : '') + ' garantía</div>'
         : '';
 
-    return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + badge + '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + product.imagen + '" alt="' + nombre + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src='https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen'"></div><div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + categoria + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + nombre + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + descripcion + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + price + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
+    return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + badge + '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + product.imagen + '" alt="' + nombre + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div><div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + categoria + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + nombre + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + descripcion + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + price + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
   }
 };

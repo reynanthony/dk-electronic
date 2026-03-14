@@ -14,7 +14,7 @@ const Navigation = (function() {
         let html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
         html += categorias.map(cat => {
             const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
-            return '<a href="categoria.html?slug=' + slug + '" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
+            return '<a href="' + slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
         }).join('');
 
         nav.innerHTML = html;
@@ -29,7 +29,7 @@ const Navigation = (function() {
         
         const html = categorias.map(cat => {
             const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
-            return '<li><a href="categoria.html?slug=' + slug + '" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
+            return '<li><a href="' + slug + '.html" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
         }).join('');
 
         footer.innerHTML = html;

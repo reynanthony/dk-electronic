@@ -1,11 +1,11 @@
 const CACHE_NAME = 'dk-electronic-v7';
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/app-publico.js',
-    '/dataStore.js',
-    '/navigation.js',
-    '/manifest.json'
+    './',
+    './index.html',
+    './app-publico.js',
+    './dataStore.js',
+    './navigation.js',
+    './manifest.json'
 ];
 
 // Instalar: pre-cachear assets esenciales
