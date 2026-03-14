@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://reynanthony.github.io/dk-electronic/categoria.html"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#c2410c"/>
+<title>Categoria | DK Electronic</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: { primary: '#c2410c', 'primary-light': '#ea580c', surface: '#ffffff', background: '#f8fafc', muted: '#94a3b8', dark: '#0f172a' },
+            fontFamily: { sans: ['Outfit', 'sans-serif'] }
+        }
+    }
+}
+</script>
+<style>
+body { font-family: 'Outfit', sans-serif; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+</head>
+<body class="bg-background text-dark font-sans">
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<a href="index.html" class="flex items-center gap-3">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-10 w-10 object-contain">
+<span class="text-xl font-bold">DK <span class="text-primary">Electronic</span></span>
+</a>
+<nav class="hidden md:flex items-center gap-8" id="nav-categorias"></nav>
+<div class="flex items-center gap-3">
+<a href="https://wa.me/18293686994" target="_blank" class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700">WhatsApp</a>
+</div>
+</div>
+</div>
+</header>
+
+<main class="py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="mb-8">
+<h1 id="categoria-titulo" class="text-3xl font-bold">Cargando...</h1>
+</div>
+<div id="productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+</div>
+</main>
+
+<footer class="bg-white py-12 border-t">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid md:grid-cols-4 gap-10">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8">
+<span class="font-bold">DK <span class="text-primary">Electronic</span></span>
+</div>
+<p class="text-sm text-muted">Los mejores electrodomesticos.</p>
+</div>
+<div>
+<h4 class="font-medium mb-4">Categorias</h4>
+<ul class="space-y-2 text-sm text-muted" id="footer-categorias"></ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Ayuda</h4>
+<ul class="space-y-2 text-sm text-muted">
+<li><a href="envios.html" class="hover:text-primary">Envios</a></li>
+<li><a href="garantia.html" class="hover:text-primary">Garantia</a></li>
+<li><a href="contacto.html" class="hover:text-primary">Contacto</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Contacto</h4>
+<p class="text-sm text-muted">+1 (829) 368-6994</p>
+</div>
+</div>
+<div class="pt-8 border-t text-center text-sm text-muted">2024 DK Electronic</div>
+</div>
+</footer>
+
+<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
+<script>
+async function cargarCategoria() {
+    try {
+        await DataStore.cargarDatos();
+        
+        var params = new URLSearchParams(window.location.search);
+        var slug = params.get('slug');
+        if (!slug) {
+            document.getElementById('categoria-titulo').textContent = 'Categoria no encontrada';
+            return;
+        }
+        
+        var cat = DataStore.getCategoriaBySlug(slug);
+        if (cat) {
+            document.getElementById('categoria-titulo').textContent = cat.nombre;
+            document.title = cat.nombre + ' | DK Electronic';
+        }
+        
+        var filtrados = DataStore.getProductosByCategoria(slug);
+        var container = document.getElementById('productos');
+        
+        if (filtrados.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500">No hay productos en esta categoria.</p></div>';
+            return;
+        }
+        
+        container.innerHTML = filtrados.map(function(p) {
+            var price = p.precio.toLocaleString();
+            var wsLink = 'https://wa.me/18293686994?text=Quiero+comprar:+' + encodeURIComponent(p.nombre);
+            return '<div class="bg-white rounded-lg shadow p-4"><img src="' + p.imagen + '" alt="' + p.nombre + '" class="w-full h-48 object-contain mb-4" onerror="this.src=\'https://placehold.co/400x300?text=Sin+imagen\'"><h3 class="font-medium text-sm line-clamp-2">' + p.nombre + '</h3><p class="text-primary font-bold mt-2">$' + price + '</p><a href="' + wsLink + '" class="block text-center bg-primary text-white py-2 rounded mt-3 text-sm hover:bg-orange-700">Comprar</a></div>';
+        }).join('');
+    } catch(e) {
+        console.error('Error:', e);
+        document.getElementById('productos').innerHTML = '<p class="text-red-500">Error al cargar productos</p>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    cargarCategoria();
+});
+</script>
+</body>
+</html>
