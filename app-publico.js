@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DK Electronic - Frontend Público (Solo Lectura)
  * Versión limpia sin administración
  */
@@ -89,7 +89,6 @@
             this.categorias = DataStore.getCategorias();
             this.marcas = DataStore.getMarcas();
             this.promociones = DataStore.getPromociones();
-            console.log('DataLoader: Datos sincronizados desde DataStore');
             return this.data;
         },
 
@@ -368,7 +367,18 @@ const PromotionRenderer = {
 
   renderProduct(product) {
     const price = product.precio.toLocaleString();
-    const wsLink = 'https://wa.me/18293686994?text=Quiero+comprar:+' + encodeURIComponent(product.nombre);
+    // Usar constante central para el numero de WhatsApp
+    const numero = (DataLoader && DataLoader.getStore && DataLoader.getStore().whatsapp) || WHATSAPP_DEFAULT;
+    const wsLink = 'https://wa.me/' + numero + '?text=' + encodeURIComponent('Quiero comprar: ' + product.nombre);
+    // Sanitizar campos antes de insertar en innerHTML para prevenir XSS
+    const tmpDiv = document.createElement('div');
+    tmpDiv.textContent = product.nombre || '';
+    const nombre = tmpDiv.innerHTML;
+    tmpDiv.textContent = product.descripcion || '';
+    const descripcion = tmpDiv.innerHTML;
+    tmpDiv.textContent = product.categoria || '';
+    const categoria = tmpDiv.innerHTML;
+
     const badge = product.destacado 
         ? '<div class="absolute top-3 right-3 bg-orange-700 text-white text-[10px] font-black px-2 py-1 rounded uppercase">Hot</div>' 
         : '';
@@ -376,220 +386,6 @@ const PromotionRenderer = {
         ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>' + (product.garantiaAnios || 1) + ' año' + ((product.garantiaAnios || 1) > 1 ? 's' : '') + ' garantía</div>'
         : '';
 
-    return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + badge + '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + product.imagen + '" alt="' + product.nombre + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div><div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + product.categoria + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + product.nombre + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + (product.descripcion || '') + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + price + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
+    return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + badge + '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + product.imagen + '" alt="' + nombre + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src='https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen'"></div><div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + categoria + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + nombre + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + descripcion + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + price + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
   }
 };
-
-    // ==========================================
-    // MÓDULO: CategoryFilter - Filtros de categorías
-    // ==========================================
-    const CategoryFilter = {
-        init() {
-            const container = document.getElementById('filtros');
-            if (!container) return;
-
-            const categories = DataLoader.getCategoriesFull();
-            
-            const buttons = [{ slug: 'todos', nombre: 'Todos' }, ...categories.map(c => ({ slug: c.slug || c.nombre.toLowerCase().replace(/\s+/g, ''), nombre: c.nombre }))];
-            
-            container.innerHTML = buttons.map((c, i) => {
-                const isActive = i === 0;
-                const label = c.nombre;
-                const href = c.slug === 'todos' ? 'index.html' : c.slug + '.html';
-                return `<a href="${href}" class="filter-link flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${isActive ? 'bg-primary text-white' : 'bg-white text-slate-600 hover:bg-orange-50 border border-slate-200'}">${label}</a>`;
-            }).join('');
-        }
-    };
-
-    // ==========================================
-    // MÓDULO: WarrantyRenderer - Página de garantía
-    // ==========================================
-    const WarrantyRenderer = {
-        render() {
-            const container = document.getElementById('productos');
-            const products = (DataLoader.getProducts() || []).filter(p => p.garantia);
-            console.log("LIST TYPE:", typeof list);
-            console.log("IS ARRAY:", Array.isArray(list));
-            console.log("LIST VALUE:", list);
-            ProductRenderer.render(DataStore.products);
-            this.renderInfo();
-        },
-
-        renderInfo() {
-            const container = document.getElementById('garantiaInfo');
-            if (!container) return;
-
-            container.innerHTML = `
-                <div class="grid md:grid-cols-3 gap-6 mb-12">
-                    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                        <div class="w-14 h-14 bg-orange-700/10 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-7 h-7 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <h3 class="font-bold text-lg mb-2">2 Años de Garantía</h3>
-                        <p class="text-sm text-gray-500">Todos nuestros Televisores incluyen garantía total.</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                        <div class="w-14 h-14 bg-orange-700/10 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-7 h-7 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                        </div>
-                        <h3 class="font-bold text-lg mb-2">2 Años de Garantía</h3>
-                        <p class="text-sm text-gray-500">Aires Acondicionados con garantía total.</p>
-                    </div>
-                    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                        <div class="w-14 h-14 bg-orange-700/10 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-7 h-7 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        </div>
-                        <h3 class="font-bold text-lg mb-2">1 Año de Garantía</h3>
-                        <p class="text-sm text-gray-500">Electrodomésticos con garantía especializada.</p>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl p-6 border border-gray-200 mb-8">
-                    <h3 class="font-bold text-lg mb-4">¿Qué cubre la garantía?</h3>
-                    <ul class="space-y-3 text-sm text-gray-600">
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                            <span>Defectos de fábrica en componentes eléctricos y electrónicos</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                            <span>Problemas de funcionamiento que no sean por mal uso</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                            <span>Repuestos y mano de obra sin costo</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                            <span>Servicio técnico a domicilio (según ubicación)</span>
-                        </li>
-                    </ul>
-                    
-                    <h3 class="font-bold text-lg mb-4 mt-6">¿Qué NO cubre la garantía?</h3>
-                    <ul class="space-y-3 text-sm text-gray-600">
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                            <span>Daños por uso inadecuado o accidentes</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                            <span>Daños por picos de tensión o fallas eléctricas</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                            <span>Productos sin factura o comprobante de compra</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                            <span>Desgaste natural por uso</span>
-                        </li>
-                    </ul>
-                </div>`;
-        }
-    };
-
-    // ==========================================
-    // MÓDULO: App - Inicialización
-    // ==========================================
-    const App = {
-        async init() {
-            try {
-                console.log("app arranco")
-                console.log('Iniciando app...');
-                await DataLoader.load();
-                console.log('Renderizando...');
-                this.render();
-                console.log('Renderizado completo');
-                
-                if (DataLoader.hasError()) {
-                    this.showErrorBanner(DataLoader.getErrorMessage());
-                }
-            } catch (e) {
-                console.error('Error initializing app:', e);
-                this.showErrorBanner('Error de conexión. Por favor recarga la página.');
-            }
-        },
-
-        showErrorBanner(message) {
-            const existing = document.getElementById('error-banner');
-            if (existing) existing.remove();
-            
-            const banner = document.createElement('div');
-            banner.id = 'error-banner';
-            banner.className = 'bg-amber-50 border-b border-amber-200 text-amber-800 px-4 py-3 text-center text-sm';
-            banner.innerHTML = `<div class="max-w-7xl mx-auto flex items-center justify-center gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>${message}</span></div>`;
-            document.body.insertBefore(banner, document.body.firstChild);
-        },
-
-        render() {
-            const isCategoryPage = typeof CATEGORIA !== 'undefined' && CATEGORIA;
-            
-            if (isCategoryPage) {
-                if (CATEGORIA === 'garantia') {
-                    WarrantyRenderer.render();
-                } else {
-                    // Add hero banner for category pages
-                    this.renderCategoryHero(CATEGORIA);
-                    const filtered = DataLoader.getByCategory(CATEGORIA);
-                    ProductRenderer.render(filtered);
-                }
-            } else {
-                ProductRenderer.render(DataLoader.getProducts());
-                CategoryFilter.init();
-                CategoryRenderer.render();
-                BrandRenderer.render();
-                PromotionRenderer.render();
-                DynamicNav.render();
-                DynamicNav.renderFooter();
-            }
-        },
-
-        renderCategoryHero(categorySlug) {
-            const theme = getCategoryTheme(categorySlug);
-            
-            // Get category name from loaded categories
-            const categories = DataLoader.getCategoriesFull();
-            const cat = categories.find(c => c.slug === categorySlug);
-            const categoryName = cat ? cat.nombre : categorySlug;
-            
-            // Check if category has custom hero config
-            const heroImage = (cat && cat.hero_imagen) ? cat.hero_imagen : theme.heroImage;
-            const heroTitle = (cat && cat.hero_titulo) ? cat.hero_titulo : theme.heroTitle;
-            const heroSubtitle = (cat && cat.hero_subtitulo) ? cat.hero_subtitulo : theme.heroSubtitle;
-            
-            // Create or update hero banner
-            let hero = document.getElementById('category-hero');
-            if (!hero) {
-                hero = document.createElement('section');
-                hero.id = 'category-hero';
-                const main = document.querySelector('main');
-                if (main) main.prepend(hero);
-            }
-            
-            hero.className = `relative h-64 md:h-80 overflow-hidden`;
-            hero.setAttribute('aria-label', categoryName);
-            
-            hero.innerHTML = `
-                <div class="absolute inset-0">
-                    <img src="${heroImage}" alt="${categoryName}" class="w-full h-full object-cover" loading="eager">
-                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/40"></div>
-                </div>
-                <div class="relative h-full flex items-center">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                        <h1 class="text-4xl md:text-5xl font-bold text-white">${heroTitle}</h1>
-                        <p class="text-xl text-white/90 mt-2">${heroSubtitle}</p>
-                    </div>
-                </div>
-            `;
-        }
-    };
-
-    // ==========================================
-    // Inicialización automática
-    // ==========================================
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => App.init());
-    } else {
-        App.init();
-    }
-})();

@@ -57,7 +57,8 @@ const StorageManager = {
     },
 
     getAdminPassword() {
-        return this.get(this.KEYS.ADMIN_PASS, 'dkadmin2024');
+        // Sin contraseña por defecto — fuerza al administrador a establecer una
+        return this.get(this.KEYS.ADMIN_PASS, null);
     },
 
     isAdminLogged() {
@@ -217,20 +218,20 @@ const Sanitizer = {
 
     validateForm(formData, rules) {
         const errors = {};
-        
+
         for (const [field, validators] of Object.entries(rules)) {
             const value = formData[field];
-            
+
             for (const validator of validators) {
                 const result = validator(value, field);
                 if (result !== true) {
                     errors[field] = result;
                     break;
                 }
-        
-        return }
             }
-        {
+        }
+
+        return {
             isValid: Object.keys(errors).length === 0,
             errors
         };
@@ -312,6 +313,12 @@ const ProductRenderer = {
     renderProduct(product) {
         const price = product.precio.toLocaleString();
         const wsLink = UrlBuilder.getWhatsAppLink(product);
+        // Sanitizamos todos los campos del producto antes de insertarlos en el DOM
+        const nombre = Sanitizer.sanitizeText(product.nombre);
+        const descripcion = Sanitizer.sanitizeText(product.descripcion);
+        const categoria = Sanitizer.sanitizeText(product.categoria);
+        const garantiaCond = Sanitizer.sanitizeText(product.garantiaCond || 'Garantía incluida');
+
         const badge = product.destacado 
             ? '<div class="absolute top-3 right-3 bg-primary text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-tighter">Hot</div>' 
             : '';
@@ -324,7 +331,7 @@ const ProductRenderer = {
             : '';
         
         const garantiaInfo = product.garantia 
-            ? `<div class="text-xs text-green-600 mt-1 line-clamp-1">${product.garantiaCond || 'Garantía incluida'}</div>` 
+            ? `<div class="text-xs text-green-600 mt-1 line-clamp-1">${garantiaCond}</div>` 
             : '';
         
         const adminBtns = AppState.isAdmin 
@@ -340,12 +347,12 @@ const ProductRenderer = {
         <div class="group flex flex-col bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-300">
             ${badge}
             <div class="aspect-square relative overflow-hidden bg-slate-100">
-                <img src="${product.imagen}" alt="${product.nombre}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" ${imageError}>
+                <img src="${product.imagen}" alt="${nombre}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" ${imageError}>
             </div>
             <div class="p-4 flex flex-col flex-1">
-                <span class="text-xs text-primary uppercase tracking-wide">${product.categoria}</span>
-                <h3 class="font-bold text-sm text-dark mt-1 line-clamp-1">${product.nombre}</h3>
-                <p class="text-xs text-muted mt-1 line-clamp-2 flex-1">${product.descripcion}</p>
+                <span class="text-xs text-primary uppercase tracking-wide">${categoria}</span>
+                <h3 class="font-bold text-sm text-dark mt-1 line-clamp-1">${nombre}</h3>
+                <p class="text-xs text-muted mt-1 line-clamp-2 flex-1">${descripcion}</p>
                 ${garantiaBadge}
                 ${garantiaInfo}
                 <p class="text-lg font-black text-primary mt-2">RD$ ${price}</p>
@@ -561,6 +568,7 @@ const AdminPanel = {
         const existing = document.getElementById('admin-login-modal');
         if (existing) existing.remove();
 
+        const isFirstTime = !AppState.password;
         const modalHtml = `
             <div id="admin-login-modal" class="dk-modal-container fixed inset-0 z-[60] flex items-center justify-center p-4">
                 <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm modal-backdrop"></div>
@@ -571,13 +579,13 @@ const AdminPanel = {
                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                         </div>
                         <h2 class="text-2xl font-bold text-slate-800 mb-1">DK Electronic</h2>
-                        <p class="text-slate-500 text-sm mb-6">Acceso administrativo</p>
+                        <p class="text-slate-500 text-sm mb-6">${isFirstTime ? '⚠️ Primera vez: establece tu contraseña de administrador' : 'Acceso administrativo'}</p>
                         <form id="loginForm" class="space-y-4">
                             <div>
-                                <input type="password" id="adminPass" required class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-center focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all" placeholder="••••••••" autocomplete="off">
+                                <input type="password" id="adminPass" required minlength="${isFirstTime ? 6 : 1}" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-center focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all" placeholder="${isFirstTime ? 'Mínimo 6 caracteres' : '••••••••'}" autocomplete="off">
                                 <p id="loginError" class="text-red-500 text-xs mt-2 hidden">Contraseña incorrecta</p>
                             </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-orange-500 hover:from-orange-500 hover:to-primary text-white py-3 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Ingresar</button>
+                            <button type="submit" class="w-full bg-gradient-to-r from-primary to-orange-500 hover:from-orange-500 hover:to-primary text-white py-3 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">${isFirstTime ? 'Establecer Contraseña' : 'Ingresar'}</button>
                         </form>
                         <div class="mt-6 pt-6 border-t border-slate-100">
                             <p class="text-xs text-slate-400">Presiona <kbd class="bg-slate-100 px-2 py-1 rounded text-slate-600 font-mono">Esc</kbd> para cerrar</p>
@@ -604,6 +612,26 @@ const AdminPanel = {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const pwd = document.getElementById('adminPass')?.value;
+
+                // Si no hay contraseña configurada, el primer ingreso la establece
+                if (!AppState.password) {
+                    if (!pwd || pwd.length < 6) {
+                        const error = document.getElementById('loginError');
+                        if (error) {
+                            error.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                            error.classList.remove('hidden');
+                        }
+                        return;
+                    }
+                    StorageManager.set(StorageManager.KEYS.ADMIN_PASS, pwd);
+                    AppState.password = pwd;
+                    AppState.isAdmin = true;
+                    StorageManager.setAdminLogged(true);
+                    ModalManager.closeById('admin-login-modal');
+                    App.init();
+                    return;
+                }
+
                 if (pwd === AppState.password) {
                     AppState.isAdmin = true;
                     StorageManager.setAdminLogged(true);
@@ -1209,17 +1237,16 @@ const GitHubPublisher = {
     REPO: 'dk-electronic',
     
     getToken() {
-        return localStorage.getItem('dk_github_token') || '';
+        return sessionStorage.getItem('dk_github_token') || '';
     },
     
     setToken(token) {
-        localStorage.setItem('dk_github_token', token);
+        sessionStorage.setItem('dk_github_token', token);
     },
     
     async publish() {
         const token = this.getToken();
-        console.log('Token exists:', !!token, 'Length:', token?.length);
-        
+
         if (!token) {
             this.showTokenModal();
             return;
@@ -1231,17 +1258,10 @@ const GitHubPublisher = {
             btn.innerHTML = '<span class="animate-spin">⏳</span> Publicando...';
             
             const datos = StorageManager.get('dk_productos');
-            console.log('Publishing datos:', datos ? 'exists' : 'null');
-            
             const contenido = JSON.stringify(datos, null, 2);
             
-            console.log('Getting SHA...');
             const sha = await this.getFileSHA('productos.json', token);
-            console.log('SHA:', sha);
-            
-            console.log('Committing file...');
             await this.commitFile('productos.json', contenido, sha, 'Update products from admin panel', token);
-            console.log('File committed successfully!');
             
             btn.innerHTML = '✅Publicado!';
             btn.classList.remove('bg-red-500', 'hover:bg-red-600');
@@ -1282,9 +1302,6 @@ const GitHubPublisher = {
     },
     
     async commitFile(filename, content, sha, message, token) {
-        console.log('Token length:', token.length);
-        console.log('Token prefix:', token.substring(0, 10));
-        
         const response = await fetch(`https://api.github.com/repos/${this.OWNER}/${this.REPO}/contents/${filename}`, {
             method: 'PUT',
             headers: {

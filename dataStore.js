@@ -17,13 +17,26 @@ const DataStore = (function() {
 
     let loadPromise = null;
 
-    async function fetchJSON(path) {
+    // Obtenemos la versión actual para cache-busting solo si no la tenemos en memoria
+    async function fetchVersion() {
+        if (store.version && store.version.v) return store.version.v;
         try {
-            const res = await fetch(path + '?v=' + Date.now());
+            const res = await fetch('version.json?v=' + Date.now());
+            if (!res.ok) return Date.now();
+            const data = await res.json();
+            return data.v || Date.now();
+        } catch(err) {
+            return Date.now();
+        }
+    }
+
+    async function fetchJSON(path, version) {
+        try {
+            const res = await fetch(path + '?v=' + version);
             if (!res.ok) throw new Error('Error loading ' + path);
             return await res.json();
         } catch(err) {
-            console.error('DataStore error:', err);
+            console.error('DataStore error loading ' + path + ':', err);
             return null;
         }
     }
@@ -39,14 +52,14 @@ const DataStore = (function() {
 
         loadPromise = (async () => {
             console.log('DataStore: Loading all data...');
+            const version = await fetchVersion();
             
-            const [categorias, productos, marcas, promociones, tienda, version] = await Promise.all([
-                fetchJSON('categorias.json'),
-                fetchJSON('productos.json'),
-                fetchJSON('marcas.json'),
-                fetchJSON('promociones.json'),
-                fetchJSON('tienda.json'),
-                fetchJSON('version.json')
+            const [categorias, productos, marcas, promociones, tienda] = await Promise.all([
+                fetchJSON('categorias.json', version),
+                fetchJSON('productos.json', version),
+                fetchJSON('marcas.json', version),
+                fetchJSON('promociones.json', version),
+                fetchJSON('tienda.json', version)
             ]);
 
             store.categorias = categorias || [];
@@ -54,7 +67,7 @@ const DataStore = (function() {
             store.marcas = marcas || [];
             store.promociones = promociones || [];
             store.tienda = tienda || {};
-            store.version = version || { v: 0 };
+            store.version = { v: version };
             store.loaded = true;
 
             console.log('DataStore: Loaded', {
