@@ -85,7 +85,7 @@
     const DataLoader = {
         async load() {
             await DataStore.cargarDatos();
-            this.data = DataStore.getStore().productos;
+            this.data = DataStore.getStore();
             this.categorias = DataStore.getCategorias();
             this.marcas = DataStore.getMarcas();
             this.promociones = DataStore.getPromociones();
@@ -102,7 +102,7 @@
         },
 
         getProducts() {
-            return this.data?.productos || [];
+            return this.data.productos || [];
         },
 
         getCategories() {
@@ -130,7 +130,7 @@
         },
 
         getStore() {
-            return this.data?.tienda || {};
+            return this.data.tienda || {};
         }
     };
 
@@ -140,7 +140,7 @@
     // ==========================================
     const DynamicNav = {
         async render() {
-            if (typeof Navigation !== 'undefined') {
+            if (typeof Navigation !== 'undefined'&& Navigation.renderHeader) {
                 await Navigation.renderHeader();
             }
         },
@@ -412,7 +412,7 @@ const PromotionRenderer = {
     const WarrantyRenderer = {
         render() {
             const container = document.getElementById('productos');
-            const products = DataLoader.getProducts().filter(p => p.garantia);
+            const products = (DataLoader.getProducts() || []).filter(p => p.garantia);
             ProductRenderer.render(products, 'productos');
             this.renderInfo();
         },
@@ -496,6 +496,7 @@ const PromotionRenderer = {
     const App = {
         async init() {
             try {
+                console.log("app arranco")
                 console.log('Iniciando app...');
                 await DataLoader.load();
                 console.log('Renderizando...');
@@ -523,7 +524,7 @@ const PromotionRenderer = {
         },
 
         render() {
-            const isCategoryPage = typeof CATEGORIA !== 'undefined';
+            const isCategoryPage = typeof CATEGORIA !== 'undefined' && CATEGORIA;
             
             if (isCategoryPage) {
                 if (CATEGORIA === 'garantia') {
