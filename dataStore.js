@@ -47,7 +47,6 @@ const DataStore = (function() {
         // Always load fresh data - don't use cache
         store.loaded = false;
         loadPromise = null;
-        }
 
         loadPromise = (async () => {
             console.log('DataStore: Loading all data...');
