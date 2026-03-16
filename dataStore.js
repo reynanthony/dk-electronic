@@ -141,3 +141,6 @@ const DataStore = (function() {
 
 // Auto-load on script execution
 DataStore.cargarDatos();
+
+// Exponer globalmente
+window.DataStore = DataStore;

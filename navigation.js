@@ -53,3 +53,6 @@ if (document.readyState === 'loading') {
 } else {
     Navigation.renderAll();
 }
+
+// Exponer globalmente
+window.Navigation = Navigation;
