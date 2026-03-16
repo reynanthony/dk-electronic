@@ -21,6 +21,11 @@ const Navigation = (function() {
         const nav = document.getElementById('main-nav');
         if (!nav) return;
 
+        // Force fresh data load
+        if (window.DataStore) {
+            window.DataStore.invalidateCache();
+        }
+
         const ready = await waitForDataStore();
         if (!ready) return;
 
