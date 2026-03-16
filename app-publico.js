@@ -82,21 +82,42 @@
     // ==========================================
     // MÓDULO: DataLoader - Usa DataStore centralizado
     // ==========================================
-    async function waitForDataStore() {
+    async function ensureDataStore() {
+        // If DataStore exists, return it
+        if (window.DataStore) {
+            return window.DataStore;
+        }
+        
+        // Wait for DataStore to become available
         let attempts = 0;
-        while (!window.DataStore && attempts < 50) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+        while (!window.DataStore && attempts < 100) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             attempts++;
         }
+        
         if (!window.DataStore) {
-            throw new Error('DataStore not available');
+            // Try to load dataStore.js dynamically
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'dataStore.js?t=' + Date.now();
+                script.onload = () => {
+                    if (window.DataStore) {
+                        resolve(window.DataStore);
+                    } else {
+                        reject(new Error('DataStore failed to load'));
+                    }
+                };
+                script.onerror = () => reject(new Error('DataStore script failed to load'));
+                document.head.appendChild(script);
+            });
         }
+        
         return window.DataStore;
     }
 
     const DataLoader = {
         async load() {
-            const DataStore = await waitForDataStore();
+            const DataStore = await ensureDataStore();
             await DataStore.cargarDatos();
             this.data = DataStore.getStore();
             this.categorias = DataStore.getCategorias();

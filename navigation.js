@@ -5,14 +5,27 @@
 const Navigation = (function() {
 
     async function waitForDataStore() {
+        // If DataStore exists, return true
+        if (window.DataStore) {
+            return true;
+        }
+        
+        // Wait for DataStore to become available
         let attempts = 0;
-        while (!window.DataStore && attempts < 50) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+        while (!window.DataStore && attempts < 100) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             attempts++;
         }
+        
         if (!window.DataStore) {
-            console.error('DataStore not available');
-            return false;
+            // Try to load dataStore.js dynamically
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'dataStore.js?t=' + Date.now();
+                script.onload = () => resolve(true);
+                script.onerror = () => resolve(false);
+                document.head.appendChild(script);
+            });
         }
         return true;
     }
