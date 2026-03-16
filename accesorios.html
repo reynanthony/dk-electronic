@@ -123,13 +123,41 @@
 </footer>
 
 <script>
-    var _t = Date.now();
-    document.write('<script src="dataStore.js?t=' + _t + '"><\/script>');
-    document.write('<script src="navigation.js?t=' + _t + '"><\/script>');
+(function() {
+    var timestamp = Date.now();
+    
+    function loadScript(src) {
+        return new Promise(function(resolve, reject) {
+            var script = document.createElement('script');
+            script.src = src + '?t=' + timestamp;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    
+    loadScript('dataStore.js')
+        .then(function() { return loadScript('navigation.js'); })
+        .catch(function(err) {
+            console.error('Error loading scripts:', err);
+        });
+})();
 </script>
 <script>
+// Wait for DataStore to be available, then run page code
+function waitForDataStoreAndRun(callback) {
+    function check() {
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            callback();
+        } else {
+            setTimeout(check, 50);
+        }
+    }
+    check();
+}
+
 const CATEGORIA = 'accesorios';
-(async function() {
+waitForDataStoreAndRun(async function() {
     try {
         await DataStore.cargarDatos();
         await Navigation.renderAll();
@@ -167,7 +195,7 @@ const CATEGORIA = 'accesorios';
         console.error('Error loading category:', error);
         document.getElementById('productos').innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error al cargar productos</div>';
     }
-})();
+});
 </script>
 </body>
 </html>

@@ -257,11 +257,27 @@
 </footer>
 
 <script>
-    // Force fresh load of all scripts
-    var _t = Date.now();
-    document.write('<script src="dataStore.js?t=' + _t + '"><\/script>');
-    document.write('<script src="navigation.js?t=' + _t + '"><\/script>');
-    document.write('<script src="app-publico.js?t=' + _t + '"><\/script>');
+// Load scripts in order with cache busting
+(function() {
+    var timestamp = Date.now();
+    
+    function loadScript(src) {
+        return new Promise(function(resolve, reject) {
+            var script = document.createElement('script');
+            script.src = src + '?t=' + timestamp;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    
+    loadScript('dataStore.js')
+        .then(function() { return loadScript('navigation.js'); })
+        .then(function() { return loadScript('app-publico.js'); })
+        .catch(function(err) {
+            console.error('Error loading scripts:', err);
+        });
+})();
 </script>
 <!-- Service Worker deshabilitado temporalmente
 <script>
