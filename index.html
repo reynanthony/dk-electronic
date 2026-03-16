@@ -256,22 +256,9 @@
 </div>
 </footer>
 
-<script>
-(function() {
-    // Use a version that changes every second to prevent caching
-    var version = Math.floor(Date.now() / 1000);
-    
-    function loadScript(src) {
-        var script = document.createElement('script');
-        script.src = src + '?v=' + version;
-        script.async = false;
-        document.head.appendChild(script);
-    }
-    
-    loadScript('dataStore.js');
-    loadScript('navigation.js');
-    loadScript('app-publico.js');
-})();
+<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
+<script src="app-publico.js"></script>
 </script>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>

@@ -122,19 +122,8 @@
 </div>
 </footer>
 
-<script>
-(function() {
-    var version = Math.floor(Date.now() / 1000);
-    function loadScript(src) {
-        var script = document.createElement('script');
-        script.src = src + '?v=' + version;
-        script.async = false;
-        document.head.appendChild(script);
-    }
-    loadScript('dataStore.js');
-    loadScript('navigation.js');
-})();
-</script>
+<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
 <script>
 // Wait for DataStore to be available, then run page code
 function waitForDataStoreAndRun(callback) {
