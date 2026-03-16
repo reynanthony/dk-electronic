@@ -1,21 +1,21 @@
 [
   {
     "id": 1,
-    "nombre": "Televisores",
-    "slug": "televisores",
+    "nombre": "Tecnologia",
+    "slug": "tecnologia",
     "imagen": "imagenes/1200_900.jpeg",
     "orden": 1,
-    "hero_imagen": "",
+    "hero_imagen": "imagenes/_DGD8962.webp",
     "hero_titulo": "",
     "hero_subtitulo": ""
   },
   {
     "id": 2,
-    "nombre": "Aires Acondicionados",
+    "nombre": "Accesorios",
     "slug": "aires",
-    "imagen": "imagenes/aire.jpg",
+    "imagen": "imagenes/images.jpg",
     "orden": 2,
-    "hero_imagen": "",
+    "hero_imagen": "imagenes/clothing-and-accessories-for-men-and-women-ready-for-travel-life-style-photo.jpg",
     "hero_titulo": "",
     "hero_subtitulo": ""
   }
