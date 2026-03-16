@@ -258,7 +258,12 @@ class DKDatabase {
 
     async createCategory(category) {
         const nombre = String(category.nombre || '').trim();
-        const slug = category.slug ? this.normalizeSlug(category.slug) : this.normalizeSlug(nombre);
+        let slug;
+        if (category.slug && category.slug.trim()) {
+            slug = category.slug.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        } else {
+            slug = this.normalizeSlug(nombre);
+        }
         this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden, hero_imagen, hero_titulo, hero_subtitulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
             nombre, 
             slug, 
@@ -276,7 +281,12 @@ class DKDatabase {
 
     async updateCategory(id, category) {
         const nombre = String(category.nombre || '').trim();
-        const slug = category.slug ? this.normalizeSlug(category.slug) : this.normalizeSlug(nombre);
+        let slug;
+        if (category.slug && category.slug.trim()) {
+            slug = category.slug.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        } else {
+            slug = this.normalizeSlug(nombre);
+        }
         this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, hero_imagen=?, hero_titulo=?, hero_subtitulo=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [
             nombre, 
             slug, 
