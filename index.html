@@ -257,32 +257,24 @@
 </footer>
 
 <script>
-// Load scripts in order with cache busting
 (function() {
-    var timestamp = Date.now();
+    // Use a version that changes every second to prevent caching
+    var version = Math.floor(Date.now() / 1000);
     
     function loadScript(src) {
-        return new Promise(function(resolve, reject) {
-            var script = document.createElement('script');
-            script.src = src + '?t=' + timestamp;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
+        var script = document.createElement('script');
+        script.src = src + '?v=' + version;
+        script.async = false;
+        document.head.appendChild(script);
     }
     
-    loadScript('dataStore.js')
-        .then(function() { return loadScript('navigation.js'); })
-        .then(function() { return loadScript('app-publico.js'); })
-        .catch(function(err) {
-            console.error('Error loading scripts:', err);
-        });
+    loadScript('dataStore.js');
+    loadScript('navigation.js');
+    loadScript('app-publico.js');
 })();
 </script>
-<!-- Service Worker deshabilitado temporalmente
-<script>
-    // Service Worker deshabilitado
-</script>
--->
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
 </body>
 </html>
