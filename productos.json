@@ -47,7 +47,7 @@
       "id": 10,
       "nombre": "Hamburguer",
       "descripcion": "La mejor del pais",
-      "precio": 455,
+      "precio": 450,
       "categoria": "comida",
       "categoria_id": 13,
       "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
