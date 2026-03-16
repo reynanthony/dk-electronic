@@ -34,11 +34,11 @@
       "id": 9,
       "nombre": "pulcera chinas",
       "descripcion": "",
-      "precio": 150,
+      "precio": 170,
       "categoria": "aires",
       "categoria_id": 2,
       "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
-      "destacado": false,
+      "destacado": true,
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
