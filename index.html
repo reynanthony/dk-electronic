@@ -256,9 +256,13 @@
 </div>
 </footer>
 
-<script src="dataStore.js?v=20240316b"></script>
-<script src="navigation.js?v=20240316b"></script>
-<script src="app-publico.js?v=20240316b"></script>
+<script>
+    // Force fresh load of all scripts
+    var _t = Date.now();
+    document.write('<script src="dataStore.js?t=' + _t + '"><\/script>');
+    document.write('<script src="navigation.js?t=' + _t + '"><\/script>');
+    document.write('<script src="app-publico.js?t=' + _t + '"><\/script>');
+</script>
 <!-- Service Worker deshabilitado temporalmente
 <script>
     // Service Worker deshabilitado
