@@ -22,11 +22,24 @@
       "nombre": "11900 Btu/h WindFree™ Aire acondicionado de pared con Bespoke AI con AI Energy Mode",
       "descripcion": "alto rendimiento",
       "precio": 25500,
-      "categoria": "aires",
-      "categoria_id": 2,
+      "categoria": "tecnologia",
+      "categoria_id": 1,
       "imagen": "imagenes/Aire-Acondicionado-2.jpeg",
       "destacado": false,
       "garantia": true,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
+    },
+    {
+      "id": 9,
+      "nombre": "pulcera chinas",
+      "descripcion": "",
+      "precio": 150,
+      "categoria": "aires",
+      "categoria_id": 2,
+      "imagen": "imagenes/InShot_20221115_175502622-scaled.jpg",
+      "destacado": false,
+      "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
     }
