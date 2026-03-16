@@ -83,41 +83,36 @@
     // MÓDULO: DataLoader - Usa DataStore centralizado
     // ==========================================
     async function ensureDataStore() {
-        // If DataStore exists, return it
-        if (window.DataStore) {
+        // If DataStore exists in window, return it
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
             return window.DataStore;
         }
         
-        // Wait for DataStore to become available
-        let attempts = 0;
-        while (!window.DataStore && attempts < 100) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-            attempts++;
+        // If DataStore exists as a global variable but not on window, expose it
+        if (typeof DataStore !== 'undefined') {
+            window.DataStore = DataStore;
+            return DataStore;
         }
         
-        if (!window.DataStore) {
-            // Try to load dataStore.js dynamically
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'dataStore.js?t=' + Date.now();
-                script.onload = () => {
-                    if (window.DataStore) {
-                        resolve(window.DataStore);
-                    } else {
-                        reject(new Error('DataStore failed to load'));
-                    }
-                };
-                script.onerror = () => reject(new Error('DataStore script failed to load'));
-                document.head.appendChild(script);
-            });
+        // Wait a bit for the script to finish loading
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Check again
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            return window.DataStore;
         }
         
-        return window.DataStore;
+        // Last resort - use a simple inline loader
+        console.log('DataStore not found, using fallback');
+        return null;
     }
 
     const DataLoader = {
         async load() {
             const DataStore = await ensureDataStore();
+            if (!DataStore) {
+                throw new Error('DataStore no disponible');
+            }
             await DataStore.cargarDatos();
             this.data = DataStore.getStore();
             this.categorias = DataStore.getCategorias();

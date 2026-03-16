@@ -5,29 +5,27 @@
 const Navigation = (function() {
 
     async function waitForDataStore() {
-        // If DataStore exists, return true
-        if (window.DataStore) {
+        // If DataStore exists in window, return true
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
             return true;
         }
         
-        // Wait for DataStore to become available
-        let attempts = 0;
-        while (!window.DataStore && attempts < 100) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-            attempts++;
+        // If DataStore exists as a global variable but not on window, expose it
+        if (typeof DataStore !== 'undefined') {
+            window.DataStore = DataStore;
+            return true;
         }
         
-        if (!window.DataStore) {
-            // Try to load dataStore.js dynamically
-            return new Promise((resolve) => {
-                const script = document.createElement('script');
-                script.src = 'dataStore.js?t=' + Date.now();
-                script.onload = () => resolve(true);
-                script.onerror = () => resolve(false);
-                document.head.appendChild(script);
-            });
+        // Wait a bit for the script to finish loading
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Check again
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            return true;
         }
-        return true;
+        
+        console.log('DataStore not found in Navigation');
+        return false;
     }
 
     async function renderHeader() {
