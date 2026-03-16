@@ -53,7 +53,6 @@
 <a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>
 <a href="tecnologia.html" class="text-sm font-medium hover:text-primary transition-colors">Tecnologia</a>
 <a href="accesorios.html" class="text-sm font-medium hover:text-primary transition-colors">Accesorios</a>
-<a href="comida.html" class="text-sm font-medium hover:text-primary transition-colors">Comida</a>
 </nav>
 <div class="flex items-center gap-3">
 <a href="https://wa.me/18293686994" target="_blank" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700 transition-colors">
@@ -172,14 +171,14 @@ waitForDataStoreAndRun(async function() {
             }
         }
         
-        const container = document.getElementById('productos');
+        const productosContainer = document.getElementById('productos');
         
         if (productos.length === 0) {
-            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
+            productosContainer.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
             return;
         }
         
-        container.innerHTML = productos.map(product => {
+        productosContainer.innerHTML = productos.map(product => {
             const garantiaBadge = product.garantia ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ' + (product.garantia_anios || 1) + ' año(s) garantía</div>' : '';
             const wsLink = 'https://wa.me/18293686994?text=' + encodeURIComponent('Hola, estoy interesado en: ' + product.nombre);
             

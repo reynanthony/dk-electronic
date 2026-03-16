@@ -10,8 +10,7 @@ var Navigation = {
         // Hardcoded categories - should match categorias.json
         var categorias = [
             { nombre: 'Tecnologia', slug: 'tecnologia' },
-            { nombre: 'Accesorios', slug: 'accesorios' },
-            { nombre: 'Comida', slug: 'comida' }
+            { nombre: 'Accesorios', slug: 'accesorios' }
         ];
         
         var html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
@@ -29,8 +28,7 @@ var Navigation = {
         
         var categorias = [
             { nombre: 'Tecnologia', slug: 'tecnologia' },
-            { nombre: 'Accesorios', slug: 'accesorios' },
-            { nombre: 'Comida', slug: 'comida' }
+            { nombre: 'Accesorios', slug: 'accesorios' }
         ];
         
         var html = '';
