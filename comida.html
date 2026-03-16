@@ -133,9 +133,13 @@ waitForDataStoreAndRun(async function() {
         var categoria = categorias.find(function(c) { return c.slug === CATEGORIA; });
         
         if (categoria) {
-            if (categoria.hero_imagen) document.getElementById('hero-image').src = categoria.hero_imagen;
-            if (categoria.hero_titulo) document.getElementById('hero-title').innerHTML = categoria.hero_titulo;
-            if (categoria.hero_subtitulo) document.getElementById('hero-subtitle').textContent = categoria.hero_subtitulo;
+            var heroImg = document.getElementById('hero-image');
+            var heroTitle = document.getElementById('hero-title');
+            var heroSubtitle = document.getElementById('hero-subtitle');
+            
+            if (heroImg && categoria.hero_imagen) heroImg.src = categoria.hero_imagen;
+            if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
+            if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
         }
         
         var todosProductos = DataStore.getProductos();
