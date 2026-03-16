@@ -12,11 +12,21 @@
   {
     "id": 2,
     "nombre": "Accesorios",
-    "slug": "accesorios",
+    "slug": "aires",
     "imagen": "imagenes/images.jpg",
     "orden": 2,
     "hero_imagen": "imagenes/clothing-and-accessories-for-men-and-women-ready-for-travel-life-style-photo.jpg",
     "hero_titulo": "Todo",
     "hero_subtitulo": "lo que necesitas"
+  },
+  {
+    "id": 13,
+    "nombre": "Comida",
+    "slug": "comida",
+    "imagen": "imagenes/restaurantes-carne-santo-domingo-1000x630.jpg",
+    "orden": 3,
+    "hero_imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
+    "hero_titulo": "Cuanto",
+    "hero_subtitulo": "quieras comeras"
   }
 ]
