@@ -101,7 +101,7 @@
         },
 
         getProducts() {
-            return this.data.productos || [];
+            return this.data.productos?.productos || [];
         },
 
         getCategories() {
@@ -129,7 +129,7 @@
         },
 
         getStore() {
-            return this.data.tienda || {};
+            return this.data.productos?.tienda || this.data.tienda || {};
         }
     };
 
@@ -335,7 +335,7 @@ const PromotionRenderer = {
         }
     };
 
-  const ProductRenderer = {
+    const ProductRenderer = {
   render(list, containerId = 'productos') {
 
     const container = document.getElementById(containerId);
@@ -388,4 +388,88 @@ const PromotionRenderer = {
     return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + badge + '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + product.imagen + '" alt="' + nombre + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div><div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + categoria + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + nombre + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + descripcion + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + price + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
   }
 };
+
+    // ==========================================
+    // INICIALIZACIÓN PRINCIPAL
+    // ==========================================
+    async function init() {
+        console.log('DK Electronic: Inicializando...');
+        
+        try {
+            // Cargar datos
+            await DataLoader.load();
+            console.log('DK Electronic: Datos cargados');
+            
+            // Renderizar navegación
+            await DynamicNav.render();
+            await DynamicNav.renderFooter();
+            
+            // Renderizar categorías
+            CategoryRenderer.render();
+            
+            // Renderizar marcas
+            BrandRenderer.render();
+            
+            // Renderizar promociones
+            PromotionRenderer.render();
+            
+            // Renderizar productos destacados
+            const featured = DataLoader.getFeatured();
+            ProductRenderer.render(featured);
+            
+            // Renderizar filtros de categorías
+            renderFiltros();
+            
+            console.log('DK Electronic: Inicialización completa');
+        } catch (error) {
+            console.error('DK Electronic: Error en inicialización:', error);
+        }
+    }
+
+    // Renderizar filtros de categorías en el sticky bar
+    function renderFiltros() {
+        const container = document.getElementById('filtros');
+        if (!container) return;
+        
+        const categories = DataLoader.getCategoriesFull();
+        if (categories.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        let html = '<button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-primary text-white transition-colors" data-category="all">Todos</button>';
+        
+        html += categories.map(cat => {
+            const slug = cat.slug || cat.nombre.toLowerCase().replace(/\s+/g, '');
+            return '<button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" data-category="' + slug + '">' + cat.nombre + '</button>';
+        }).join('');
+        
+        container.innerHTML = html;
+        
+        // Agregar event listeners a los filtros
+        container.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                container.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white');
+                    b.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-100', 'text-gray-700');
+                this.classList.add('bg-primary', 'text-white');
+                
+                const category = this.dataset.category;
+                const products = category === 'all' 
+                    ? DataLoader.getProducts() 
+                    : DataLoader.getByCategory(category);
+                ProductRenderer.render(products);
+            });
+        });
+    }
+
+    // Auto-inicialización cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();

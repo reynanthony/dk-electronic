@@ -5,7 +5,7 @@
 const Navigation = (function() {
 
     async function renderHeader() {
-        const nav = document.getElementById('nav-categorias');
+        const nav = document.getElementById('main-nav');
         if (!nav) return;
 
         await DataStore.cargarDatos();
