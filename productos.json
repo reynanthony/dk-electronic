@@ -55,6 +55,19 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 8,
+      "nombre": "pulsera",
+      "descripcion": "",
+      "precio": 150,
+      "categoria": "pulseras",
+      "categoria_id": 10,
+      "imagen": "imagenes/61Q81uh0MFL._AC_UL600_SR600,600_.jpg",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }

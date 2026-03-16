@@ -244,10 +244,23 @@ class DKDatabase {
         return this._rowsToObjects(stmt);
     }
 
+    normalizeSlug(text) {
+        if (!text) return '';
+        return String(text)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remove accents
+            .replace(/\s+/g, '-')           // Spaces to hyphens
+            .replace(/[^\w-]/g, '')          // Remove non-word chars
+            .replace(/-+/g, '-')            // Multiple hyphens to one
+            .replace(/^-|-$/g, '');          // Trim leading/trailing hyphens
+    }
+
     async createCategory(category) {
-        const slug = String(category.slug || category.nombre).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const nombre = String(category.nombre || '').trim();
+        const slug = category.slug ? this.normalizeSlug(category.slug) : this.normalizeSlug(nombre);
         this.db.run('INSERT INTO categories (nombre, slug, imagen, activo, orden, hero_imagen, hero_titulo, hero_subtitulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
-            String(category.nombre), 
+            nombre, 
             slug, 
             String(category.imagen || ''), 
             category.activo ? 1 : 0, 
@@ -262,9 +275,10 @@ class DKDatabase {
     }
 
     async updateCategory(id, category) {
-        const slug = String(category.slug || category.nombre).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const nombre = String(category.nombre || '').trim();
+        const slug = category.slug ? this.normalizeSlug(category.slug) : this.normalizeSlug(nombre);
         this.db.run('UPDATE categories SET nombre=?, slug=?, imagen=?, activo=?, orden=?, hero_imagen=?, hero_titulo=?, hero_subtitulo=?, updated_at=CURRENT_TIMESTAMP WHERE id=?', [
-            String(category.nombre), 
+            nombre, 
             slug, 
             String(category.imagen || ''), 
             category.activo ? 1 : 0, 
