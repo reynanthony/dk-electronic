@@ -136,21 +136,19 @@ waitForDataStoreAndRun(async function() {
         await DataStore.cargarDatos();
         await Navigation.renderAll();
         
-        var categorias = DataStore.getCategorias();
-        var categoria = categorias.find(function(c) { return c.slug === CATEGORIA; });
+        var todosProductos = DataStore.getProductos();
+        var container = document.getElementById('productos');
         
-        if (categoria) {
-            var heroImg = document.getElementById('hero-image');
-            var heroTitle = document.getElementById('hero-title');
-            var heroSubtitle = document.getElementById('hero-subtitle');
-            
-            if (heroImg && categoria.hero_imagen) heroImg.src = categoria.hero_imagen;
-            if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
-            if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
+        // Filter by category - exact match
+        var productos = [];
+        for (var i = 0; i < todosProductos.length; i++) {
+            var p = todosProductos[i];
+            if (p.categoria === 'accesorios' && p.activo !== false) {
+                productos.push(p);
+            }
         }
         
-        var todosProductos = DataStore.getProductos();
-        var productos = todosProductos.filter(function(p) { return p.categoria === CATEGORIA && p.activo !== false; });
+        console.log('Productos en accesorios:', productos.length);
         
         var container = document.getElementById('productos');
         
@@ -175,11 +173,5 @@ waitForDataStoreAndRun(async function() {
     }
 });
 </script>
-</body>
-</html>
-
-const CATEGORIA = 'accesorios';
-waitForDataStoreAndRun(async function() {
-<script src="app-publico.js"></script>
 </body>
 </html>

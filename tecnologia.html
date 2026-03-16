@@ -161,7 +161,16 @@ waitForDataStoreAndRun(async function() {
         }
         
         const todosProductos = DataStore.getProductos();
-        const productos = todosProductos.filter(p => p.categoria === CATEGORIA && p.activo !== false);
+        const container = document.getElementById('productos');
+        
+        // Filter by category - exact match
+        const productos = [];
+        for (let i = 0; i < todosProductos.length; i++) {
+            const p = todosProductos[i];
+            if (p.categoria === 'tecnologia' && p.activo !== false) {
+                productos.push(p);
+            }
+        }
         
         const container = document.getElementById('productos');
         

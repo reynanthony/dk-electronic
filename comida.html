@@ -150,7 +150,16 @@ waitForDataStoreAndRun(async function() {
         }
         
         var todosProductos = DataStore.getProductos();
-        var productos = todosProductos.filter(function(p) { return p.categoria === CATEGORIA && p.activo !== false; });
+        var container = document.getElementById('productos');
+        
+        // Filter by category - exact match
+        var productos = [];
+        for (var i = 0; i < todosProductos.length; i++) {
+            var p = todosProductos[i];
+            if (p.categoria === 'comida' && p.activo !== false) {
+                productos.push(p);
+            }
+        }
         
         var container = document.getElementById('productos');
         
