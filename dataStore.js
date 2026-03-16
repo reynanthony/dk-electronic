@@ -140,7 +140,7 @@ const DataStore = (function() {
 })();
 
 // Auto-load on script execution
-DataStore.cargarDatos();
-
-// Exponer globalmente
-window.DataStore = DataStore;
+if (typeof window !== 'undefined') {
+    window.DataStore = DataStore;
+    DataStore.cargarDatos();
+}

@@ -82,8 +82,21 @@
     // ==========================================
     // MÓDULO: DataLoader - Usa DataStore centralizado
     // ==========================================
+    async function waitForDataStore() {
+        let attempts = 0;
+        while (!window.DataStore && attempts < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        if (!window.DataStore) {
+            throw new Error('DataStore not available');
+        }
+        return window.DataStore;
+    }
+
     const DataLoader = {
         async load() {
+            const DataStore = await waitForDataStore();
             await DataStore.cargarDatos();
             this.data = DataStore.getStore();
             this.categorias = DataStore.getCategorias();
