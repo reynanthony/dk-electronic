@@ -139,6 +139,12 @@ const DataStore = (function() {
 
 // Auto-load on script execution
 if (typeof window !== 'undefined') {
-    window.DataStore = DataStore;
-    DataStore.cargarDatos();
+    // Only set if not already defined
+    if (!window.DataStore) {
+        window.DataStore = DataStore;
+    }
+    // Try to load data
+    if (DataStore && DataStore.cargarDatos) {
+        DataStore.cargarDatos();
+    }
 }
