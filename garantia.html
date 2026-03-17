@@ -203,15 +203,14 @@ Contactar por WhatsApp
 <script src="dataStore.js"></script>
 <script src="navigation.js"></script>
 <script>
-// Wait for DataStore to be ready before loading app-publico.js
 (function() {
     function checkAndLoad() {
-        if (window.DataStore && window.DataStore.cargarDatos) {
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
             var script = document.createElement('script');
-            script.src = 'app-publico.js?v=11';
+            script.src = 'app-publico.js?v=12';
             document.body.appendChild(script);
         } else {
-            setTimeout(checkAndLoad, 50);
+            setTimeout(checkAndLoad, 100);
         }
     }
     checkAndLoad();

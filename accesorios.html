@@ -118,71 +118,72 @@ tailwind.config = {
 <script src="dataStore.js"></script>
 <script src="navigation.js"></script>
 <script>
-function waitForDataStoreAndRun(callback) {
-    function check() {
+(function() {
+    function checkAndLoad() {
         if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
-            callback();
+            initPage();
         } else {
-            setTimeout(check, 50);
+            setTimeout(checkAndLoad, 100);
         }
     }
-    check();
-}
+    checkAndLoad();
+})();
 
-const CATEGORIA = 'accesorios';
-waitForDataStoreAndRun(async function() {
-    try {
-        await DataStore.cargarDatos();
-        await Navigation.renderAll();
-        
-        var categorias = DataStore.getCategorias();
-        var categoria = categorias.find(function(c) { return c.slug === CATEGORIA; });
-        
-        if (categoria) {
-            var heroSection = document.querySelector('.hero-section');
-            var heroTitle = document.getElementById('hero-title');
-            var heroSubtitle = document.getElementById('hero-subtitle');
+function initPage() {
+    var CATEGORIA = 'accesorios';
+    
+    (async function() {
+        try {
+            await DataStore.cargarDatos();
+            await Navigation.renderAll();
             
-            if (heroSection && categoria.hero_imagen) {
-                heroSection.style.backgroundImage = "url('" + categoria.hero_imagen + "')";
-            }
-            if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
-            if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
-        }
-        
-        var todosProductos = DataStore.getProductos();
-        
-        // Filter by category - exact match
-        var productos = [];
-        for (var i = 0; i < todosProductos.length; i++) {
-            var p = todosProductos[i];
-            if (p.categoria === 'accesorios' && p.activo !== false) {
-                productos.push(p);
-            }
-        }
-        
-        var container = document.getElementById('productos');
-        
-        if (productos.length === 0) {
-            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
-            return;
-        }
-        
-        container.innerHTML = productos.map(function(product) {
-            var garantiaBadge = product.garantia ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ' + (product.garantia_anios || 1) + ' año(s) garantía</div>' : '';
-            var wsLink = 'https://wa.me/18293686994?text=' + encodeURIComponent('Hola, estoy interesado en: ' + product.nombre);
+            var categorias = DataStore.getCategorias();
+            var categoria = categorias.find(function(c) { return c.slug === CATEGORIA; });
             
-            return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + 
-                (product.destacado ? '<div class="absolute top-3 right-3 bg-orange-700 text-white text-[10px] font-black px-2 py-1 rounded uppercase">Hot</div>' : '') +
-                '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + (product.imagen || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen') + '" alt="' + (product.nombre || '') + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div>' +
-                '<div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + (product.categoria || '') + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + (product.nombre || '') + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + (product.descripcion || '') + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + (product.precio || 0).toLocaleString() + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
-        }).join('');
-        
-    } catch (error) {
-        console.error('Error loading category:', error);
-        document.getElementById('productos').innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error al cargar productos</div>';
-    }
-});
+            if (categoria) {
+                var heroSection = document.querySelector('.hero-section');
+                var heroTitle = document.getElementById('hero-title');
+                var heroSubtitle = document.getElementById('hero-subtitle');
+                
+                if (heroSection && categoria.hero_imagen) {
+                    heroSection.style.backgroundImage = "url('" + categoria.hero_imagen + "')";
+                }
+                if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
+                if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
+            }
+            
+            var todosProductos = DataStore.getProductos();
+            var container = document.getElementById('productos');
+            
+            var productos = [];
+            for (var i = 0; i < todosProductos.length; i++) {
+                var p = todosProductos[i];
+                if (p.categoria === 'accesorios' && p.activo !== false) {
+                    productos.push(p);
+                }
+            }
+            
+            if (productos.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
+                return;
+            }
+            
+            container.innerHTML = productos.map(function(product) {
+                var garantiaBadge = product.garantia ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ' + (product.garantia_anios || 1) + ' año(s) garantía</div>' : '';
+                var wsLink = 'https://wa.me/18293686994?text=' + encodeURIComponent('Hola, estoy interesado en: ' + product.nombre);
+                
+                return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + 
+                    (product.destacado ? '<div class="absolute top-3 right-3 bg-orange-700 text-white text-[10px] font-black px-2 py-1 rounded uppercase">Hot</div>' : '') +
+                    '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + (product.imagen || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen') + '" alt="' + (product.nombre || '') + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div>' +
+                    '<div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + (product.categoria || '') + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + (product.nombre || '') + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + (product.descripcion || '') + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + (product.precio || 0).toLocaleString() + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
+            }).join('');
+            
+        } catch (error) {
+            console.error('Error loading category:', error);
+            document.getElementById('productos').innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error al cargar productos</div>';
+        }
+    })();
+}
 </script>
 </body>
 </html>
