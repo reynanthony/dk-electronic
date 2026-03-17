@@ -7,11 +7,24 @@ var Navigation = {
         var nav = document.getElementById('main-nav');
         if (!nav) return;
         
-        // Hardcoded categories - should match categorias.json
-        var categorias = [
-            { nombre: 'Tecnologia', slug: 'tecnologia' },
-            { nombre: 'Accesorios', slug: 'accesorios' }
-        ];
+        var categorias = [];
+        
+        // Try to get categories from DataStore
+        if (window.DataStore && typeof window.DataStore.getCategorias === 'function') {
+            try {
+                categorias = window.DataStore.getCategorias() || [];
+            } catch (e) {
+                console.warn('Navigation: No se pudieron cargar categorías:', e);
+            }
+        }
+        
+        // Fallback if no categories
+        if (categorias.length === 0) {
+            categorias = [
+                { nombre: 'Tecnologia', slug: 'tecnologia' },
+                { nombre: 'Accesorios', slug: 'accesorios' }
+            ];
+        }
         
         var html = '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>';
         for (var i = 0; i < categorias.length; i++) {
@@ -26,10 +39,24 @@ var Navigation = {
         var footer = document.getElementById('footer-categorias');
         if (!footer) return;
         
-        var categorias = [
-            { nombre: 'Tecnologia', slug: 'tecnologia' },
-            { nombre: 'Accesorios', slug: 'accesorios' }
-        ];
+        var categorias = [];
+        
+        // Try to get categories from DataStore
+        if (window.DataStore && typeof window.DataStore.getCategorias === 'function') {
+            try {
+                categorias = window.DataStore.getCategorias() || [];
+            } catch (e) {
+                console.warn('Navigation: No se pudieron cargar categorías:', e);
+            }
+        }
+        
+        // Fallback if no categories
+        if (categorias.length === 0) {
+            categorias = [
+                { nombre: 'Tecnologia', slug: 'tecnologia' },
+                { nombre: 'Accesorios', slug: 'accesorios' }
+            ];
+        }
         
         var html = '';
         for (var i = 0; i < categorias.length; i++) {

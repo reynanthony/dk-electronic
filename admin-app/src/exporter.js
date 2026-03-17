@@ -317,7 +317,7 @@ const CATEGORIA = '{SLUG}';
         if (fs.existsSync(templatePath)) {
             template = fs.readFileSync(templatePath, 'utf8');
         } else {
-            // Basic template for category pages
+            // Basic template for category pages - Uses dynamic navigation
             template = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -354,26 +354,24 @@ tailwind.config = {
 </script>
 <style>
 body { font-family: 'Outfit', sans-serif; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+img { loading: lazy; }
 </style>
 </head>
 <body class="bg-background text-dark font-sans">
-<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex items-center justify-between h-16">
-<a href="index.html" class="flex items-center gap-3" aria-label="DK Electronic - Inicio">
-<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-10 w-10 object-contain" width="40" height="40">
+<a href="index.html" class="flex items-center gap-3">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-12 w-12 object-contain" width="48" height="48">
 <span class="text-xl font-bold tracking-tight">DK <span class="text-primary">Electronic</span></span>
 </a>
-<nav class="hidden md:flex items-center gap-8" aria-label="Navegacin principal">
+<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal" id="main-nav">
 <a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>
-<a href="televisores.html" class="text-sm font-medium hover:text-primary transition-colors">Televisores</a>
-<a href="aires.html" class="text-sm font-medium hover:text-primary transition-colors">Aires</a>
-<a href="electrodomesticos.html" class="text-sm font-medium hover:text-primary transition-colors">Electrodomsticos</a>
-<a href="pulseras.html" class="text-sm font-medium hover:text-primary transition-colors">Pulseras</a>
 </nav>
 <div class="flex items-center gap-3">
-<a href="https://wa.me/18293686994" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700 transition-colors" aria-label="Contactar por WhatsApp">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+<a href="https://wa.me/18293686994" target="_blank" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-orange-700 transition-colors">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 <span class="hidden sm:inline">WhatsApp</span>
 </a>
 </div>
@@ -385,60 +383,95 @@ body { font-family: 'Outfit', sans-serif; }
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="mb-8">
 <h1 class="text-3xl font-bold">{CATEGORY_NAME}</h1>
-<p class="text-muted mt-2">Los mejores productos en {CATEGORY_NAME}</p>
 </div>
 <div id="productos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-<div class="col-span-full text-center py-12 text-muted">
-<div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
-<p class="mt-4">Cargando productos...</p>
-</div>
+<div class="col-span-full text-center py-12 text-muted">Cargando...</div>
 </div>
 </div>
 </main>
 
-<footer class="bg-white py-12 border-t" role="contentinfo">
+<footer class="bg-white py-12 border-t">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="grid md:grid-cols-4 gap-10">
 <div>
 <div class="flex items-center gap-2 mb-4">
-<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8 object-contain" width="32" height="32">
+<img src="logo/dklogo-removebg-preview.png" alt="DK" class="h-8 w-8 object-contain">
 <span class="font-bold">DK <span class="text-primary">Electronic</span></span>
 </div>
-<p class="text-sm text-muted">Los mejores electrodomsticos con garanta y servicio tcnico en Repblica Dominicana.</p>
+<p class="text-sm text-muted">Los mejores electrodomesticos.</p>
 </div>
 <div>
 <h4 class="font-medium mb-4">Categorias</h4>
-<ul class="space-y-2 text-sm text-muted">
-<li><a href="televisores.html" class="hover:text-primary transition-colors">Televisores</a></li>
-<li><a href="aires.html" class="hover:text-primary transition-colors">Aires</a></li>
-<li><a href="electrodomesticos.html" class="hover:text-primary transition-colors">Electrodomsticos</a></li>
-<li><a href="pulseras.html" class="hover:text-primary transition-colors">Pulseras</a></li>
-</ul>
+<ul class="space-y-2 text-sm text-muted" id="footer-categorias"></ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Ayuda</h4>
 <ul class="space-y-2 text-sm text-muted">
-<li><a href="envios.html" class="hover:text-primary transition-colors">Envos</a></li>
-<li><a href="garantia.html" class="hover:text-primary transition-colors">Garanta</a></li>
+<li><a href="envios.html" class="hover:text-primary transition-colors">Envios</a></li>
+<li><a href="garantia.html" class="hover:text-primary transition-colors">Garantia</a></li>
 <li><a href="contacto.html" class="hover:text-primary transition-colors">Contacto</a></li>
 </ul>
 </div>
 <div>
 <h4 class="font-medium mb-4">Contacto</h4>
 <p class="text-sm text-muted">+1 (829) 368-6994</p>
-<p class="text-sm text-muted">Repblica Dominicana</p>
 </div>
-</div>
-<div class="pt-8 border-t text-center text-sm text-muted">
- 2024 DK Electronic. Todos los derechos reservados.
 </div>
 </div>
 </footer>
 
+<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
 <script>
+function waitForDataStoreAndRun(callback) {
+    function check() {
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            callback();
+        } else {
+            setTimeout(check, 50);
+        }
+    }
+    check();
+}
+
 const CATEGORIA = '{SLUG}';
+waitForDataStoreAndRun(async function() {
+    try {
+        await DataStore.cargarDatos();
+        await Navigation.renderAll();
+        
+        var todosProductos = DataStore.getProductos();
+        var container = document.getElementById('productos');
+        
+        var productos = [];
+        for (var i = 0; i < todosProductos.length; i++) {
+            var p = todosProductos[i];
+            if (p.categoria === '{SLUG}' && p.activo !== false) {
+                productos.push(p);
+            }
+        }
+        
+        if (productos.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
+            return;
+        }
+        
+        container.innerHTML = productos.map(function(product) {
+            var garantiaBadge = product.garantia ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ' + (product.garantia_anios || 1) + ' año(s) garantía</div>' : '';
+            var wsLink = 'https://wa.me/18293686994?text=' + encodeURIComponent('Hola, estoy interesado en: ' + product.nombre);
+            
+            return '<div class="group flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-700/30 transition-all duration-300">' + 
+                (product.destacado ? '<div class="absolute top-3 right-3 bg-orange-700 text-white text-[10px] font-black px-2 py-1 rounded uppercase">Hot</div>' : '') +
+                '<div class="aspect-square relative overflow-hidden bg-gray-100"><img src="' + (product.imagen || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen') + '" alt="' + (product.nombre || '') + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" onerror="this.src=\'https://placehold.co/400x400/f3f4f6/9ca3af?text=Sin+Imagen\'"></div>' +
+                '<div class="p-4 flex flex-col flex-1"><span class="text-xs text-orange-700 uppercase tracking-wide">' + (product.categoria || '') + '</span><h3 class="font-bold text-sm text-gray-800 mt-1 line-clamp-1">' + (product.nombre || '') + '</h3><p class="text-xs text-gray-500 mt-1 line-clamp-2 flex-1">' + (product.descripcion || '') + '</p>' + garantiaBadge + '<p class="text-lg font-black text-orange-700 mt-2">RD$ ' + (product.precio || 0).toLocaleString() + '</p><a href="' + wsLink + '" target="_blank" class="mt-3 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95">Comprar</a></div></div>';
+        }).join('');
+        
+    } catch (error) {
+        console.error('Error loading category:', error);
+        document.getElementById('productos').innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error al cargar productos</div>';
+    }
+});
 </script>
-<script src="app-publico.js"></script>
 </body>
 </html>`;
         }
@@ -463,15 +496,9 @@ const CATEGORIA = '{SLUG}';
     }
 
     async updateAllPagesWithCategoryLinks(categories) {
-        const pagesToUpdate = ['index.html', 'televisores.html', 'aires.html', 'electrodomesticos.html', 'pulseras.html', 'viajes.html', 'contacto.html', 'envios.html', 'garantia.html'];
-        
-        const categoryLinks = categories.map(cat => {
-            return '<a href="' + cat.slug + '.html" class="text-sm font-medium hover:text-primary transition-colors">' + cat.nombre + '</a>';
-        }).join('\n');
-        
-        const footerLinks = categories.map(cat => {
-            return '<li><a href="' + cat.slug + '.html" class="hover:text-primary transition-colors">' + cat.nombre + '</a></li>';
-        }).join('\n');
+        // Now pages use dataStore.js + navigation.js, no manual update needed
+        // Just ensure the pages have the correct scripts
+        const pagesToUpdate = ['index.html'];
         
         for (const page of pagesToUpdate) {
             const pagePath = path.join(this.outputPath, page);
@@ -480,30 +507,18 @@ const CATEGORIA = '{SLUG}';
             let content = fs.readFileSync(pagePath, 'utf8');
             let modified = false;
             
-            // 1. Actualizar nav - eliminar todos los enlaces de categorias y agregar solo los activos
-            const navRegex = /<nav class="hidden md:flex items-center gap-8" aria-label="Navegaci(?:ó|o)n principal">([\s\S]*?)<\/nav>/;
-            const navMatch = content.match(navRegex);
-            if (navMatch) {
-                const newNav = '<nav class="hidden md:flex items-center gap-8" aria-label="Navegacion principal">\n' +
-                    '<a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Inicio</a>\n' +
-                    categoryLinks + '\n</nav>';
-                content = content.replace(navMatch[0], newNav);
+            // Ensure dataStore.js and navigation.js are included
+            if (!content.includes('dataStore.js')) {
+                content = content.replace(
+                    '<script src="navigation.js"></script>',
+                    '<script src="dataStore.js"></script>\n<script src="navigation.js"></script>'
+                );
                 modified = true;
-                log.info('Nav actualizado en:', page);
-            }
-            
-            // 2. Actualizar footer Categorias
-            const footerRegex = /<h4 class="font-medium mb-4">Categor[ií]as<\/h4>\s*<ul class="space-y-2 text-sm text-muted">([\s\S]*?)<\/ul>/;
-            const footerMatch = content.match(footerRegex);
-            if (footerMatch) {
-                const newFooter = '<h4 class="font-medium mb-4">Categorias</h4>\n<ul class="space-y-2 text-sm text-muted">\n' + footerLinks + '\n</ul>';
-                content = content.replace(footerMatch[0], newFooter);
-                modified = true;
-                log.info('Footer actualizado en:', page);
             }
             
             if (modified) {
                 fs.writeFileSync(pagePath, content, 'utf8');
+                log.info('Scripts actualizados en:', page);
             }
         }
     }
