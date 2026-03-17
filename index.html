@@ -262,16 +262,26 @@
 <script>
 // Wait for DataStore to be ready before loading app-publico.js
 (function() {
+    var attempts = 0;
     function checkAndLoad() {
+        attempts++;
+        if (attempts > 50) {
+            console.error('DataStore never loaded after 50 attempts');
+            return;
+        }
         if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
             var script = document.createElement('script');
             script.src = 'app-publico.js';
+            script.onerror = function() {
+                console.error('Failed to load app-publico.js');
+            };
             document.body.appendChild(script);
         } else {
             setTimeout(checkAndLoad, 100);
         }
     }
-    checkAndLoad();
+    // Start checking after a small delay to ensure dataStore.js has run
+    setTimeout(checkAndLoad, 100);
 })();
 </script>
 
