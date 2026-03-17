@@ -525,9 +525,7 @@ function initPage() {
     }
 
     async updateAllPagesWithCategoryLinks(categories) {
-        // Now pages use dataStore.js + navigation.js, no manual update needed
-        // Just ensure the pages have the correct scripts
-        const pagesToUpdate = ['index.html'];
+        const pagesToUpdate = ['index.html', 'tecnologia.html', 'accesorios.html', 'comida.html', 'viajes.html'];
         
         for (const page of pagesToUpdate) {
             const pagePath = path.join(this.outputPath, page);
@@ -536,18 +534,60 @@ function initPage() {
             let content = fs.readFileSync(pagePath, 'utf8');
             let modified = false;
             
-            // Ensure dataStore.js and navigation.js are included
-            if (!content.includes('dataStore.js')) {
-                content = content.replace(
-                    '<script src="navigation.js"></script>',
-                    '<script src="dataStore.js"></script>\n<script src="navigation.js"></script>'
-                );
-                modified = true;
+            // Update index.html with proper loading
+            if (page === 'index.html') {
+                // Check if it needs the new loading pattern
+                if (!content.includes('checkAndLoad()')) {
+                    content = content.replace(
+                        /<script src="dataStore.js"><\/script>\s*<script src="navigation.js"><\/script>\s*<script>[\s\S]*?<\/script>/,
+                        `<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
+<script>
+(function() {
+    function checkAndLoad() {
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            var script = document.createElement('script');
+            script.src = 'app-publico.js';
+            document.body.appendChild(script);
+        } else {
+            setTimeout(checkAndLoad, 100);
+        }
+    }
+    checkAndLoad();
+})();
+</script>`
+                    );
+                    modified = true;
+                    log.info('Scripts actualizados en:', page);
+                }
+            } else {
+                // For category pages, update the loading pattern
+                if (!content.includes('initPage()')) {
+                    content = content.replace(
+                        /<script src="dataStore.js"><\/script>\s*<script src="navigation.js"><\/script>\s*<script>[\s\S]*?<\/script>/,
+                        `<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
+<script>
+(function() {
+    function checkAndLoad() {
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
+            initPage();
+        } else {
+            setTimeout(checkAndLoad, 100);
+        }
+    }
+    checkAndLoad();
+})();
+
+function initPage() {`
+                    );
+                    modified = true;
+                    log.info('Scripts actualizados en:', page);
+                }
             }
             
             if (modified) {
                 fs.writeFileSync(pagePath, content, 'utf8');
-                log.info('Scripts actualizados en:', page);
             }
         }
     }
