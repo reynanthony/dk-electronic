@@ -55,6 +55,19 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 12,
+      "nombre": "Paris Tour",
+      "descripcion": "Viaja con nosotros a la ciudad del Amor",
+      "precio": 146000,
+      "categoria": "viajes",
+      "categoria_id": 15,
+      "imagen": "imagenes/paris.webp",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
