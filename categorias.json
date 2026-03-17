@@ -18,35 +18,5 @@
     "hero_imagen": "imagenes/clothing-and-accessories-for-men-and-women-ready-for-travel-life-style-photo.jpg",
     "hero_titulo": "Todo",
     "hero_subtitulo": "lo que necesitas"
-  },
-  {
-    "id": 14,
-    "nombre": "Comida",
-    "slug": "comida",
-    "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
-    "orden": 3,
-    "hero_imagen": "imagenes/restaurantes-carne-santo-domingo-1000x630.jpg",
-    "hero_titulo": "Lo nuevo",
-    "hero_subtitulo": "...para el paladar!"
-  },
-  {
-    "id": 15,
-    "nombre": "Viajes",
-    "slug": "viajes",
-    "imagen": "imagenes/clothing-and-accessories-for-men-and-women-ready-for-travel-life-style-photo.jpg",
-    "orden": 4,
-    "hero_imagen": "imagenes/consejos-viaje-al-extranjero_a65b7706-37e8-426f-ab46-b026aacd2282.webp",
-    "hero_titulo": "El Placer de irte....",
-    "hero_subtitulo": "...y luego regresar!!"
-  },
-  {
-    "id": 16,
-    "nombre": "Autos",
-    "slug": "autos",
-    "imagen": "imagenes/cars.webp",
-    "orden": 5,
-    "hero_imagen": "imagenes/cars back.jpg",
-    "hero_titulo": "",
-    "hero_subtitulo": ""
   }
 ]

@@ -42,32 +42,6 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
-    },
-    {
-      "id": 11,
-      "nombre": "Hamburguer",
-      "descripcion": "Lo mas Rico!!",
-      "precio": 450,
-      "categoria": "comida",
-      "categoria_id": 14,
-      "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
-      "destacado": true,
-      "garantia": false,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
-    },
-    {
-      "id": 12,
-      "nombre": "Paris Tour",
-      "descripcion": "Viaja con nosotros a la ciudad del Amor",
-      "precio": 146000,
-      "categoria": "viajes",
-      "categoria_id": 15,
-      "imagen": "imagenes/paris.webp",
-      "destacado": true,
-      "garantia": false,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
     }
   ]
 }
