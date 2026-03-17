@@ -380,12 +380,12 @@ img { loading: lazy; }
 </header>
 
 <!-- Hero Section -->
-<section class="hero-section relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center">
+<section class="hero-section relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center" style="background-image: url('{HERO_IMAGEN}');">
 <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40"></div>
 <div class="relative h-full flex items-center">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 <h1 id="hero-title" class="text-4xl md:text-5xl font-bold text-white mb-4">{CATEGORY_NAME}</h1>
-<p id="hero-subtitle" class="text-lg text-gray-200 max-w-xl"></p>
+<p id="hero-subtitle" class="text-lg text-gray-200 max-w-xl">{HERO_SUBTITULO}</p>
 </div>
 </div>
 </section>
@@ -512,7 +512,9 @@ function initPage() {
             // Always regenerate category pages to ensure correct code
             let pageContent = template
                 .replace(/{CATEGORY_NAME}/g, cat.nombre)
-                .replace(/{SLUG}/g, slug);
+                .replace(/{SLUG}/g, slug)
+                .replace(/{HERO_IMAGEN}/g, cat.hero_imagen || 'imagenes/1200_900.jpeg')
+                .replace(/{HERO_SUBTITULO}/g, cat.hero_subtitulo || '');
             
             fs.writeFileSync(pagePath, pageContent, 'utf8');
             log.info('Página creada/actualizada:', pagePath);
