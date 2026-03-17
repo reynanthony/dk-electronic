@@ -14,7 +14,7 @@ var Navigation = {
             try {
                 categorias = window.DataStore.getCategorias() || [];
             } catch (e) {
-                console.warn('Navigation: No se pudieron cargar categorías:', e);
+                // Silently fail
             }
         }
         
@@ -46,7 +46,7 @@ var Navigation = {
             try {
                 categorias = window.DataStore.getCategorias() || [];
             } catch (e) {
-                console.warn('Navigation: No se pudieron cargar categorías:', e);
+                // Silently fail
             }
         }
         

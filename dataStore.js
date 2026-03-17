@@ -25,31 +25,12 @@ const DataStore = (function() {
             if (!res.ok) return Date.now();
             const data = await res.json();
             return data.v || Date.now();
-        } catch(err) {
-            return Date.now();
+            } catch(err) {
+                return null;
+            }
         }
-    }
-
-    async function fetchJSON(path, version) {
-        try {
-            // Add timestamp AND random to prevent any caching
-            const cacheBuster = Date.now() + Math.random();
-            const res = await fetch(path + '?v=' + version + '&cb=' + cacheBuster);
-            if (!res.ok) throw new Error('Error loading ' + path);
-            return await res.json();
-        } catch(err) {
-            console.error('DataStore error loading ' + path + ':', err);
-            return null;
-        }
-    }
-
-    async function cargarDatos() {
-        // Always load fresh data - don't use cache
-        store.loaded = false;
-        loadPromise = null;
 
         loadPromise = (async () => {
-            console.log('DataStore: Loading all data...');
             const version = await fetchVersion();
             
             const [categorias, productos, marcas, promociones, tienda] = await Promise.all([
@@ -67,13 +48,6 @@ const DataStore = (function() {
             store.tienda = tienda || {};
             store.version = { v: version };
             store.loaded = true;
-
-            console.log('DataStore: Loaded', {
-                categorias: store.categorias.length,
-                productos: store.productos.productos?.length || 0,
-                marcas: store.marcas.length,
-                promociones: store.promociones.length
-            });
 
             return store;
         })();
