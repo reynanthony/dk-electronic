@@ -509,15 +509,13 @@ function initPage() {
             const slug = cat.slug;
             const pagePath = path.join(this.outputPath, slug + '.html');
             
-            // Only create if doesn't exist
-            if (!fs.existsSync(pagePath)) {
-                let pageContent = template
-                    .replace(/{CATEGORY_NAME}/g, cat.nombre)
-                    .replace(/{SLUG}/g, slug);
-                
-                fs.writeFileSync(pagePath, pageContent, 'utf8');
-                log.info('Pgina creada:', pagePath);
-            }
+            // Always regenerate category pages to ensure correct code
+            let pageContent = template
+                .replace(/{CATEGORY_NAME}/g, cat.nombre)
+                .replace(/{SLUG}/g, slug);
+            
+            fs.writeFileSync(pagePath, pageContent, 'utf8');
+            log.info('Página creada/actualizada:', pagePath);
         }
 
         // Update all existing pages with new category links
