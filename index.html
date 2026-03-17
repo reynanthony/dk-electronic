@@ -263,18 +263,17 @@
 // Wait for DataStore to be ready before loading app-publico.js
 (function() {
     function checkAndLoad() {
-        if (window.DataStore && window.DataStore.cargarDatos) {
-            // DataStore ready, load app-publico.js
+        if (window.DataStore && typeof window.DataStore.cargarDatos === 'function') {
             var script = document.createElement('script');
             script.src = 'app-publico.js';
-            script.onload = function() {
-                console.log('app-publico.js loaded');
-            };
             document.body.appendChild(script);
         } else {
-            setTimeout(checkAndLoad, 50);
+            setTimeout(checkAndLoad, 100);
         }
     }
+    checkAndLoad();
+})();
+</script>
     checkAndLoad();
 })();
 </script>
