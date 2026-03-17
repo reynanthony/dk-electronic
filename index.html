@@ -259,7 +259,25 @@
 
 <script src="dataStore.js"></script>
 <script src="navigation.js"></script>
-<script src="app-publico.js"></script>
+<script>
+// Wait for DataStore to be ready before loading app-publico.js
+(function() {
+    function checkAndLoad() {
+        if (window.DataStore && window.DataStore.cargarDatos) {
+            // DataStore ready, load app-publico.js
+            var script = document.createElement('script');
+            script.src = 'app-publico.js';
+            script.onload = function() {
+                console.log('app-publico.js loaded');
+            };
+            document.body.appendChild(script);
+        } else {
+            setTimeout(checkAndLoad, 50);
+        }
+    }
+    checkAndLoad();
+})();
+</script>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>

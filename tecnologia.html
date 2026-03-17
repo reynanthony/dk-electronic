@@ -65,7 +65,7 @@
 </header>
 
 <!-- Hero Section -->
-<section class="relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center" style="background-image: url('imagenes/_DGD8962.webp');">
+<section class="hero-section relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center" style="background-image: url('imagenes/_DGD8962.webp');">
 <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40"></div>
 <div class="relative h-full flex items-center">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -150,11 +150,13 @@ waitForDataStoreAndRun(async function() {
         const categoria = categorias.find(c => c.slug === CATEGORIA);
         
         if (categoria) {
-            var heroImg = document.getElementById('hero-image');
-            var heroTitle = document.getElementById('hero-title');
-            var heroSubtitle = document.getElementById('hero-subtitle');
+            const heroSection = document.querySelector('.hero-section');
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
             
-            if (heroImg && categoria.hero_imagen) heroImg.src = categoria.hero_imagen;
+            if (heroSection && categoria.hero_imagen) {
+                heroSection.style.backgroundImage = "url('" + categoria.hero_imagen + "')";
+            }
             if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
             if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
         }

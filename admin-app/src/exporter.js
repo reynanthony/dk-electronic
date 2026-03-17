@@ -379,6 +379,17 @@ img { loading: lazy; }
 </div>
 </header>
 
+<!-- Hero Section -->
+<section class="hero-section relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center">
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40"></div>
+<div class="relative h-full flex items-center">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+<h1 id="hero-title" class="text-4xl md:text-5xl font-bold text-white mb-4">{CATEGORY_NAME}</h1>
+<p id="hero-subtitle" class="text-lg text-gray-200 max-w-xl"></p>
+</div>
+</div>
+</section>
+
 <main class="py-12">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="mb-8">
@@ -439,6 +450,21 @@ waitForDataStoreAndRun(async function() {
     try {
         await DataStore.cargarDatos();
         await Navigation.renderAll();
+        
+        var categorias = DataStore.getCategorias();
+        var categoria = categorias.find(function(c) { return c.slug === CATEGORIA; });
+        
+        if (categoria) {
+            var heroSection = document.querySelector('.hero-section');
+            var heroTitle = document.getElementById('hero-title');
+            var heroSubtitle = document.getElementById('hero-subtitle');
+            
+            if (heroSection && categoria.hero_imagen) {
+                heroSection.style.backgroundImage = "url('" + categoria.hero_imagen + "')";
+            }
+            if (heroTitle && categoria.hero_titulo) heroTitle.innerHTML = categoria.hero_titulo;
+            if (heroSubtitle && categoria.hero_subtitulo) heroSubtitle.textContent = categoria.hero_subtitulo;
+        }
         
         var todosProductos = DataStore.getProductos();
         var container = document.getElementById('productos');

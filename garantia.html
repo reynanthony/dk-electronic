@@ -200,9 +200,22 @@ Contactar por WhatsApp
 </div>
 </footer>
 
+<script src="dataStore.js"></script>
+<script src="navigation.js"></script>
 <script>
-const CATEGORIA = 'garantia';
+// Wait for DataStore to be ready before loading app-publico.js
+(function() {
+    function checkAndLoad() {
+        if (window.DataStore && window.DataStore.cargarDatos) {
+            var script = document.createElement('script');
+            script.src = 'app-publico.js?v=11';
+            document.body.appendChild(script);
+        } else {
+            setTimeout(checkAndLoad, 50);
+        }
+    }
+    checkAndLoad();
+})();
 </script>
-<script src="app-publico.js?v=11"></script>
 </body>
 </html>
