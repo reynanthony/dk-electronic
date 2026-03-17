@@ -137,14 +137,7 @@ const DataStore = (function() {
     };
 })();
 
-// Auto-load on script execution
+// Expose to window
 if (typeof window !== 'undefined') {
-    // Only set if not already defined
-    if (!window.DataStore) {
-        window.DataStore = DataStore;
-    }
-    // Try to load data
-    if (DataStore && DataStore.cargarDatos) {
-        DataStore.cargarDatos();
-    }
+    window.DataStore = DataStore;
 }

@@ -65,7 +65,7 @@
 </header>
 
 <!-- Hero Section -->
-<section class="relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=80');">
+<section class="relative h-[350px] md:h-[400px] overflow-hidden bg-slate-900 bg-cover bg-center" style="background-image: url('imagenes/_DGD8962.webp');">
 <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40"></div>
 <div class="relative h-full flex items-center">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -160,7 +160,6 @@ waitForDataStoreAndRun(async function() {
         }
         
         const todosProductos = DataStore.getProductos();
-        const container = document.getElementById('productos');
         
         // Filter by category - exact match
         const productos = [];
@@ -171,14 +170,14 @@ waitForDataStoreAndRun(async function() {
             }
         }
         
-        const productosContainer = document.getElementById('productos');
+        const container = document.getElementById('productos');
         
         if (productos.length === 0) {
-            productosContainer.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
+            container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p></div>';
             return;
         }
         
-        productosContainer.innerHTML = productos.map(product => {
+        container.innerHTML = productos.map(product => {
             const garantiaBadge = product.garantia ? '<div class="mt-2 flex items-center gap-1 text-xs text-green-600 font-medium"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ' + (product.garantia_anios || 1) + ' año(s) garantía</div>' : '';
             const wsLink = 'https://wa.me/18293686994?text=' + encodeURIComponent('Hola, estoy interesado en: ' + product.nombre);
             
