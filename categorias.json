@@ -28,5 +28,15 @@
     "hero_imagen": "imagenes/restaurantes-carne-santo-domingo-1000x630.jpg",
     "hero_titulo": "Lo nuevo",
     "hero_subtitulo": "enrriquece el paladar"
+  },
+  {
+    "id": 15,
+    "nombre": "Viajes",
+    "slug": "viajes",
+    "imagen": "imagenes/clothing-and-accessories-for-men-and-women-ready-for-travel-life-style-photo.jpg",
+    "orden": 4,
+    "hero_imagen": "imagenes/consejos-viaje-al-extranjero_a65b7706-37e8-426f-ab46-b026aacd2282.webp",
+    "hero_titulo": "El Placer de irte....",
+    "hero_subtitulo": "...y luego regresar!"
   }
 ]
