@@ -17,18 +17,32 @@ const DataStore = (function() {
 
     let loadPromise = null;
 
-    // Obtenemos la versión actual para cache-busting
     async function fetchVersion() {
         try {
-            // Always fetch fresh version - add timestamp to prevent cache
             const res = await fetch('version.json?v=' + Date.now() + '&t=' + Math.random());
             if (!res.ok) return Date.now();
             const data = await res.json();
             return data.v || Date.now();
-            } catch(err) {
-                return null;
-            }
+        } catch(err) {
+            return Date.now();
         }
+    }
+
+    async function fetchJSON(path, version) {
+        try {
+            const cacheBuster = Date.now() + Math.random();
+            const res = await fetch(path + '?v=' + version + '&cb=' + cacheBuster);
+            if (!res.ok) throw new Error('Error loading ' + path);
+            return await res.json();
+        } catch(err) {
+            console.error('DataStore error loading ' + path + ':', err);
+            return null;
+        }
+    }
+
+    async function cargarDatos() {
+        store.loaded = false;
+        loadPromise = null;
 
         loadPromise = (async () => {
             const version = await fetchVersion();

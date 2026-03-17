@@ -47,7 +47,7 @@
       "id": 11,
       "nombre": "Hamburguer",
       "descripcion": "Lo mas Rico!!",
-      "precio": 350,
+      "precio": 450,
       "categoria": "comida",
       "categoria_id": 14,
       "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
