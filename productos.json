@@ -42,6 +42,19 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 13,
+      "nombre": "prueba",
+      "descripcion": "prueba",
+      "precio": 10000,
+      "categoria": "tecnologia",
+      "categoria_id": 1,
+      "imagen": "imagenes/1200_900.jpeg",
+      "destacado": true,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
