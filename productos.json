@@ -55,19 +55,6 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
-    },
-    {
-      "id": 14,
-      "nombre": "Hamburguer",
-      "descripcion": "Mmmmm..",
-      "precio": 360,
-      "categoria": "restaurant",
-      "categoria_id": 17,
-      "imagen": "imagenes/franquicias-de-comida-rapida-img-790x440-04.jpg",
-      "destacado": true,
-      "garantia": false,
-      "garantiaAnios": 1,
-      "garantiaCond": ""
     }
   ]
 }
