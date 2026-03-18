@@ -3,8 +3,8 @@
     "id": 2,
     "titulo": "Samsung",
     "descripcion": "Las mejores marcas en un solo lugar",
-    "imagen": "",
-    "video_url": "videos/videoplayback.mp4",
+    "imagen": "imagenes/Samsung-es-la-marca-más-recomendada-en-el-mercado-de-electrodomésticos-y-televisores-de-EE.UU_..png",
+    "video_url": "",
     "fecha_inicio": "2026-03-13",
     "fecha_fin": "2026-03-16"
   }
