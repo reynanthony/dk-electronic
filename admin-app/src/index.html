@@ -1345,10 +1345,34 @@
                         <label>Con garantía</label>
                     </div>
                 </div>
+                <div class="form-row" id="garantiaAniosRow">
+                    <div class="form-group">
+                        <label>Años de Garantía</label>
+                        <select id="prodGarantiaAnios">
+                            <option value="1" ${product?.garantia_anios === 1 ? 'selected' : ''}>1 año</option>
+                            <option value="2" ${product?.garantia_anios === 2 ? 'selected' : ''}>2 años</option>
+                            <option value="3" ${product?.garantia_anios === 3 ? 'selected' : ''}>3 años</option>
+                            <option value="4" ${product?.garantia_anios === 4 ? 'selected' : ''}>4 años</option>
+                            <option value="5" ${product?.garantia_anios === 5 ? 'selected' : ''}>5 años</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condiciones de Garantía</label>
+                        <input type="text" id="prodGarantiaCond" value="${escapeHTML(product?.garantia_cond || '')}" placeholder="Condiciones adicionales...">
+                    </div>
+                </div>
             `;
             
             document.getElementById('modalTitle').textContent = isEdit ? 'Editar Producto' : 'Nuevo Producto';
             document.getElementById('modalBody').innerHTML = modalContent;
+            
+            const garantiaCheckbox = document.getElementById('prodGarantia');
+            const garantiaRow = document.getElementById('garantiaAniosRow');
+            garantiaRow.style.display = garantiaCheckbox.checked ? 'grid' : 'none';
+            garantiaCheckbox.addEventListener('change', function() {
+                garantiaRow.style.display = this.checked ? 'grid' : 'none';
+            });
+            
             openModal();
         }
 
@@ -1831,7 +1855,9 @@
                             imagen: document.getElementById('prodImagen').value.trim(),
                             destacado: document.getElementById('prodDestacado').checked,
                             activo: document.getElementById('prodActivo').checked,
-                            garantia: document.getElementById('prodGarantia').checked
+                            garantia: document.getElementById('prodGarantia').checked,
+                            garantia_anios: parseInt(document.getElementById('prodGarantiaAnios').value) || 1,
+                            garantia_cond: document.getElementById('prodGarantiaCond').value.trim()
                         };
                         if (currentEditId) {
                             await window.api.products.update(currentEditId, prodData);

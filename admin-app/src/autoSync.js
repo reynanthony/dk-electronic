@@ -35,8 +35,17 @@ class AutoSync {
 
             log.info('AutoSync: Archivos modificados:', status.files.map(f => f.path).join(', '));
 
-            // Stage all changes
-            await this.git.add('.');
+            // Stage all changes except 'nul' (Windows reserved name)
+            const files = status.files.filter(f => f.path !== 'nul');
+            if (files.length === 0) {
+                log.info('AutoSync: No hay cambios para sincronizar');
+                return { success: true, message: 'No hay cambios' };
+            }
+            
+            // Add filtered files
+            for (const file of files) {
+                await this.git.add(file.path);
+            }
             
             // Create commit with timestamp
             const timestamp = new Date().toLocaleString('es-DO', {
