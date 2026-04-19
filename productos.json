@@ -55,6 +55,19 @@
       "garantia": false,
       "garantiaAnios": 1,
       "garantiaCond": ""
+    },
+    {
+      "id": 15,
+      "nombre": "pata",
+      "descripcion": "dfdf",
+      "precio": 500,
+      "categoria": "accesorios",
+      "categoria_id": 2,
+      "imagen": "imagenes/images.jpg",
+      "destacado": false,
+      "garantia": false,
+      "garantiaAnios": 1,
+      "garantiaCond": ""
     }
   ]
 }
